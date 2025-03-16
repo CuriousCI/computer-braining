@@ -238,7 +238,7 @@ table.cell(align: center + horizon, `is goal`)
 / Iterazioni: 1
 / Ottimalità: il cammino non è ottimale
 
-Generalmente la BFS garantisce l'ottimalità solo se il costo per tutte le azioni è lo stesso (perché la BFS trova il minor numero di azioni per raggiungere l'obiettivo)
+Generalmente la BFS garantisce l'ottimalità solo se il costo per tutte le azioni è lo stesso (perché la BFS trova il minor numero di azioni per raggiungere l'obiettivo), e se è possibile trovare un piano (quindi le azioni per un dato stato non sono infinite).
 
   // - garantisce solo la minimalità del numero di azioni
   // - il cammino trovato è ottimo se il costo di tutte le azioni è lo stesso
@@ -364,9 +364,9 @@ Min cost search
 / Percorso: $"S" -> "D" -> "C" -> "F" -> "G2"$
 / Costo: 5 + 3 + 2 + 4 = 14 
 / Iterazioni: 1
-/ Ottimalità: il costo è quello ottimale
+/ Ottimalità: il costo del cammino è ottimale
 
-L'algoritmo Min cost trova sempre il cammino ottimale (tranne in grafi infiniti)
+L'algoritmo min cost trova sempre il cammino ottimale (se l'albero di ricerca è finito).
 
 #pagebreak()
 
@@ -546,7 +546,9 @@ Iterative deepening search
 / Percorso: $"S" -> "B" -> "G1"$
 / Costo: 7 + 9 = 16
 / Iterazioni: 2
-/ Ottimalità: il percorso non è ottimale
+/ Ottimalità: il cammino non è ottimale
+
+Generalmente non è detto che la ricerca ad approfondimento iterativo trovi un cammino con costo ottimale. 
 
 #pagebreak()
 
@@ -727,6 +729,8 @@ Best-first greedy search
 / Iterazioni: 1
 / Ottimalità: la soluzione non è ottimale
 
+L'algoritmo best-first non è ottimale, a meno che l'euristica non corrisponde esattamente alla distanza minima per raggiungere un goal. Questo perché il best-first non considera i costi effettivi (che sono maggiori o uguali all'euristica).
+
 #pagebreak()
 
 == A#super[\*]
@@ -852,7 +856,7 @@ A#super[\*]
 / Iterazioni: 1
 / Ottimalità: la soluzione è ottimale
 
-L'algoritmo A#super[\*] è ottimale quando la funzione $h(s)$ è consistente (quindi anche ammissibile)
+L'algoritmo A#super[\*] è ottimale quando la funzione $h(s)$ è consistente (quindi anche ammissibile). In questo esempio l'euristica è ammissibile ma non consistente, il che non basta per avere l'ottimalità di A#super[\*].
 
 #pagebreak()
 
@@ -880,4 +884,5 @@ Come si nota dalla tabella sotto l'euristica *è ammissibile*, perché per ogni 
 ) 
 ]
 
-L'euristica *non è consistente* perché $9 = h("A") > 4 + h("B") = 4 + 3 = 7$, è solo un caso che A#super[\*] trova il percorso ottimale in questo esempio.
+L'euristica *non è consistente*:  $9 = h("A") > 4 + h("B") = 4 + 3 = 7$.
+
