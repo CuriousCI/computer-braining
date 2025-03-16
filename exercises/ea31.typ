@@ -34,6 +34,9 @@
 
 = E.A.3.1
 
+Implementations in `Rust` and exercises
+- #link("https://github.com/CuriousCI/artificial-intelligence")[https://github.com/CuriousCI/artificial-intelligence]
+
 == Ricerca in profondità 
 DFS (depth first search)
 
