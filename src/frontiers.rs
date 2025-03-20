@@ -3,167 +3,168 @@ use std::{
     collections::{HashMap, VecDeque},
     fmt::Debug,
     hash::Hash,
+    rc::Rc,
 };
 
 use crate::problem_solving_agent::*;
 
-#[derive(Debug)]
-pub struct BreadthFirst<S, A>(VecDeque<(S, std::rc::Rc<Node<A>>)>);
+pub struct Breadth<S, A>(VecDeque<(S, Rc<Node<A>>)>);
 
-impl<S, A> Frontier<S, A> for BreadthFirst<S, A>
+impl<S, A> Debug for Breadth<S, A>
 where
-    S: Hash + Eq + Debug + Clone,
+    S: Debug,
     A: Debug,
 {
-    fn new() -> Self {
-        BreadthFirst(VecDeque::new())
-    }
-
-    fn next(&mut self) -> Option<(S, std::rc::Rc<Node<A>>)> {
-        self.0.pop_front()
-    }
-
-    fn insert(&mut self, s: S, n: std::rc::Rc<Node<A>>) {
-        self.0.push_back((s, n));
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        self.0.fmt(f)
     }
 }
 
-#[derive(Debug)]
-pub struct DepthFirst<S, A>(Vec<(S, std::rc::Rc<Node<A>>)>);
+impl<S, A> Default for Breadth<S, A> {
+    fn default() -> Self {
+        Self(Default::default())
+    }
+}
 
-impl<S, A> Frontier<S, A> for DepthFirst<S, A>
+impl<S, A> Frontier<S, A> for Breadth<S, A>
 where
-    S: Eq + Debug,
+    S: Debug,
     A: Debug,
 {
-    fn new() -> Self {
-        DepthFirst(Vec::new())
+    fn next(&mut self) -> Option<(S, Rc<Node<A>>)> {
+        self.0.pop_front()
     }
 
-    fn next(&mut self) -> Option<(S, std::rc::Rc<Node<A>>)> {
+    fn insert(&mut self, state: S, node: Rc<Node<A>>) {
+        self.0.push_back((state, node));
+    }
+}
+
+pub struct Depth<S, A>(Vec<(S, Rc<Node<A>>)>);
+
+impl<S, A> Debug for Depth<S, A>
+where
+    S: Debug,
+    A: Debug,
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        self.0.fmt(f)
+    }
+}
+
+impl<S, A> Default for Depth<S, A> {
+    fn default() -> Self {
+        Self(Default::default())
+    }
+}
+
+impl<S, A> Frontier<S, A> for Depth<S, A>
+where
+    S: Debug,
+    A: Debug,
+{
+    fn next(&mut self) -> Option<(S, Rc<Node<A>>)> {
         self.0.pop()
     }
 
-    fn insert(&mut self, s: S, n: std::rc::Rc<Node<A>>) {
-        self.0.push((s, n));
+    fn insert(&mut self, state: S, node: Rc<Node<A>>) {
+        self.0.push((state, node));
     }
 }
 
 use priority_queue::PriorityQueue;
-#[derive(Debug)]
-pub struct MinCost<S, A>(
-    PriorityQueue<S, (Reverse<usize>, Reverse<S>)>,
-    HashMap<S, std::rc::Rc<Node<A>>>,
-);
 
-impl<S, A> Frontier<S, A> for MinCost<S, A>
+pub struct PriorityFrontier<S, A, N>(
+    PriorityQueue<S, Reverse<(usize, S)>>,
+    HashMap<S, Rc<Node<A>>>,
+    std::marker::PhantomData<N>,
+)
 where
-    S: Eq + Hash + Debug + Clone + Ord, //(Reverse<usize>, Rc<S>): Ord,
-    A: Eq + Hash + Debug,
+    S: Ord + Hash,
+    N: FromNode<A>;
+
+impl<S, A, N> Default for PriorityFrontier<S, A, N>
+where
+    S: Ord + Hash + Clone,
+    N: FromNode<A>,
 {
-    fn new() -> Self {
-        MinCost(PriorityQueue::new(), HashMap::new())
+    fn default() -> Self {
+        Self(Default::default(), Default::default(), Default::default())
+    }
+}
+
+impl<S, A, N> Debug for PriorityFrontier<S, A, N>
+where
+    S: Ord + Hash + Clone + Debug,
+    N: FromNode<A>,
+    A: Debug,
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        for x in self.0.clone().into_sorted_iter() {
+            if let Some(v) = self.1.get(&x.0) {
+                f.write_fmt(format_args!("({:?}, {:?}), ", x.0, v))?
+            }
+        }
+        f.write_str("\n")
+    }
+}
+
+impl<S, A, N> Frontier<S, A> for PriorityFrontier<S, A, N>
+where
+    S: Hash + Ord + Clone + Debug,
+    N: FromNode<A>,
+    A: Debug,
+{
+    fn next(&mut self) -> Option<(S, Rc<Node<A>>)> {
+        self.0.pop().and_then(|(state, _)| {
+            let node = self.1.get(&state)?.clone();
+            Some((state, node))
+        })
     }
 
-    fn next(&mut self) -> Option<(S, std::rc::Rc<Node<A>>)> {
-        let (s, _) = self.0.pop()?;
-        let n = self.1.get(&s)?.clone();
-        Some((s, n))
-    }
-
-    fn insert(&mut self, s: S, n: std::rc::Rc<Node<A>>) {
+    fn insert(&mut self, state: S, node: Rc<Node<A>>) {
         self.0
-            .push(s.clone(), (Reverse(n.cost), Reverse(s.clone())));
-        self.1.insert(s, n);
+            .push(state.clone(), Reverse((N::cost(&node), state.clone())));
+        self.1.insert(state, node);
     }
 
-    fn change(&mut self, s: &S, n: std::rc::Rc<Node<A>>) {
-        if self.1.get(s).is_none_or(|prev_n| prev_n.cost > n.cost) {
+    fn change(&mut self, state: &S, node: Rc<Node<A>>) {
+        if self
+            .1
+            .get(state)
+            .is_none_or(|prev| N::cost(prev) > N::cost(&node))
+        {
             self.0
-                .change_priority(&s.clone(), (Reverse(n.cost), Reverse(s.clone())));
-            self.1.insert(s.clone(), n);
+                .change_priority(state, Reverse((N::cost(&node), state.clone())));
+            self.1.insert(state.clone(), node);
         }
     }
 }
 
-#[derive(Debug)]
-pub struct BestFirst<S, A>(
-    PriorityQueue<S, Reverse<usize>>,
-    HashMap<S, std::rc::Rc<Node<A>>>,
-);
+pub struct MinCostPolicy;
 
-impl<S, A> Frontier<S, A> for BestFirst<S, A>
-where
-    S: Eq + Hash + Debug + Clone, //(Reverse<usize>, Rc<S>): Ord,
-    A: Eq + Hash + Debug,
-{
-    fn new() -> Self {
-        BestFirst(PriorityQueue::new(), HashMap::new())
-    }
-
-    fn next(&mut self) -> Option<(S, std::rc::Rc<Node<A>>)> {
-        let (s, _) = self.0.pop()?;
-        let n = self.1.get(&s)?.clone();
-        Some((s, n))
-    }
-
-    fn insert(&mut self, s: S, n: std::rc::Rc<Node<A>>) {
-        self.0.push(s.clone(), Reverse(n.heuristic));
-        self.1.insert(s, n);
-    }
-
-    fn change(&mut self, s: &S, n: std::rc::Rc<Node<A>>) {
-        if self
-            .1
-            .get(s)
-            .is_none_or(|prev_n| prev_n.heuristic > n.heuristic)
-        {
-            self.0.change_priority(&s.clone(), Reverse(n.heuristic));
-            self.1.insert(s.clone(), n);
-        }
+impl<A> FromNode<A> for MinCostPolicy {
+    fn cost(node: &Node<A>) -> Cost {
+        node.g
     }
 }
 
-#[derive(Debug)]
-pub struct AStar<S, A>(
-    PriorityQueue<S, (Reverse<usize>, Reverse<S>)>,
-    HashMap<S, std::rc::Rc<Node<A>>>,
-);
+pub struct BestFirstPolicy;
 
-impl<S, A> Frontier<S, A> for AStar<S, A>
-where
-    S: Eq + Hash + Debug + Clone + Ord, //(Reverse<usize>, Rc<S>): Ord,
-    A: Eq + Hash + Debug,
-{
-    fn new() -> Self {
-        AStar(PriorityQueue::new(), HashMap::new())
-    }
-
-    fn next(&mut self) -> Option<(S, std::rc::Rc<Node<A>>)> {
-        let (s, _) = self.0.pop()?;
-        let n = self.1.get(&s)?.clone();
-        Some((s, n))
-    }
-
-    fn insert(&mut self, s: S, n: std::rc::Rc<Node<A>>) {
-        self.0.push(
-            s.clone(),
-            (Reverse(n.cost + n.heuristic), Reverse(s.clone())),
-        );
-        self.1.insert(s, n);
-    }
-
-    fn change(&mut self, s: &S, n: std::rc::Rc<Node<A>>) {
-        if self
-            .1
-            .get(s)
-            .is_none_or(|prev_n| prev_n.cost + prev_n.heuristic > n.cost + n.heuristic)
-        {
-            self.0.change_priority(
-                &s.clone(),
-                (Reverse(n.cost + n.heuristic), Reverse(s.clone())),
-            );
-            self.1.insert(s.clone(), n);
-        }
+impl<A> FromNode<A> for BestFirstPolicy {
+    fn cost(node: &Node<A>) -> Cost {
+        node.h
     }
 }
+
+pub struct AStarPolicy;
+
+impl<A> FromNode<A> for AStarPolicy {
+    fn cost(node: &Node<A>) -> Cost {
+        node.g + node.h
+    }
+}
+
+pub type MinCost<S, A> = PriorityFrontier<S, A, MinCostPolicy>;
+pub type BestFirst<S, A> = PriorityFrontier<S, A, BestFirstPolicy>;
+pub type AStar<S, A> = PriorityFrontier<S, A, AStarPolicy>;

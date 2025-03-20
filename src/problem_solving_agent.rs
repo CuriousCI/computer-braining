@@ -1,56 +1,67 @@
 use std::{
     collections::{HashSet, VecDeque},
-    fmt::{Debug, write},
+    fmt::Debug,
     hash::Hash,
     rc::Rc,
-    time::Instant,
 };
 
-use crate::frontiers::DepthFirst;
-
 pub type Cost = usize;
-pub type Heuristic = usize;
+pub type Heuristic = Cost;
 
 pub trait Problem<S, A> {
-    fn actions(&self, s: &S) -> impl IntoIterator<Item = A>;
+    fn expand(&self, s: &S) -> impl Iterator<Item = (A, Cost)>;
     fn is_goal(&self, s: &S) -> bool;
-    fn next_state(&self, s: &S, a: &A) -> (S, Cost);
+    fn new_state(&self, s: &S, a: &A) -> S;
     fn h(&self, s: &S) -> Heuristic;
 }
 
-pub trait Frontier<S, A>: Debug {
-    fn new() -> Self;
+pub trait Frontier<S, A>: Default + Debug {
     fn next(&mut self) -> Option<(S, Rc<Node<A>>)>;
-    fn insert(&mut self, s: S, n: Rc<Node<A>>);
-    fn change(&mut self, _: &S, _: Rc<Node<A>>) {}
+    fn insert(&mut self, state: S, node: Rc<Node<A>>);
+    fn change(&mut self, _state: &S, _node: Rc<Node<A>>) {}
 }
 
 #[derive(Hash, Eq, PartialEq)]
 pub struct Node<A> {
     parent: Option<(A, Rc<Node<A>>)>,
-    pub cost: Cost,
-    pub heuristic: Heuristic,
     depth: usize,
+    pub g: Cost,
+    pub h: Heuristic,
 }
 
-impl<A> Debug for Node<A> {
+impl<A> Debug for Node<A>
+where
+    A: Debug,
+{
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_fmt(format_args!(
-            "g: {}, h: {}, f: {}, d: {}",
-            self.cost,
-            self.heuristic,
-            self.cost + self.heuristic,
-            self.depth
-        ))
+        let p = self
+            .parent
+            .as_ref()
+            .and_then(|(_, p)| p.parent.as_ref().map(|(a, _)| a));
 
-        //f.debug_struct("")
-        //    //.field("parent", &self.parent)
-        //    .field("g", &self.cost)
-        //    .field("h", &self.heuristic)
-        //    .field("f", &self.cost + &self.heuristic)
-        //    .field("d", &self.depth)
-        //    .finish()
+        if let Some(a) = p {
+            f.write_fmt(format_args!(
+                "p: {:?}, g: {}, h: {}, f: {}, d: {}",
+                a,
+                self.g,
+                self.h,
+                self.g + self.h,
+                self.depth
+            ))
+        } else {
+            f.write_fmt(format_args!(
+                "p: S, g: {}, h: {}, f: {}, d: {}",
+                self.g,
+                self.h,
+                self.g + self.h,
+                self.depth
+            ))
+        }
     }
+}
+
+pub trait FromNode<A> {
+    fn cost(node: &Node<A>) -> Cost;
 }
 
 pub struct Agent<S, A, M>
@@ -64,7 +75,7 @@ where
 
 impl<S, A, M> Agent<S, A, M>
 where
-    S: Eq + Clone + Hash + Ord + Debug,
+    S: Eq + Hash + Clone + Debug,
     A: Clone + Debug,
     M: Problem<S, A>,
 {
@@ -76,7 +87,6 @@ where
         }
     }
 
-    // TODO: mut ref + lifetime, possibly lifetime on class or impl
     pub fn function<P, F>(&mut self, perception: P) -> Option<A>
     where
         P: TryInto<S>,
@@ -84,9 +94,7 @@ where
     {
         if self.plan.is_none() {
             self.state = perception.try_into().ok();
-            let time = Instant::now();
             self.plan = self.search::<F>(None);
-            println!("{:#?}", time.elapsed())
         };
 
         self.plan.as_mut()?.pop_front()
@@ -99,54 +107,41 @@ where
     {
         if self.plan.is_none() {
             self.state = perception.try_into().ok();
-            let time = Instant::now();
             let mut depth = 1;
             while self.plan.is_none() {
                 self.plan = self.search::<F>(Some(depth));
                 depth += 1;
             }
-            println!("{:#?}", time.elapsed())
         };
 
         self.plan.as_mut()?.pop_front()
     }
 
-    //(P, Option<S>): TryInto<S>,
-    //self.state = (perception, self.state.clone()).try_into().ok();
-
-    // node + Rc :: clone for nodes, so just clone the states and don't reuse them!
-    fn search<F>(&self, depth: Option<usize>) -> Option<VecDeque<A>>
+    fn search<F>(&mut self, depth: Option<usize>) -> Option<VecDeque<A>>
     where
         F: Frontier<S, A>,
     {
-        let mut frontier = F::new();
-        let state = self.state.clone()?;
-        let node = Rc::new(Node {
-            parent: None,
-            cost: 0,
-            heuristic: self.problem.h(&state),
-            depth: 0,
-        });
-
-        frontier.insert(state, node);
+        let mut frontier = F::default();
         let mut explored = HashSet::new();
         let mut in_frontier = HashSet::new();
 
-        println!("frontier: {:?}", frontier);
-        println!("explored: {:?}", explored);
+        let state = self.state.clone()?;
+        let node = Rc::new(Node {
+            h: self.problem.h(&state),
+            parent: None,
+            depth: 0,
+            g: 0,
+        });
+        frontier.insert(state.clone(), node);
+
+        println!("explored:\n- {:?}", explored);
+        println!("frontier:\n- {:?}\n", frontier);
 
         while let Some((state, node)) = frontier.next() {
             explored.insert(state.clone());
             in_frontier.remove(&state);
 
-            //if let Some(depth) = depth {
-            //    if node.depth > depth {
-            //        continue;
-            //        //return None;
-            //    }
-            //}
-
-            println!("\n{:?}", state);
+            println!("{:?}", state);
 
             if self.problem.is_goal(&state) {
                 let mut plan = VecDeque::new();
@@ -159,41 +154,107 @@ where
                 return Some(plan);
             }
 
-            println!(
-                "actions: {:?}",
-                self.problem.actions(&state).into_iter().collect::<Vec<A>>()
-            );
-
             if let Some(depth) = depth {
                 if node.depth >= depth {
                     continue;
                 }
             }
 
-            for action in self.problem.actions(&state) {
-                let (curr_state, action_cost) = self.problem.next_state(&state, &action);
+            println!(
+                "actions:\n- {:?}",
+                self.problem
+                    .expand(&state)
+                    .map(|(a, _)| a)
+                    .collect::<Vec<A>>()
+            );
 
-                let curr_node = Rc::new(Node {
-                    parent: Some((action, node.clone())),
-                    depth: node.depth + 1,
-                    cost: node.cost + action_cost,
-                    heuristic: self.problem.h(&curr_state),
-                });
+            for (action, cost) in self.problem.expand(&state) {
+                let new_state = self.problem.new_state(&state, &action);
+                if !explored.contains(&new_state) {
+                    let new_node = Rc::new(Node {
+                        parent: Some((action, node.clone())),
+                        depth: node.depth + 1,
+                        g: node.g + cost,
+                        h: self.problem.h(&new_state),
+                    });
 
-                if !explored.contains(&curr_state) {
-                    if !in_frontier.contains(&curr_state) {
-                        in_frontier.insert(curr_state.clone());
-                        frontier.insert(curr_state.clone(), curr_node);
+                    if !in_frontier.contains(&new_state) {
+                        in_frontier.insert(new_state.clone());
+                        frontier.insert(new_state, new_node);
                     } else {
-                        frontier.change(&curr_state, curr_node);
+                        frontier.change(&new_state, new_node);
                     }
                 }
             }
 
-            println!("frontier: {:?}", frontier);
-            println!("explored: {:?}", explored);
+            println!("explored:\n- {:?}", explored);
+            println!("frontier:\n- {:?}\n", frontier);
         }
 
         None
     }
 }
+
+//self.problem.expand(&state).map(|(action, cost)| self.problem.new_state(, a))
+
+//let new_state = self.problem.new_state(&state, &action);
+//let new_state = self.problem.new_state(&state, &action);
+
+//fn next_state(&self, s: &S, a: &A) -> (S, Cost);
+
+//let new_node = Rc::new(Node {
+//    parent: Some((action, node.clone())),
+//    depth: node.depth + 1,
+//    cost: node.cost + action_cost,
+//    heuristic: self.problem.h(&new_state),
+//});
+
+//let node = Rc::new(Node {
+//    parent: None,
+//    cost: 0,
+//    heuristic: self.problem.h(&state),
+//    depth: 0,
+//});
+
+// TODO: mut ref + lifetime, possibly lifetime on class or impl
+
+//parent: Option<(A, Rc<Node<A>>)>,
+
+//let time = Instant::now();
+//impl<A> Debug for Node<A> {
+//    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+//        f.write_fmt(format_args!(
+//            "g: {}, h: {}, f: {}, d: {}",
+//            self.cost,
+//            self.heuristic,
+//            self.cost + self.heuristic,
+//            self.depth
+//        ))
+//    }
+//}
+
+//(P, Option<S>): TryInto<S>,
+//self.state = (perception, self.state.clone()).try_into().ok();
+
+// node + Rc :: clone for nodes, so just clone the states and don't reuse them!
+
+//println!("{:#?}", time.elapsed())
+//println!("{:#?}", time.elapsed())
+//println!("frontier: {:?}", frontier);
+//println!("explored: {:?}", explored);
+//if let Some(depth) = depth {
+//    if node.depth > depth {
+//        continue;
+//        //return None;
+//    }
+//}
+
+//println!("\n{:?}", state);
+
+//println!(
+//    "actions: {:?}",
+//    self.problem.actions(&state).into_iter().collect::<Vec<A>>()
+//);
+
+//println!("frontier: {:?}", frontier);
+//println!("explored: {:?}", explored);

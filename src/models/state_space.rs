@@ -2,10 +2,10 @@ use std::fmt::Debug;
 
 use ai::problem_solving_agent::{Cost, Problem};
 
-#[derive(Copy, Clone, Ord, PartialEq, Eq, Hash, PartialOrd)]
+#[derive(Copy, Clone, Ord, PartialEq, Eq, Hash, PartialOrd, Default)]
 pub struct V(pub usize);
 
-static VERTICES: [&str; 10] = ["A", "B", "C", "D", "E", "F", "G1", "G2", "J", "S"];
+static VERTICES: [&str; 11] = ["A", "B", "C", "D", "E", "G1", "G2", "H", "I", "J", "S"];
 
 impl Debug for V {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
@@ -22,16 +22,16 @@ pub struct Space {
 }
 
 impl Problem<V, V> for Space {
-    fn actions(&self, &s: &V) -> impl IntoIterator<Item = V> {
-        self.graph[s.0].clone()
+    fn expand(&self, s: &V) -> impl Iterator<Item = (V, Cost)> {
+        self.graph[s.0].iter().map(|&t| (t, self.costs[s.0][t.0]))
     }
 
-    fn is_goal(&self, &s: &V) -> bool {
+    fn is_goal(&self, s: &V) -> bool {
         self.goals[s.0]
     }
 
-    fn next_state(&self, s: &V, &a: &V) -> (V, ai::problem_solving_agent::Cost) {
-        (a, self.costs[s.0][a.0])
+    fn new_state(&self, _: &V, &a: &V) -> V {
+        a
     }
 
     fn h(&self, s: &V) -> ai::problem_solving_agent::Heuristic {
@@ -39,6 +39,23 @@ impl Problem<V, V> for Space {
     }
 }
 
+//static VERTICES: [&str; 10] = ["A", "B", "C", "D", "E", "F", "G1", "G2", "J", "S"];
+//todo!()
+//fn expand(&self, &s: &V) -> impl IntoIterator<Item = V> {
+//    self.graph[s.0].clone()
+//}
+//
+//fn is_goal(&self, &s: &V) -> bool {
+//    self.goals[s.0]
+//}
+//
+//fn new_state(&self, s: &V, &a: &V) -> (V, ai::problem_solving_agent::Cost) {
+//    (a, self.costs[s.0][a.0])
+//}
+//
+//fn h(&self, s: &V) -> ai::problem_solving_agent::Heuristic {
+//    self.h[s.0]
+//}
 //impl From<((), Option<State>)> for State {
 //    fn from(value: ((), Option<State>)) -> Self {
 //        todo!()
@@ -71,3 +88,10 @@ impl Problem<V, V> for Space {
 //        value.0
 //    }
 //}
+
+//impl Into<usize> for V {
+//    fn into(self) -> usize {
+//        self.0
+//    }
+//}
+//.collect::<Vec<(V, Cost)>>()

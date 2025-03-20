@@ -34,8 +34,8 @@
 
 = E.A.3.1
 
-Implementations in `Rust` and exercises
-- #link("https://github.com/CuriousCI/artificial-intelligence")[https://github.com/CuriousCI/artificial-intelligence]
+// Implementations in `Rust` and exercises
+// - #link("https://github.com/CuriousCI/artificial-intelligence")[https://github.com/CuriousCI/artificial-intelligence]
 
 == Ricerca in profondità 
 DFS (depth first search)
@@ -95,29 +95,24 @@ DFS (depth first search)
     [\#], [], [*azioni*], [*esplorati*], [*frontiera*]
   ),
   [0], $emptyset$, `{}`, `{}`, 
-`[
-  (S, g: 0, h: 7, f: 7, d: 0),
-]`,
+`(S, g: 0, h: 7, f: 7, d: 0)  <`,
   [1], `S`, `{A, B, D}`, `{S}`, 
-`[
-  (A, g: 2, h: 9, f: 11, d: 1),
-  (B, g: 7, h: 3, f: 10, d: 1),
-  (D, g: 5, h: 4, f:  9, d: 1),
-]`,
+`(D, g: 5, h: 4, f:  9, d: 1) <
+(B, g: 7, h: 3, f: 10, d: 1)
+(A, g: 2, h: 9, f: 11, d: 1)
+`,
   [2], `D`, `{C, E, S}`, `{D, S}`, 
-`[
-  (A, g: 2, h: 9, f: 11, d: 1),
-  (B, g: 7, h: 3, f: 10, d: 1),
-  (C, g: 8, h: 2, f: 10, d: 2),
-  (E, g: 8, h: 5, f: 13, d: 2),
-]`,
+`(E, g: 8, h: 5, f: 13, d: 2) <
+(C, g: 8, h: 2, f: 10, d: 2)
+(B, g: 7, h: 3, f: 10, d: 1)
+(A, g: 2, h: 9, f: 11, d: 1)
+`,
   [3], `E`, `{G2}`, `{D, E, S}`, 
-`[
-  (A, g: 2, h: 9, f: 11, d: 1),
-  (B, g: 7, h: 3, f: 10, d: 1),
-  (C, g: 8, h: 2, f: 10, d: 2),
-  (G2, g: 15, h: 0, f: 15, d: 3),
-]`,
+`(G2, g: 15, h: 0, f: 15, d: 3) <
+(C, g: 8, h: 2, f: 10, d: 2)
+(B, g: 7, h: 3, f: 10, d: 1)
+(A, g: 2, h: 9, f: 11, d: 1)
+`,
   [4], `G2`, `{}`, `{D, E, G2, S}`, table.cell(align: center + horizon, `is goal`)
 )
 ]
@@ -126,10 +121,8 @@ DFS (depth first search)
 
 / Percorso: $"S" -> "D" -> "E" -> "G2"$
 / Costo: 5 + 3 + 7 = 15
-/ Iterazioni: 1
-/ Ottimalità: il cammino non è ottimale (il costo ottimale è 14)
-
-Generalmente la DFS non garantisce l'ottimalità
+/ Iterazioni: 4
+/ Ottimalità: il cammino non è ottimale (il costo ottimale è 14, generalmente la DFS non garantisce l'ottimalità)
 
 #pagebreak()
 
@@ -192,40 +185,33 @@ BFS (breadth first search)
     [\#], [], [*azioni*], [*esplorati*], [*frontiera*]
   ),
   [0], $emptyset$, `{}`, `{}`, 
-`[
-  (S, g: 0, h: 7, f: 7, d: 0),
-]`,
+`(S, g: 0, h: 7, f: 7, d: 0)`,
   [1], `S`, `{A, B, D}`, `{S}`, 
-`[
-  (A, g: 2, h: 9, f: 11, d: 1),
-  (B, g: 7, h: 3, f: 10, d: 1),
-  (D, g: 5, h: 4, f:  9, d: 1),
-]`,
+`(A, g: 2, h: 9, f: 11, d: 1)
+(B, g: 7, h: 3, f: 10, d: 1)
+(D, g: 5, h: 4, f:  9, d: 1)
+`,
   [2], `A`, `{B}`, `{A, S}`, 
-`[
-  (A, g: 2, h: 9, f: 11, d: 1),
-  (B, g: 7, h: 3, f: 10, d: 1),
-  (D, g: 5, h: 4, f:  9, d: 1),
-]`,
+`(A, g: 2, h: 9, f: 11, d: 1)
+(B, g: 7, h: 3, f: 10, d: 1)
+(D, g: 5, h: 4, f:  9, d: 1)
+`,
   [3], `B`, `{C, G1}`, `{A, B, S}`, 
-`[
-  (D, g: 5, h: 4, f: 9, d: 1),
-  (C, g: 10, h: 2, f: 12, d: 2),
-  (G1, g: 16, h: 0, f: 16, d: 2),
-]`,
+`(D, g: 5, h: 4, f: 9, d: 1)
+(C, g: 10, h: 2, f: 12, d: 2)
+(G1, g: 16, h: 0, f: 16, d: 2)
+`,
   [4], `D`, `{C, E, S}`, `{A, B, D, S}`, 
-`[
-  (C, g: 10, h: 2, f: 12, d: 2),
-  (G1, g: 16, h: 0, f: 16, d: 2),
-  (E, g: 8, h: 5, f: 13, d: 2),
-]`,
+`(C, g: 10, h: 2, f: 12, d: 2)
+(G1, g: 16, h: 0, f: 16, d: 2)
+(E, g: 8, h: 5, f: 13, d: 2)
+`,
   [5], `C`, `{F, J, S}`, `{A, B, C, D, S}`, 
-`[
-  (G1, g: 16, h: 0, f: 16, d: 2),
-  (E, g: 8, h: 5, f: 13, d: 2),
-  (F, g: 12, h: 3, f: 15, d: 3),
-  (J, g: 15, h: 1, f: 16, d: 3),
-]`,
+`(G1, g: 16, h: 0, f: 16, d: 2)
+(E, g: 8, h: 5, f: 13, d: 2)
+(F, g: 12, h: 3, f: 15, d: 3)
+(J, g: 15, h: 1, f: 16, d: 3)
+`,
   [6], `G1`, `{}`, `{A, B, D, G1, S}`, 
 table.cell(align: center + horizon, `is goal`)
 )

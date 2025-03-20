@@ -5,3 +5,4 @@ edition = "2024"
 
 [dependencies]
 priority-queue = "2.2.2"
+bumpalo = "3.17.0"
