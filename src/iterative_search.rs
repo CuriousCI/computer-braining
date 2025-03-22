@@ -1,6 +1,51 @@
-// algoritmi a miglioramento iterativo
+use rand::{Rng, distr::Distribution};
 
-pub fn steepest_ascent() {} // descent
+use crate::problems::IterativeImprovement;
+
+pub fn steepest_ascent<P, S, A, V>(problem: &P, rng: &mut impl Rng) -> Option<S>
+where
+    V: Ord,
+    P: IterativeImprovement<S, A, V> + Distribution<S>,
+{
+    let mut state = problem.sample(rng);
+
+    loop {
+        state = match problem
+            .expansion(&state)
+            .map(|action| problem.new_state(&state, &action))
+            .filter(|s| problem.value(s) > problem.value(&state))
+            .max_by_key(|state| problem.value(state))
+        {
+            Some(state) => state,
+            _ => return Some(state),
+        }
+    }
+}
+
+//.map(|s| (s, problem.value(&s)))
+//.max_by_key(|(_, v)| v)
+
+//let mut next = None;
+//for new_state in problem
+//    .expansion(&state)
+//    .map(|action| problem.new_state(&state, &action))
+//{
+//    if problem.value(&new_state) > problem.value(&state) {
+//        next = Some(new_state);
+//    }
+//}
+
+//let new_state = problem.new_state(&state, &action);
+
+//if let Some(s) = next {
+//    state = s
+//} else {
+//    return Some(state);
+//}
+
+// descent
+//let mut found_act = None;
+//found_act = Some(action);
 
 // function steepest_ascent(problema): stato ottimo locale
 //2 nodo_corrente ← crea_nodo(problema.stato_iniziale);
@@ -10,7 +55,31 @@ pub fn steepest_ascent() {} // descent
 //6 return nodo_corrente.stato; /* ottimo locale, poss. piatto */
 //7 else nodo_corrente ← vicino ;
 
-pub fn hill_climping() {} //
+//pub fn hill_climping<P, S, A>(problem: &P, state: S) -> Option<S>
+//where
+//    S: Clone,
+//    P: Problem<S, A>,
+//{
+//    let mut state = state;
+//    let mut counter = 0;
+//    loop {
+//        let mut move_found = false;
+//        //let mut found_act = None;
+//        for action in problem.expand(&state.clone()) {
+//            let new_state = problem.new_state(&state, &action);
+//            if problem.fitness(&new_state) >= problem.fitness(&state) {
+//                // TODO: counter
+//                move_found = true;
+//                state = new_state;
+//                break;
+//            }
+//        }
+//
+//        if !move_found {
+//            return Some(state);
+//        }
+//    }
+//} // descent
 
 //Variante: Hill-climbing con prima scelta
 //1 function hill_climbing(problema): stato ottimo locale
@@ -27,7 +96,12 @@ pub fn hill_climping() {} //
 //10 if mossa_trovata = false then
 //11 return nodo_corrente.stato;
 
-pub fn simulated_annealing() {}
+//pub fn simulated_annealing<P, S, A>(problem: &P, state: S)
+//where
+//    S: Clone,
+//    P: Problem<S, A>,
+//{
+//}
 
 //function
 //simulated_annealing(problema, velocità_raffredd): stato ottimo locale
@@ -77,3 +151,39 @@ pub fn genetic_algorithms() {}
 //un gene random di figlio;
 //15 aggiungi figlio a successori;
 //16 pop_corr ← successori;
+
+// algoritmi a miglioramento iterativo
+
+//trait MyProblem<'a, State, Action, Value>: Problem<State, Action, Value> {
+//    fn new_state(&self, state: &mut State, action: &Action) -> &'a mut State;
+//}
+
+//fn is_goal(&self, state: &State) -> bool;
+//fn is_goal(&self, s: &S) -> bool;
+//fn new_state(&self, s: &S, a: &A) -> S;
+//fn h(&self, s: &S) -> Heuristic;
+
+//pub trait Problem<S, A> {
+//    fn expand(&self, s: &S) -> impl Iterator<Item = (A, Cost)>;
+//    fn is_goal(&self, s: &S) -> bool;
+//    fn new_state(&self, s: &S, a: &A) -> S;
+//    fn h(&self, s: &S) -> Heuristic;
+//}
+
+//pub trait ItProblem<State, Action, Fitness>
+//where
+//    Fitness: Ord,
+//{
+//    fn expand(&self, s: &State) -> impl Iterator<Item = Action>;
+//    fn is_goal(&self, s: &State) -> bool;
+//    fn fitness(&self, s: &State) -> Fitness;
+//    fn new_state(&self, s: &State, a: &Action) -> State;
+//}
+
+//trait State<A> {
+//    fn expand(&self) -> impl Iterator<Item = A>;
+//    fn update(&mut self, action: A);
+//    fn is_goal(&mut self);
+//    fn goodness(&self) -> usize;
+//}
+//struct State {}
