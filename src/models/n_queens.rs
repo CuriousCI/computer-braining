@@ -8,7 +8,7 @@ use rayon::iter::ParallelIterator;
 /// The _"state of the board"_ is known as _"position"_ in chess
 type Position = Vec<usize>;
 
-/// An action consist in moving the queen in col i to row j
+/// An action corresponds to moving the queen in col i to row j
 type Move = (usize, usize);
 
 /// Definition of the n-queens problem
@@ -104,7 +104,7 @@ impl IterativeImprovement<Reverse<usize>> for NQueens {
 impl ParallelImprovement<Reverse<usize>> for NQueens {
     /// Used by parallel_steepest_ascent to parallelize the calculation of the utility
     ///
-    /// By using parallelization for 1000-queens times went down from 460to 75s (on my 6 core computer)
+    /// By using parallelization for 1000-queens times went down from 460s to 75s (on my 6 core computer)
     fn expand(&self, state: &Position) -> impl ParallelIterator<Item = Move> {
         IterativeImprovement::expand(self, state)
             .collect::<Vec<(usize, usize)>>()
