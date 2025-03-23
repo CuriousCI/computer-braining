@@ -19,7 +19,7 @@ pub trait Goal: TransitionModel {
 /// A trait to define utility-based problems
 ///
 /// Different algorithms have different interpretations for the utility
-/// _(eg. steepest_ascent tries to maximize the "fitness", and A* tries to minimize the "cost")_.
+/// _(eg. genetic algorithms try to maximize the "fitness", exploration algorithms try to minimize the "cost")_.
 ///
 /// The generic parameter allows for multiple utility functions for the same problem, to adapt the
 /// problem definition to multiple algorithms.

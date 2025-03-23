@@ -2,6 +2,7 @@ use crate::problem::{IterativeImprovement, ParallelImprovement};
 use rand::{Rng, distr::Distribution, seq::IteratorRandom};
 use rayon::prelude::*;
 
+// The restart is handled outside of the function
 pub fn steepest_ascent<P, S, U>(problem: &P, rng: &mut impl Rng) -> Option<S>
 where
     U: Ord + Copy,
@@ -13,20 +14,26 @@ where
     loop {
         (state, utility) = match problem
             .expand(&state)
+            // Filter just neighbours that have better utility
             .filter_map(|action| {
                 let new_state = problem.new_state(&state, &action);
                 let new_utility = problem.utility(&new_state);
 
                 (new_utility > utility).then_some((new_state, new_utility))
             })
+            // Get the one with best utility
             .max_by_key(|&(_, value)| value)
         {
             Some(new) => new,
+            // No better neighbour was found, state is a local minimum
             _ => return Some(state),
         };
     }
 }
 
+// Same as above, but
+// - parallelization helps a lot with bigger instances
+// - it requires a stricter contract on the problems (with Send + Sync)
 pub fn parallel_steepest_ascent<P, S, U>(problem: &P, rng: &mut impl Rng) -> Option<S>
 where
     P: Sync,
@@ -66,17 +73,20 @@ where
     loop {
         let new_state = problem
             .expand(&state)
+            // Allow only better or lateral movements
             .filter_map(|action| {
                 let new_state = problem.new_state(&state, &action);
                 let new_utility = problem.utility(&new_state);
 
                 (new_utility >= utility).then_some((new_state, new_utility))
             })
+            // Get the first one
             .next();
 
         (state, utility) = match new_state {
             Some((new_state, new_utility)) => {
                 if new_utility == utility {
+                    // Keep track of plateaus
                     counter += 1;
                 }
 
@@ -108,6 +118,7 @@ where
 
     for time in 0.. {
         let temp = temperature(time);
+        // Due to floating-point ISSUES, it's better to use an epsilon here
         if temp <= 10e-3 {
             return Some(state);
         }
@@ -119,6 +130,7 @@ where
 
         let new_state = problem.new_state(&state, &action);
         let new_utility = problem.utility(&new_state);
+        // either the new state is better, or pick it with a certain probability
         if new_utility > utility
             || rng.random_bool((-(delta(&new_utility, &utility)).abs() / temp).exp())
         {
