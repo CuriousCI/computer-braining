@@ -1,7 +1,6 @@
 use std::{
     cmp::Reverse,
     collections::{HashMap, VecDeque},
-    //fmt::Debug,
     hash::Hash,
     rc::Rc,
 };
@@ -10,27 +9,13 @@ use crate::problem_solving_agent::*;
 
 pub struct Breadth<S, A>(VecDeque<(S, Rc<Node<A>>)>);
 
-//impl<S, A> Debug for Breadth<S, A>
-//where
-//    S: Debug,
-//    A: Debug,
-//{
-//    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-//        self.0.fmt(f)
-//    }
-//}
-
 impl<S, A> Default for Breadth<S, A> {
     fn default() -> Self {
         Self(Default::default())
     }
 }
 
-impl<S, A> Frontier<S, A> for Breadth<S, A>
-//where
-//    S: Debug,
-//    A: Debug,
-{
+impl<S, A> Frontier<S, A> for Breadth<S, A> {
     fn next(&mut self) -> Option<(S, Rc<Node<A>>)> {
         self.0.pop_front()
     }
@@ -42,27 +27,13 @@ impl<S, A> Frontier<S, A> for Breadth<S, A>
 
 pub struct Depth<S, A>(Vec<(S, Rc<Node<A>>)>);
 
-//impl<S, A> Debug for Depth<S, A>
-//where
-//    S: Debug,
-//    A: Debug,
-//{
-//    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-//        self.0.fmt(f)
-//    }
-//}
-
 impl<S, A> Default for Depth<S, A> {
     fn default() -> Self {
         Self(Default::default())
     }
 }
 
-impl<S, A> Frontier<S, A> for Depth<S, A>
-//where
-//S: Debug,
-//A: Debug,
-{
+impl<S, A> Frontier<S, A> for Depth<S, A> {
     fn next(&mut self) -> Option<(S, Rc<Node<A>>)> {
         self.0.pop()
     }
@@ -93,27 +64,10 @@ where
     }
 }
 
-//impl<S, A, N> Debug for PriorityFrontier<S, A, N>
-//where
-//    S: Ord + Hash + Clone + Debug,
-//    N: FromNode<A>,
-//    A: Debug,
-//{
-//    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-//        for x in self.0.clone().into_sorted_iter() {
-//            if let Some(v) = self.1.get(&x.0) {
-//                f.write_fmt(format_args!("({:?}, {:?}), ", x.0, v))?
-//            }
-//        }
-//        f.write_str("\n")
-//    }
-//}
-
 impl<S, A, N> Frontier<S, A> for PriorityFrontier<S, A, N>
 where
     S: Hash + Ord + Clone,
     N: FromNode<A>,
-    //A: Debug,
 {
     fn next(&mut self) -> Option<(S, Rc<Node<A>>)> {
         self.0.pop().and_then(|(state, _)| {

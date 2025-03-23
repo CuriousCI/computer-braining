@@ -5,7 +5,7 @@ use std::{
     rc::Rc,
 };
 
-use crate::problems::StateSpaceExploration;
+use crate::problem::Exploration;
 
 pub type Value = usize;
 pub type Heuristic = Value;
@@ -30,7 +30,7 @@ pub trait Frontier<S, A>: Default {
 
 pub struct Agent<S, A, M>
 where
-    M: StateSpaceExploration<S, A>,
+    M: Exploration<usize, State = S, Action = A>,
 {
     plan: Option<VecDeque<A>>,
     state: Option<S>,
@@ -41,7 +41,7 @@ impl<S, A, M> Agent<S, A, M>
 where
     S: Eq + Hash + Clone,
     A: Clone,
-    M: StateSpaceExploration<S, A>,
+    M: Exploration<usize, State = S, Action = A>,
 {
     pub fn new(problem: M) -> Self {
         Self {
@@ -94,7 +94,7 @@ where
         let state = arena.alloc(self.state.clone()?);
         //let state = self.state.clone()?;
         let node = Rc::new(Node {
-            h: self.problem.value(&state),
+            h: self.problem.utility(state),
             parent: None,
             depth: 0,
             g: 0,
@@ -109,7 +109,7 @@ where
             explored.insert(&*state);
             in_frontier.remove(state);
 
-            if self.problem.is_goal(&state) {
+            if self.problem.is_goal(state) {
                 let mut plan = VecDeque::new();
                 let mut n = node;
                 while let Some((action, parent)) = n.parent.clone() {
@@ -126,8 +126,8 @@ where
                 }
             }
 
-            for (state, action, cost) in self.problem.expansion(&state) {
-                let new_state = arena.alloc(self.problem.new_state(&state, &action));
+            for (action, cost) in self.problem.expand(state) {
+                let new_state = arena.alloc(self.problem.new_state(state, &action));
                 //let new_state = self.problem.new_state(&state, &action);
                 //states.push(new_state);
                 //let new_state = states.last().unwrap();
@@ -137,14 +137,14 @@ where
                         parent: Some((action, node.clone())),
                         depth: node.depth + 1,
                         g: node.g + cost,
-                        h: self.problem.value(&new_state),
+                        h: self.problem.utility(new_state),
                     });
 
                     if !in_frontier.contains(&new_state) {
                         frontier.insert(new_state.clone(), new_node);
                         in_frontier.insert(new_state);
                     } else {
-                        frontier.change(&new_state, new_node);
+                        frontier.change(new_state, new_node);
                     }
                 }
             }
