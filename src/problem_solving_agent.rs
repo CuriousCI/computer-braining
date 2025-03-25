@@ -2,59 +2,63 @@ use bumpalo::Bump;
 use std::{
     collections::{HashSet, VecDeque},
     hash::Hash,
+    ops::Add,
     rc::Rc,
 };
 
 use crate::problem::Exploration;
 
-pub type Value = usize;
-pub type Heuristic = Value;
+//pub type Value = usize;
+//pub type Heuristic = Value;
 
 #[derive(Eq, PartialEq)]
-pub struct Node<A> {
-    parent: Option<(A, Rc<Node<A>>)>,
+pub struct Node<A, U> {
+    parent: Option<(A, Rc<Node<A, U>>)>,
     depth: usize,
-    pub g: Value,
-    pub h: Heuristic,
+    pub g: U,
+    pub h: U,
 }
 
-pub trait FromNode<A> {
-    fn value(node: &Node<A>) -> Value;
+pub trait FromNode<A, U> {
+    fn value(node: &Node<A, U>) -> U;
 }
 
-pub trait Frontier<S, A>: Default {
-    fn next(&mut self) -> Option<(S, Rc<Node<A>>)>;
-    fn insert(&mut self, state: S, node: Rc<Node<A>>);
-    fn change(&mut self, _state: &S, _node: Rc<Node<A>>) {}
+pub trait Frontier<S, A, U>: Default {
+    fn next(&mut self) -> Option<(S, Rc<Node<A, U>>)>;
+    fn insert(&mut self, state: S, node: Rc<Node<A, U>>);
+    fn change(&mut self, _state: &S, _node: Rc<Node<A, U>>) {}
 }
 
-pub struct Agent<S, A, M>
+pub struct Agent<S, A, P, U>
 where
-    M: Exploration<usize, State = S, Action = A>,
+    P: Exploration<U, State = S, Action = A>,
 {
     plan: Option<VecDeque<A>>,
     state: Option<S>,
-    problem: M,
+    problem: P,
+    phantom: std::marker::PhantomData<U>,
 }
 
-impl<S, A, M> Agent<S, A, M>
+impl<S, A, P, U> Agent<S, A, P, U>
 where
+    U: Default + Clone + Add<Output = U>,
     S: Eq + Hash + Clone,
     A: Clone,
-    M: Exploration<usize, State = S, Action = A>,
+    P: Exploration<U, State = S, Action = A>,
 {
-    pub fn new(problem: M) -> Self {
+    pub fn new(problem: P) -> Self {
         Self {
             plan: None,
             state: None,
             problem,
+            phantom: Default::default(),
         }
     }
 
-    pub fn function<P, F>(&mut self, perception: P) -> Option<A>
+    pub fn function<Q, F>(&mut self, perception: Q) -> Option<A>
     where
-        P: TryInto<S>,
-        F: Frontier<S, A>,
+        Q: TryInto<S>,
+        F: Frontier<S, A, U>,
     {
         if self.plan.is_none() {
             self.state = perception.try_into().ok();
@@ -64,10 +68,10 @@ where
         self.plan.as_mut()?.pop_front()
     }
 
-    pub fn iterative_function<P, F>(&mut self, perception: P) -> Option<A>
+    pub fn iterative_function<Q, F>(&mut self, perception: Q) -> Option<A>
     where
-        P: TryInto<S>,
-        F: Frontier<S, A>,
+        Q: TryInto<S>,
+        F: Frontier<S, A, U>,
     {
         if self.plan.is_none() {
             self.state = perception.try_into().ok();
@@ -83,7 +87,7 @@ where
 
     fn search<F>(&self, depth: Option<usize>) -> Option<VecDeque<A>>
     where
-        F: Frontier<S, A>,
+        F: Frontier<S, A, U>,
     {
         let mut frontier = F::default();
         let mut explored = HashSet::new();
@@ -92,19 +96,16 @@ where
         let arena = Bump::new();
 
         let state = arena.alloc(self.state.clone()?);
-        //let state = self.state.clone()?;
         let node = Rc::new(Node {
             h: self.problem.utility(state),
             parent: None,
             depth: 0,
-            g: 0,
+            g: Default::default(),
         });
         frontier.insert(state.clone(), node);
 
         while let Some((state, node)) = frontier.next() {
             let state = arena.alloc(state);
-            //states.push(state);
-            //let state = states.last().unwrap();
 
             explored.insert(&*state);
             in_frontier.remove(state);
@@ -128,15 +129,12 @@ where
 
             for (action, cost) in self.problem.expand(state) {
                 let new_state = arena.alloc(self.problem.new_state(state, &action));
-                //let new_state = self.problem.new_state(&state, &action);
-                //states.push(new_state);
-                //let new_state = states.last().unwrap();
 
                 if !explored.contains(&*new_state) {
                     let new_node = Rc::new(Node {
                         parent: Some((action, node.clone())),
                         depth: node.depth + 1,
-                        g: node.g + cost,
+                        g: node.g.clone() + cost,
                         h: self.problem.utility(new_state),
                     });
 
@@ -153,3 +151,10 @@ where
         None
     }
 }
+
+//let state = self.state.clone()?;
+//let new_state = self.problem.new_state(&state, &action);
+//states.push(new_state);
+//let new_state = states.last().unwrap();
+//states.push(state);
+//let state = states.last().unwrap();

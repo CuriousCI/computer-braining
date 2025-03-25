@@ -1,3 +1,4 @@
+pub mod csp;
 pub mod frontiers;
 pub mod iterative_search;
 pub mod problem;

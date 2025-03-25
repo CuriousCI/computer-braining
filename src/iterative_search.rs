@@ -119,7 +119,7 @@ where
     for time in 0.. {
         let temp = temperature(time);
         // Due to floating-point ISSUES, it's better to use an epsilon here
-        if temp <= 10e-3 {
+        if temp <= 10e-6 {
             return Some(state);
         }
 

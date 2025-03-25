@@ -2,87 +2,90 @@ use std::{
     cmp::Reverse,
     collections::{HashMap, VecDeque},
     hash::Hash,
+    ops::Add,
     rc::Rc,
 };
 
 use crate::problem_solving_agent::*;
 
-pub struct Breadth<S, A>(VecDeque<(S, Rc<Node<A>>)>);
+pub struct BFS<S, A, U>(VecDeque<(S, Rc<Node<A, U>>)>);
 
-impl<S, A> Default for Breadth<S, A> {
+impl<S, A, U> Default for BFS<S, A, U> {
     fn default() -> Self {
         Self(Default::default())
     }
 }
 
-impl<S, A> Frontier<S, A> for Breadth<S, A> {
-    fn next(&mut self) -> Option<(S, Rc<Node<A>>)> {
+impl<S, A, U> Frontier<S, A, U> for BFS<S, A, U> {
+    fn next(&mut self) -> Option<(S, Rc<Node<A, U>>)> {
         self.0.pop_front()
     }
 
-    fn insert(&mut self, state: S, node: Rc<Node<A>>) {
+    fn insert(&mut self, state: S, node: Rc<Node<A, U>>) {
         self.0.push_back((state, node));
     }
 }
 
-pub struct Depth<S, A>(Vec<(S, Rc<Node<A>>)>);
+pub struct DFS<S, A, U>(Vec<(S, Rc<Node<A, U>>)>);
 
-impl<S, A> Default for Depth<S, A> {
+impl<S, A, U> Default for DFS<S, A, U> {
     fn default() -> Self {
         Self(Default::default())
     }
 }
 
-impl<S, A> Frontier<S, A> for Depth<S, A> {
-    fn next(&mut self) -> Option<(S, Rc<Node<A>>)> {
+impl<S, A, U> Frontier<S, A, U> for DFS<S, A, U> {
+    fn next(&mut self) -> Option<(S, Rc<Node<A, U>>)> {
         self.0.pop()
     }
 
-    fn insert(&mut self, state: S, node: Rc<Node<A>>) {
+    fn insert(&mut self, state: S, node: Rc<Node<A, U>>) {
         self.0.push((state, node));
     }
 }
 
 use priority_queue::PriorityQueue;
 
-pub struct PriorityFrontier<S, A, N>(
-    PriorityQueue<S, Reverse<(usize, S)>>,
-    HashMap<S, Rc<Node<A>>>,
+pub struct PriorityFrontier<S, A, N, U>(
+    PriorityQueue<S, Reverse<(U, S)>>,
+    HashMap<S, Rc<Node<A, U>>>,
     std::marker::PhantomData<N>,
 )
 where
     S: Ord + Hash,
-    N: FromNode<A>;
+    N: FromNode<A, U>;
 
-impl<S, A, N> Default for PriorityFrontier<S, A, N>
+impl<S, A, N, U> Default for PriorityFrontier<S, A, N, U>
 where
+    U: Default + Ord,
     S: Ord + Hash + Clone,
-    N: FromNode<A>,
+    N: FromNode<A, U>,
 {
     fn default() -> Self {
         Self(Default::default(), Default::default(), Default::default())
     }
 }
 
-impl<S, A, N> Frontier<S, A> for PriorityFrontier<S, A, N>
+impl<S, A, N, U> Frontier<S, A, U> for PriorityFrontier<S, A, N, U>
 where
+    U: Default + Ord,
     S: Hash + Ord + Clone,
-    N: FromNode<A>,
+    N: FromNode<A, U>,
 {
-    fn next(&mut self) -> Option<(S, Rc<Node<A>>)> {
+    fn next(&mut self) -> Option<(S, Rc<Node<A, U>>)> {
         self.0.pop().and_then(|(state, _)| {
             let node = self.1.get(&state)?.clone();
             Some((state, node))
         })
     }
 
-    fn insert(&mut self, state: S, node: Rc<Node<A>>) {
+    fn insert(&mut self, state: S, node: Rc<Node<A, U>>) {
         self.0
             .push(state.clone(), Reverse((N::value(&node), state.clone())));
         self.1.insert(state, node);
     }
 
-    fn change(&mut self, state: &S, node: Rc<Node<A>>) {
+    fn change(&mut self, state: &S, node: Rc<Node<A, U>>) {
         if self
             .1
             .get(state)
@@ -97,28 +100,37 @@ where
 
 pub struct MinCostPolicy;
 
-impl<A> FromNode<A> for MinCostPolicy {
-    fn value(node: &Node<A>) -> Value {
-        node.g
+impl<A, U> FromNode<A, U> for MinCostPolicy
+where
+    U: Clone,
+{
+    fn value(node: &Node<A, U>) -> U {
+        node.g.clone()
     }
 }
 
 pub struct BestFirstPolicy;
 
-impl<A> FromNode<A> for BestFirstPolicy {
-    fn value(node: &Node<A>) -> Value {
-        node.h
+impl<A, U> FromNode<A, U> for BestFirstPolicy
+where
+    U: Clone,
+{
+    fn value(node: &Node<A, U>) -> U {
+        node.h.clone()
     }
 }
 
 pub struct AStarPolicy;
 
-impl<A> FromNode<A> for AStarPolicy {
-    fn value(node: &Node<A>) -> Value {
-        node.g + node.h
+impl<A, U> FromNode<A, U> for AStarPolicy
+where
+    U: Clone + Add<Output = U>,
+{
+    fn value(node: &Node<A, U>) -> U {
+        node.g.clone() + node.h.clone()
     }
 }
 
-pub type MinCost<S, A> = PriorityFrontier<S, A, MinCostPolicy>;
-pub type BestFirst<S, A> = PriorityFrontier<S, A, BestFirstPolicy>;
-pub type AStar<S, A> = PriorityFrontier<S, A, AStarPolicy>;
+pub type MinCost<S, A, U> = PriorityFrontier<S, A, MinCostPolicy, U>;
+pub type BestFirst<S, A, U> = PriorityFrontier<S, A, BestFirstPolicy, U>;
+pub type AStar<S, A, U> = PriorityFrontier<S, A, AStarPolicy, U>;
