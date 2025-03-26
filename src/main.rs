@@ -12,31 +12,31 @@ fn main() {
     let sequence = vec![P, H, H, P, H, P, P, H, P];
     let protein = ProteinFolding::new(sequence.clone());
 
-    for i in 1..=5_i32 {
-        for j in 1..=5 {
-            if i != j {
-                println!("{{Q_{i}, Q_{j}}}");
-
-                println!("{{");
-                for x in 1..=5_i32 {
-                    for y in 1..=5 {
-                        if i.abs_diff(j) != x.abs_diff(y) {
-                            print!("({x}, {y}), ")
-                        }
-                    }
-                }
-                println!("\n}}")
-            }
-        }
-    }
-
-    //let mut agent = Agent::new(protein);
-    //let mut conformation = vec![];
-
-    //while let Some(pos) = agent.function::<Conformation, MinCost<Conformation, Pos, Energy>>(vec![])
-    //{
-    //    conformation.push(pos);
+    //for i in 1..=5_i32 {
+    //    for j in 1..=5 {
+    //        if i != j {
+    //            println!("{{Q_{i}, Q_{j}}}");
+    //
+    //            println!("{{");
+    //            for x in 1..=5_i32 {
+    //                for y in 1..=5 {
+    //                    if i.abs_diff(j) != x.abs_diff(y) {
+    //                        print!("({x}, {y}), ")
+    //                    }
+    //                }
+    //            }
+    //            println!("\n}}")
+    //        }
+    //    }
     //}
+
+    let mut agent = Agent::new(protein);
+    let mut conformation = vec![];
+
+    while let Some(pos) = agent.function::<Conformation, MinCost<Conformation, Pos, Energy>>(vec![])
+    {
+        conformation.push(pos);
+    }
 
     //let max_col = conformation.iter().map(|(x, _)| *x).max().unwrap_or(0);
     //let max_row = conformation.iter().map(|(_, y)| *y).max().unwrap_or(0);
