@@ -4,6 +4,200 @@ pub mod iterative_search;
 pub mod problem;
 pub mod problem_solving_agent;
 
+//if count > 0 {
+//    println!("{:?}", count);
+//}
+
+//pub type Conformation = Vec<Pos>;
+
+//if p.pos == pos {
+//return false;
+//}
+
+//for (i, (c_x, c_y)) in amino_acid[..amino_acid.len() - 1].iter().enumerate() {
+//    if c_x.abs_diff(pos.0) + c_y.abs_diff(pos.1) == 1 {
+//        if let Alphabet::H = self.sequence[i] {
+//            count += 1;
+//        }
+//    }
+//}
+//
+//(pos, 100 - count)
+
+//match conformation.last() {
+//Some(&(x, y)) => [(x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)]
+//    .into_iter()
+//    .filter(|(x, y)| amino_acid.iter().all(|(c_x, c_y)| c_x != x || c_y != y))
+//    .map(|pos| match self.sequence[amino_acid.len()] {
+//        Alphabet::P => (pos, 0),
+//        Alphabet::H => {
+//            let mut count = 0;
+//
+//            for (i, (c_x, c_y)) in
+//                amino_acid[..amino_acid.len() - 1].iter().enumerate()
+//            {
+//                if c_x.abs_diff(pos.0) + c_y.abs_diff(pos.1) == 1 {
+//                    if let Alphabet::H = self.sequence[i] {
+//                        count += 1;
+//                    }
+//                }
+//            }
+//
+//            (pos, 100 - count)
+//        }
+//    })
+//.collect(),
+//None => vec![((0, 0), 0)],
+//}
+//.into_iter()
+
+//impl Goal for ProteinFolding {
+//    fn is_goal(&self, conformation: &Self::State) -> bool {
+//        conformation.len() == self.sequence.len()
+//    }
+//}
+
+//impl Exploration<Energy> for ProteinFolding {
+//    fn expand(&self, conformation: &Self::State) -> impl Iterator<Item = (Self::Action, Energy)> {
+//        match conformation.last() {
+//            Some(&(x, y)) => [(x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)]
+//                .into_iter()
+//                .filter(|(x, y)| conformation.iter().all(|(c_x, c_y)| c_x != x || c_y != y))
+//                .map(|pos| match self.sequence[conformation.len()] {
+//                    Alphabet::P => (pos, 0),
+//                    Alphabet::H => {
+//                        let mut count = 0;
+//
+//                        for (i, (c_x, c_y)) in
+//                            conformation[..conformation.len() - 1].iter().enumerate()
+//                        {
+//                            if c_x.abs_diff(pos.0) + c_y.abs_diff(pos.1) == 1 {
+//                                if let Alphabet::H = self.sequence[i] {
+//                                    count += 1;
+//                                }
+//                            }
+//                        }
+//
+//                        (pos, 100 - count)
+//                    }
+//                })
+//                .collect(),
+//            None => vec![((0, 0), 0)],
+//        }
+//        .into_iter()
+//    }
+//}
+
+//impl TransitionModel for ProteinFolding {
+//    type State = Conformation;
+//    type Action = Pos;
+//
+//    fn new_state(&self, conformation: &Self::State, &pos: &Self::Action) -> Self::State {
+//        let mut new_conformation = conformation.clone();
+//        new_conformation.push(pos);
+//        new_conformation
+//    }
+//}
+
+//#[derive(Default, Clone, PartialEq, Eq, Ord, PartialOrd, Debug)]
+//pub struct Energy(Reverse<usize>);
+//impl Add for Energy {
+//    type Output = Energy;
+//
+//    fn add(self, rhs: Self) -> Self::Output {
+//        Energy(Reverse(self.0.0 + rhs.0.0))
+//    }
+//}
+
+//Energy(Reverse(0))
+
+//let res = match conformation.last() {
+//println!("{:?}", res);
+//res.into_iter()
+
+//if conformation.len() > 1 {
+//    if let Alphabet::H = self.sequence[conformation.len() - 1] {
+//        count -= 1;
+//    }
+//}
+
+//(pos, Energy(Reverse(count)))
+// TODO: almost there
+//Alphabet::P => (pos, Energy(Reverse(0))),
+//None => vec![((0, 0), Energy(Reverse(0)))],
+
+//let mut contacts = 0;
+//
+//for (i, (x_i, y_i)) in conformation.iter().enumerate() {
+//    for &(x_j, y_j) in conformation.iter().skip(i + 1) {
+//        if x_i.abs_diff(x_j) == 1 || y_i.abs_diff(y_j) == 1 {
+//            contacts += 1;
+//        }
+//    }
+//}
+//
+//Energy(Reverse(contacts))
+// quanti vicini liberi hanno i punti di tipo H?
+//
+//let mut free = 0;
+//
+//for (i, &(x, y)) in conformation.iter().enumerate() {
+//    if let Alphabet::H = self.sequence[i] {
+//        for (n_x, n_y) in [(x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)] {
+//            if conformation
+//                .iter()
+//                .all(|&(p_x, p_y)| p_x != n_x || p_y != n_y)
+//            {
+//                free += 1;
+//            }
+//        }
+//    }
+//}
+//
+//Energy(Reverse(contacts + free))
+
+//let mut dist = 0;
+//
+//for (x, y) in conformation {
+//    dist += x.unsigned_abs() as usize + y.unsigned_abs() as usize;
+//}
+
+// hydrophobic amino-acids
+// hydrophilic amino-acids (polar)
+// length n
+//type Energy = Reverse<usize>;
+//impl From<Vec> for  {
+//    fn from(conformation: Conformation) -> Self {
+//        Self { conformation }
+//    }
+//}
+
+// neighbourhood of a node, so basically add a new node, if available
+// when adding the new node, check the neighbourhood (still, would I need an adjency matrix?, how big would it be)
+// precalculate bridges when creating new state, the just use the values to calculate the energy
+
+//if conformation[prot_i].0.abs_diff(conformation[prot_j])
+// basically, save the list of position for all items in the sequence
+
+// grid [-(n-1), (n-1)]
+
+//.as_ref()
+//.map(|amino_acid| amino_acid.depth + 1)
+//.unwrap_or(0),
+//amino_acid
+//    .as_ref()
+//    .is_some_and(|amino_acid| )
+
+//pub struct ProteinFolding {
+//    sequence: Sequence,
+//}
+
+//impl ProteinFolding {
+//    pub fn new(sequence: Sequence) -> Self {
+//        Self { sequence }
+//    }
+//}
+
 //println!("explored:\n- {:?}", explored);
 //println!("frontier:\n- {:?}\n", frontier);
 //println!("{:?}", state);
