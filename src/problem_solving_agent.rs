@@ -6,21 +6,18 @@ use std::{
     rc::Rc,
 };
 
-use crate::problem::Exploration;
-
-//pub type Value = usize;
-//pub type Heuristic = Value;
+use crate::problem::{Exploration, Goal};
 
 #[derive(Eq, PartialEq)]
-pub struct Node<A, U> {
-    parent: Option<(A, Rc<Node<A, U>>)>,
+pub struct Node<A, H> {
+    parent: Option<(A, Rc<Node<A, H>>)>,
     depth: usize,
-    pub g: U,
-    pub h: U,
+    pub g: H,
+    pub h: H,
 }
 
-pub trait FromNode<A, U> {
-    fn value(node: &Node<A, U>) -> U;
+pub trait FromNode<A, H> {
+    fn value(node: &Node<A, H>) -> H;
 }
 
 pub trait Frontier<S, A, U>: Default {
@@ -29,22 +26,22 @@ pub trait Frontier<S, A, U>: Default {
     fn change(&mut self, _state: &S, _node: Rc<Node<A, U>>) {}
 }
 
-pub struct Agent<S, A, P, U>
+pub struct Agent<S, A, P, H>
 where
-    P: Exploration<U, State = S, Action = A>,
+    P: Exploration<H, State = S, Action = A>,
 {
     plan: Option<VecDeque<A>>,
     state: Option<S>,
     problem: P,
-    phantom: std::marker::PhantomData<U>,
+    phantom: std::marker::PhantomData<H>,
 }
 
-impl<S, A, P, U> Agent<S, A, P, U>
+impl<S, A, P, H> Agent<S, A, P, H>
 where
-    U: Default + Clone + Add<Output = U>,
     S: Eq + Hash + Clone,
     A: Clone,
-    P: Exploration<U, State = S, Action = A>,
+    P: Exploration<H, State = S, Action = A> + Goal,
+    H: Default + Clone + Add<Output = H>,
 {
     pub fn new(problem: P) -> Self {
         Self {
@@ -58,7 +55,7 @@ where
     pub fn function<Q, F>(&mut self, perception: Q) -> Option<A>
     where
         Q: TryInto<S>,
-        F: Frontier<S, A, U>,
+        F: Frontier<S, A, H>,
     {
         if self.plan.is_none() {
             self.state = perception.try_into().ok();
@@ -71,7 +68,7 @@ where
     pub fn iterative_function<Q, F>(&mut self, perception: Q) -> Option<A>
     where
         Q: TryInto<S>,
-        F: Frontier<S, A, U>,
+        F: Frontier<S, A, H>,
     {
         if self.plan.is_none() {
             self.state = perception.try_into().ok();
@@ -87,22 +84,23 @@ where
 
     fn search<F>(&self, depth: Option<usize>) -> Option<VecDeque<A>>
     where
-        F: Frontier<S, A, U>,
+        F: Frontier<S, A, H>,
     {
         let mut frontier = F::default();
         let mut explored = HashSet::new();
         let mut in_frontier = HashSet::new();
 
         let arena = Bump::new();
-
         let state = arena.alloc(self.state.clone()?);
-        let node = Rc::new(Node {
-            h: self.problem.utility(state),
-            parent: None,
-            depth: 0,
-            g: Default::default(),
-        });
-        frontier.insert(state.clone(), node);
+        frontier.insert(
+            state.clone(),
+            Rc::new(Node {
+                h: self.problem.heuristic(state),
+                parent: None,
+                depth: 0,
+                g: Default::default(),
+            }),
+        );
 
         while let Some((state, node)) = frontier.next() {
             let state = arena.alloc(state);
@@ -135,7 +133,7 @@ where
                         parent: Some((action, node.clone())),
                         depth: node.depth + 1,
                         g: node.g.clone() + cost,
-                        h: self.problem.utility(new_state),
+                        h: self.problem.heuristic(new_state),
                     });
 
                     if !in_frontier.contains(&new_state) {

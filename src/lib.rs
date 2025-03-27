@@ -4,6 +4,42 @@ pub mod iterative_search;
 pub mod problem;
 pub mod problem_solving_agent;
 
+//pub trait Exploration<H>: Transition + Heuristic<H> + Goal {
+
+//pub trait Local<H>: Transition + Heuristic<H> {
+//    fn expand(&self, state: &Self::State) -> impl Iterator<Item = Self::Action>;
+//}
+
+//pub trait ParallelLocal<H>: Transition + Heuristic<H> {
+//    fn expand(&self, state: &Self::State) -> impl ParallelIterator<Item = Self::Action>;
+//}
+
+//let node = Rc::new(Node {
+//    h: self.problem.heuristic(state),
+//    parent: None,
+//    depth: 0,
+//    g: Default::default(),
+//});
+
+// A trait to define problems.
+//
+// It only requires a transition model.
+// Different algorithms may require different ways to generate the initial state, so it's not a part of the contract.
+// A trait to define goal-based problems.
+// A trait to define utility-based problems
+//
+// Different algorithms have different interpretations for the utility
+// _(eg. genetic algorithms try to maximize the "fitness", exploration algorithms try to minimize the "cost")_.
+//
+// The generic parameter allows for multiple utility functions for the same problem, to adapt the
+// problem definition to multiple algorithms.
+// A trait used by exploration algorithms
+//
+// The utility in state-space exploration is interpreted as the heuristics.
+// The expand method returns a `Self::Action` and its actual cost.
+// A trait used by iterative improvement algorithms
+// Some iterative improvement algorithms might be parallelizable
+
 //if count > 0 {
 //    println!("{:?}", count);
 //}
@@ -867,3 +903,6 @@ pub mod problem_solving_agent;
 //        todo!()
 //    }
 //}
+
+//pub type Value = usize;
+//pub type Heuristic = Value;

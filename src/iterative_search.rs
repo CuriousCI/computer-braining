@@ -1,15 +1,15 @@
-use crate::problem::{IterativeImprovement, ParallelImprovement};
+use crate::problem::{Heuristic, Local, ParallelLocal};
 use rand::{Rng, distr::Distribution, seq::IteratorRandom};
 use rayon::prelude::*;
 
 // The restart is handled outside of the function
-pub fn steepest_ascent<P, S, U>(problem: &P, rng: &mut impl Rng) -> Option<S>
+pub fn steepest_ascent<P, S, H>(problem: &P, rng: &mut impl Rng) -> Option<S>
 where
-    U: Ord + Copy,
-    P: IterativeImprovement<U, State = S> + Distribution<S>,
+    H: Ord + Copy,
+    P: Local<State = S> + Distribution<S> + Heuristic<H>,
 {
     let mut state = problem.sample(rng);
-    let mut utility = problem.utility(&state);
+    let mut utility = problem.heuristic(&state);
 
     loop {
         (state, utility) = match problem
@@ -17,7 +17,7 @@ where
             // Filter just neighbours that have better utility
             .filter_map(|action| {
                 let new_state = problem.new_state(&state, &action);
-                let new_utility = problem.utility(&new_state);
+                let new_utility = problem.heuristic(&new_state);
 
                 (new_utility > utility).then_some((new_state, new_utility))
             })
@@ -34,22 +34,22 @@ where
 // Same as above, but
 // - parallelization helps a lot with bigger instances
 // - it requires a stricter contract on the problems (with Send + Sync)
-pub fn parallel_steepest_ascent<P, S, U>(problem: &P, rng: &mut impl Rng) -> Option<S>
+pub fn parallel_steepest_ascent<P, S, H>(problem: &P, rng: &mut impl Rng) -> Option<S>
 where
     P: Sync,
     S: Send + Sync,
-    U: Ord + Copy + Send + Sync,
-    P: ParallelImprovement<U, State = S> + Distribution<S>,
+    H: Ord + Copy + Send + Sync,
+    P: ParallelLocal<State = S> + Heuristic<H> + Distribution<S>,
 {
     let mut state = problem.sample(rng);
-    let mut utility = problem.utility(&state);
+    let mut utility = problem.heuristic(&state);
 
     loop {
         (state, utility) = match problem
             .expand(&state)
             .filter_map(|action| {
                 let new_state = problem.new_state(&state, &action);
-                let new_utility = problem.utility(&new_state);
+                let new_utility = problem.heuristic(&new_state);
 
                 (new_utility > utility).then_some((new_state, new_utility))
             })
@@ -61,13 +61,13 @@ where
     }
 }
 
-pub fn hill_climping<P, S, U>(problem: &P, rng: &mut impl Rng, threshold: usize) -> Option<S>
+pub fn hill_climping<P, S, H>(problem: &P, rng: &mut impl Rng, threshold: usize) -> Option<S>
 where
-    U: Ord,
-    P: IterativeImprovement<U, State = S> + Distribution<S>,
+    H: Ord,
+    P: Local<State = S> + Distribution<S> + Heuristic<H>,
 {
     let mut state = problem.sample(rng);
-    let mut utility = problem.utility(&state);
+    let mut utility = problem.heuristic(&state);
     let mut counter = 0;
 
     loop {
@@ -76,7 +76,7 @@ where
             // Allow only better or lateral movements
             .filter_map(|action| {
                 let new_state = problem.new_state(&state, &action);
-                let new_utility = problem.utility(&new_state);
+                let new_utility = problem.heuristic(&new_state);
 
                 (new_utility >= utility).then_some((new_state, new_utility))
             })
@@ -101,20 +101,20 @@ where
     }
 }
 
-pub fn simulated_annealing<P, S, U, F, D>(
+pub fn simulated_annealing<P, S, H, F, D>(
     problem: &P,
     rng: &mut impl Rng,
     temperature: F,
     delta: D,
 ) -> Option<S>
 where
-    U: Ord + Clone,
-    P: IterativeImprovement<U, State = S> + Distribution<S>,
+    H: Ord + Clone,
+    P: Local<State = S> + Heuristic<H> + Distribution<S>,
     F: Fn(usize) -> f64,
-    D: Fn(&U, &U) -> f64,
+    D: Fn(&H, &H) -> f64,
 {
     let mut state = problem.sample(rng);
-    let mut utility = problem.utility(&state);
+    let mut utility = problem.heuristic(&state);
 
     for time in 0.. {
         let temp = temperature(time);
@@ -129,7 +129,7 @@ where
         };
 
         let new_state = problem.new_state(&state, &action);
-        let new_utility = problem.utility(&new_state);
+        let new_utility = problem.heuristic(&new_state);
         // either the new state is better, or pick it with a certain probability
         if new_utility > utility
             || rng.random_bool((-(delta(&new_utility, &utility)).abs() / temp).exp())

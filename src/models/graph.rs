@@ -1,6 +1,6 @@
 use std::fmt::Debug;
 
-use ai::problem::{Exploration, Goal, TransitionModel, Utility};
+use ai::problem::{Exploration, Goal, Heuristic, Problem, Transition};
 
 #[derive(Copy, Clone, Ord, PartialEq, Eq, Hash, PartialOrd, Default)]
 pub struct Vert(pub usize);
@@ -21,8 +21,11 @@ pub struct Graph {
     pub heuristic: Vec<usize>,
 }
 
-impl TransitionModel for Graph {
+impl Problem for Graph {
     type State = Vert;
+}
+
+impl Transition for Graph {
     type Action = Vert;
 
     fn new_state(&self, _: &Self::State, &next_vert: &Self::Action) -> Self::State {
@@ -36,8 +39,8 @@ impl Goal for Graph {
     }
 }
 
-impl Utility<usize> for Graph {
-    fn utility(&self, vert: &Self::State) -> usize {
+impl Heuristic<usize> for Graph {
+    fn heuristic(&self, vert: &Self::State) -> usize {
         self.heuristic[vert.0]
     }
 }

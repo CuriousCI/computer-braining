@@ -1,46 +1,31 @@
 use rayon::iter::ParallelIterator;
 
-/// A trait to define problems.
-///
-/// It only requires a transition model.
-/// Different algorithms may require different ways to generate the initial state, so it's not a part of the contract.
-pub trait TransitionModel {
+pub trait Problem {
     type State;
+}
+
+pub trait Transition: Problem {
     type Action;
 
     fn new_state(&self, state: &Self::State, action: &Self::Action) -> Self::State;
 }
 
-/// A trait to define goal-based problems.
-pub trait Goal: TransitionModel {
+pub trait Goal: Problem {
     fn is_goal(&self, state: &Self::State) -> bool;
 }
 
-/// A trait to define utility-based problems
-///
-/// Different algorithms have different interpretations for the utility
-/// _(eg. genetic algorithms try to maximize the "fitness", exploration algorithms try to minimize the "cost")_.
-///
-/// The generic parameter allows for multiple utility functions for the same problem, to adapt the
-/// problem definition to multiple algorithms.
-pub trait Utility<U>: TransitionModel {
-    fn utility(&self, state: &Self::State) -> U;
+pub trait Heuristic<H>: Problem {
+    fn heuristic(&self, state: &Self::State) -> H;
 }
 
-/// A trait used by exploration algorithms
-///
-/// The utility in state-space exploration is interpreted as the heuristics.
-/// The expand method returns a `Self::Action` and its actual cost.
-pub trait Exploration<U>: Utility<U> + Goal {
-    fn expand(&self, state: &Self::State) -> impl Iterator<Item = (Self::Action, U)>;
+pub trait Exploration<H>: Transition + Heuristic<H> {
+    fn expand(&self, state: &Self::State) -> impl Iterator<Item = (Self::Action, H)>;
 }
 
-/// A trait used by iterative improvement algorithms
-pub trait IterativeImprovement<U>: Utility<U> {
+pub trait Local: Transition {
     fn expand(&self, state: &Self::State) -> impl Iterator<Item = Self::Action>;
 }
 
-/// Some iterative improvement algorithms might be parallelizable
-pub trait ParallelImprovement<U>: Utility<U> {
+pub trait ParallelLocal: Transition {
     fn expand(&self, state: &Self::State) -> impl ParallelIterator<Item = Self::Action>;
 }

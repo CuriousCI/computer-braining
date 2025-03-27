@@ -1,6 +1,6 @@
 use std::{ops::Deref, rc::Rc};
 
-use ai::problem::{Exploration, Goal, TransitionModel, Utility};
+use ai::problem::{Exploration, Goal, Heuristic, Problem, Transition};
 
 #[derive(Clone, Debug)]
 pub enum Alphabet {
@@ -29,8 +29,11 @@ pub struct AminoAcid {
     pub depth: usize,
 }
 
-impl TransitionModel for ProteinFolding {
+impl Problem for ProteinFolding {
     type State = Rc<AminoAcid>;
+}
+
+impl Transition for ProteinFolding {
     type Action = Pos;
 
     fn new_state(&self, amino_acid: &Self::State, &pos: &Self::Action) -> Self::State {
@@ -42,10 +45,9 @@ impl TransitionModel for ProteinFolding {
     }
 }
 
-impl Utility<Energy> for ProteinFolding {
-    fn utility(&self, amino_acid: &Self::State) -> Energy {
+impl Heuristic<Energy> for ProteinFolding {
+    fn heuristic(&self, _amino_acid: &Self::State) -> Energy {
         0
-        //amino_acid.depth as i64
     }
 }
 
@@ -61,6 +63,7 @@ impl Exploration<Energy> for ProteinFolding {
 
         [(x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)]
             .into_iter()
+            .filter(|(x, y)| x >= &0 && y >= &0)
             .filter(|pos| {
                 let mut prev = amino_acid.prev.as_ref();
                 while let Some(p) = prev {

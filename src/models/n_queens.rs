@@ -1,7 +1,7 @@
 use rayon::prelude::*;
 use std::cmp::Reverse;
 
-use ai::problem::{Goal, IterativeImprovement, ParallelImprovement, TransitionModel, Utility};
+use ai::problem::{Goal, Heuristic, Local, ParallelLocal, Problem, Transition};
 use rand::distr::Distribution;
 use rayon::iter::ParallelIterator;
 
@@ -14,8 +14,11 @@ type Move = (usize, usize);
 /// Definition of the n-queens problem
 pub struct NQueens(pub usize);
 
-impl TransitionModel for NQueens {
+impl Problem for NQueens {
     type State = Position;
+}
+
+impl Transition for NQueens {
     type Action = Move;
 
     /// Generates a new state s.t. the queen in column `col` is in row `row`
@@ -30,15 +33,15 @@ impl TransitionModel for NQueens {
 
 impl Goal for NQueens {
     fn is_goal(&self, state: &Self::State) -> bool {
-        self.utility(state) == Reverse(0)
+        self.heuristic(state) == Reverse(0)
     }
 }
 
-impl Utility<Reverse<usize>> for NQueens {
+impl Heuristic<Reverse<usize>> for NQueens {
     /// This heuristic counts both the number of *direct* attacks and *indirect* attacks. It has
     /// proven to be more effecting at finding results (it carries more information than just the
     /// direct attacks)
-    fn utility(&self, position: &Self::State) -> Reverse<usize> {
+    fn heuristic(&self, position: &Self::State) -> Reverse<usize> {
         let mut attacks = 0;
 
         for (col_i, row_i) in position.iter().enumerate() {
@@ -53,7 +56,8 @@ impl Utility<Reverse<usize>> for NQueens {
     }
 }
 
-impl IterativeImprovement<Reverse<usize>> for NQueens {
+//impl Local<Reverse<usize>> for NQueens {
+impl Local for NQueens {
     /// The simplest way to implement the neighbourhood is to allow a queen to move only above or
     /// below.
     ///
@@ -101,12 +105,12 @@ impl IterativeImprovement<Reverse<usize>> for NQueens {
     }
 }
 
-impl ParallelImprovement<Reverse<usize>> for NQueens {
+impl ParallelLocal for NQueens {
     /// Used by parallel_steepest_ascent to parallelize the calculation of the utility
     ///
     /// By using parallelization for 1000-queens times went down from 460s to 75s (on my 6 core computer)
     fn expand(&self, state: &Position) -> impl ParallelIterator<Item = Move> {
-        IterativeImprovement::expand(self, state)
+        Local::expand(self, state)
             .collect::<Vec<(usize, usize)>>()
             .into_par_iter()
     }
