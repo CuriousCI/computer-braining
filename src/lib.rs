@@ -4,6 +4,18 @@ pub mod iterative_search;
 pub mod problem;
 pub mod problem_solving_agent;
 
+//pub fn steepest_descent<P, S, H>(problem: &P, rng: &mut impl Rng) -> Option<S>
+//where
+//    H: Ord + Copy,
+//    P: Local<State = S> + Heuristic<H> + Distribution<S>,
+//let mut state = problem.sample(rng);
+//let mut utility = problem.heuristic(&state);
+
+// The restart is handled outside of the function
+// Get the one with best utility
+// No better neighbour was found, state is a local minimum
+// Filter just neighbours that have better utility
+
 //pub trait Exploration<H>: Transition + Heuristic<H> + Goal {
 
 //pub trait Local<H>: Transition + Heuristic<H> {

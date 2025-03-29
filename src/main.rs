@@ -6,17 +6,39 @@ use rand::seq::IndexedRandom;
 use std::rc::Rc;
 use std::time::Instant;
 
+// cplex optimization studio
+// pruning dell'albero di ricerca
+// MILP: mixed integer linear programming
+// GAC e framework
+
 pub mod models;
 
 fn main() {
     use Alphabet::*;
 
     let mut rng = rng();
-    let sequence: Vec<Alphabet> = (0..16)
+    let sequence: Vec<Alphabet> = (0..20)
         .filter_map(|_| [P, H].choose(&mut rng))
+        //.filter_map(|_| [P, H, H, H, H, H, H, H].choose(&mut rng))
         .map(Clone::clone)
         .collect();
+
+    //let sequence = vec![H, H, P, H, P, P, H, H, H, P, P, P, P, H, H, P];
     //let sequence = vec![P, H, H, P, H, P, P, H, P];
+
+    //let sequence = vec![P, P, P, P, P, P, P, P, P];
+    //let sequence = vec![P, P, P, P, P, P, P, P, H];
+    //let sequence = vec![P, P, P, P, P, P, H, P, H];
+    let sequence = vec![H, P, P, P, P, H, P, P, P, H, P, P, P, P, H, P, P, P, H];
+    //let sequence = vec![P, P, H, P, H, P, H, P, H];
+    //let sequence = vec![H, P, H, P, H, P, H, P, H];
+    //let sequence = vec![H, P, H, P, H, P, H, H, H];
+    //let sequence = vec![H, P, H, P, H, H, H, H, H];
+    //let sequence = vec![H, P, H, H, H, H, H, H, H];
+    //let sequence = vec![H, H, H, H, H, H, H, H, H];
+
+    // TODO: la distanza "pari" fra due H è interessante... si potrebbe precalcolare
+    // guacamole: la distanza "pari" gioca un ruolo fondamentale, vaccaccia
 
     let mut agent = Agent::new(ProteinFolding(sequence.clone()));
 

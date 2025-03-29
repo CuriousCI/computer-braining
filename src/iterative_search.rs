@@ -2,31 +2,27 @@ use crate::problem::{Heuristic, Local, ParallelLocal};
 use rand::{Rng, distr::Distribution, seq::IteratorRandom};
 use rayon::prelude::*;
 
-// The restart is handled outside of the function
-pub fn steepest_ascent<P, S, H>(problem: &P, rng: &mut impl Rng) -> Option<S>
+pub fn steepest_descent<P, S, H>(local_problem: &P, initial_state: S) -> S
 where
-    H: Ord + Copy,
-    P: Local<State = S> + Distribution<S> + Heuristic<H>,
+    H: Ord + Clone,
+    P: Local<State = S> + Heuristic<H>,
 {
-    let mut state = problem.sample(rng);
-    let mut utility = problem.heuristic(&state);
+    let mut state = initial_state;
+    let mut heuristic = local_problem.heuristic(&state);
 
     loop {
-        (state, utility) = match problem
+        (state, heuristic) = match local_problem
             .expand(&state)
-            // Filter just neighbours that have better utility
             .filter_map(|action| {
-                let new_state = problem.new_state(&state, &action);
-                let new_utility = problem.heuristic(&new_state);
+                let new_state = local_problem.new_state(&state, &action);
+                let new_heuristic = local_problem.heuristic(&new_state);
 
-                (new_utility > utility).then_some((new_state, new_utility))
+                (new_heuristic < heuristic).then_some((new_state, new_heuristic))
             })
-            // Get the one with best utility
-            .max_by_key(|&(_, value)| value)
+            .min_by_key(|(_, h)| h.clone())
         {
             Some(new) => new,
-            // No better neighbour was found, state is a local minimum
-            _ => return Some(state),
+            _ => return state,
         };
     }
 }

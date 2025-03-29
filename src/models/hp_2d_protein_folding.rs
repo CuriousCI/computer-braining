@@ -45,25 +45,65 @@ impl Transition for ProteinFolding {
     }
 }
 
-impl Heuristic<Energy> for ProteinFolding {
-    fn heuristic(&self, _amino_acid: &Self::State) -> Energy {
-        0
-    }
-}
-
 impl Goal for ProteinFolding {
     fn is_goal(&self, amino_acid: &Self::State) -> bool {
         amino_acid.depth == self.len() - 1
     }
 }
 
+impl Heuristic<Energy> for ProteinFolding {
+    fn heuristic(&self, _amino_acid: &Self::State) -> Energy {
+        0
+    }
+}
+
+// next position, nah
+// direction (maybe? Still hard to check for translations)
+// impl Eq for AminoAcid, s.t. two amino acids are equal if they have the same directions, but rotated
+// rotation... what does rotation mean in this context?
+// can I prevent a duplicating move before doing it?
+
 impl Exploration<Energy> for ProteinFolding {
     fn expand(&self, amino_acid: &Self::State) -> impl Iterator<Item = (Self::Action, Energy)> {
         let (x, y) = amino_acid.pos;
 
-        [(x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)]
+        //.filter(|(x, y)| x >= &0 && y >= &0)
+        let actions = if amino_acid.depth == 0 {
+            vec![(x, y + 1)]
+        } else if amino_acid.depth == 1 {
+            vec![(x + 1, y), (x, y + 1)]
+        } else {
+            // check if it is straight or angle
+            let parent = amino_acid.prev.clone();
+            let grandpa = parent.clone().and_then(|parent| parent.prev.clone());
+
+            if let Some(parent) = parent {
+                if let Some(grandpa) = grandpa {
+                    if parent.pos.1.abs_diff(amino_acid.pos.1)
+                        + grandpa.pos.1.abs_diff(parent.pos.1)
+                        == 2
+                    {
+                        vec![(x + 1, y), (x, y + 1)]
+                    } else {
+                        vec![(x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)]
+                    }
+                } else {
+                    vec![(x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)]
+                }
+            } else {
+                vec![(x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)]
+            }
+        };
+
+        //} else if amino_acid.depth == 2 {
+        //    vec![]
+
+        //if amino_acid.depth == 0 {
+        //    vec![((0, 1), 0)]
+        //} else {
+        //[(x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)]
+        actions
             .into_iter()
-            .filter(|(x, y)| x >= &0 && y >= &0)
             .filter(|pos| {
                 let mut prev = amino_acid.prev.as_ref();
                 while let Some(p) = prev {
@@ -78,7 +118,6 @@ impl Exploration<Energy> for ProteinFolding {
                 Alphabet::P => (pos, 0),
                 Alphabet::H => {
                     let mut count = 0;
-
                     let mut prev = amino_acid
                         .prev
                         .as_ref()
@@ -97,5 +136,12 @@ impl Exploration<Energy> for ProteinFolding {
             })
             .collect::<Vec<_>>()
             .into_iter()
+        //}
+        //.into_iter()
+
+        //.into_iter()
     }
 }
+
+//.collect::<Vec<_>>()
+//.into_iter()

@@ -1,5 +1,3 @@
-use rayon::iter::ParallelIterator;
-
 pub trait Problem {
     type State;
 }
@@ -25,6 +23,8 @@ pub trait Exploration<H>: Transition + Heuristic<H> {
 pub trait Local: Transition {
     fn expand(&self, state: &Self::State) -> impl Iterator<Item = Self::Action>;
 }
+
+use rayon::iter::ParallelIterator;
 
 pub trait ParallelLocal: Transition {
     fn expand(&self, state: &Self::State) -> impl ParallelIterator<Item = Self::Action>;
