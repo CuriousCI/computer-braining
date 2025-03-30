@@ -23,13 +23,13 @@ fn main() {
         .map(Clone::clone)
         .collect();
 
-    //let sequence = vec![H, H, P, H, P, P, H, H, H, P, P, P, P, H, H, P];
+    let sequence = vec![H, H, P, H, P, P, H, H, H, P, P, P, P, H, H, P];
     //let sequence = vec![P, H, H, P, H, P, P, H, P];
 
     //let sequence = vec![P, P, P, P, P, P, P, P, P];
     //let sequence = vec![P, P, P, P, P, P, P, P, H];
     //let sequence = vec![P, P, P, P, P, P, H, P, H];
-    let sequence = vec![H, P, P, P, P, H, P, P, P, H, P, P, P, P, H, P, P, P, H];
+    // let sequence = vec![H, P, P, P, P, H, P, P, P, H, P, P, P, P, H, P, P, P, H];
     //let sequence = vec![P, P, H, P, H, P, H, P, H];
     //let sequence = vec![H, P, H, P, H, P, H, P, H];
     //let sequence = vec![H, P, H, P, H, P, H, H, H];

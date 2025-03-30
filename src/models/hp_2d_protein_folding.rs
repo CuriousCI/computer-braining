@@ -68,31 +68,64 @@ impl Exploration<Energy> for ProteinFolding {
         let (x, y) = amino_acid.pos;
 
         //.filter(|(x, y)| x >= &0 && y >= &0)
+
         let actions = if amino_acid.depth == 0 {
             vec![(x, y + 1)]
         } else if amino_acid.depth == 1 {
             vec![(x + 1, y), (x, y + 1)]
         } else {
-            // check if it is straight or angle
-            let parent = amino_acid.prev.clone();
-            let grandpa = parent.clone().and_then(|parent| parent.prev.clone());
+            // let parent = amino_acid.prev.clone();
+            // let grandpa = parent.clone().and_then(|parent| parent.prev.clone());
 
-            if let Some(parent) = parent {
-                if let Some(grandpa) = grandpa {
-                    if parent.pos.1.abs_diff(amino_acid.pos.1)
-                        + grandpa.pos.1.abs_diff(parent.pos.1)
-                        == 2
-                    {
-                        vec![(x + 1, y), (x, y + 1)]
-                    } else {
-                        vec![(x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)]
+            let mut result = vec![(x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)];
+            if let Some(parent) = amino_acid.prev.as_ref() {
+                if let Some(grandpa) = parent.prev.as_ref() {
+                    let (p_x, p_y) = parent.pos;
+                    let (g_x, g_y) = grandpa.pos;
+
+                    result = match (x - p_x, p_x - g_x, y - p_y, p_y - g_y) {
+                        (1, 1, 0, 0) => vec![(x + 1, y), (x, y + 1)],
+                        (-1, -1, 0, 0) => vec![(x - 1, y), (x, y - 1)],
+                        (0, 0, 1, 1) => vec![(x, y + 1), (x + 1, y)],
+                        (0, 0, -1, -1) => vec![(x, y - 1), (x - 1, y)],
+                        _ => vec![(x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)],
                     }
-                } else {
-                    vec![(x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)]
+                    // match (amino_acid.pos {
+                    //
+                    // }
                 }
-            } else {
-                vec![(x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)]
             }
+
+            // // check if it is straight or angle
+            // let parent = amino_acid.prev.clone();
+            // let grandpa = parent.clone().and_then(|parent| parent.prev.clone());
+            //
+            // if let Some(parent) = parent {
+            //     if let Some(grandpa) = grandpa {
+            //         if parent.pos.1.abs_diff(amino_acid.pos.1)
+            //             + grandpa.pos.1.abs_diff(parent.pos.1)
+            //             == 2
+            //             || parent.pos.0.abs_diff(amino_acid.pos.0)
+            //                 + grandpa.pos.0.abs_diff(parent.pos.0)
+            //                 == 2
+            //         {
+            //             vec![(x + 1, y), (x, y + 1)]
+            //         // } else if parent.pos.0.abs_diff(amino_acid.pos.0)
+            //         //     + grandpa.pos.0.abs_diff(parent.pos.0)
+            //         //     == 2
+            //         // {
+            //         //     vec![(x + 1, y), (x, y + 1)]
+            //         } else {
+            //             vec![(x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)]
+            //         }
+            //     } else {
+            //         vec![(x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)]
+            //     }
+            // } else {
+            // }
+
+            result
+            // vec![(x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)]
         };
 
         //} else if amino_acid.depth == 2 {
