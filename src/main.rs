@@ -1,6 +1,6 @@
 use ai::frontiers::{AStar, BFS, DFS, MinCost};
 use ai::problem_solving_agent::Agent;
-use models::hp_2d_protein_folding::{Alphabet, AminoAcid, Energy, Pos, ProteinFolding};
+use models::hp_2d_protein_folding::{Alphabet, AminoAcid, Energy, Pos, ProteinFolding, Sequence};
 use rand::rng;
 use rand::seq::IndexedRandom;
 use std::rc::Rc;
@@ -17,7 +17,7 @@ fn main() {
     use Alphabet::*;
 
     let mut rng = rng();
-    let sequence: Vec<Alphabet> = (0..20)
+    let sequence: Sequence = (0..20)
         .filter_map(|_| [P, H].choose(&mut rng))
         //.filter_map(|_| [P, H, H, H, H, H, H, H].choose(&mut rng))
         .map(Clone::clone)

@@ -4,6 +4,105 @@ pub mod iterative_search;
 pub mod problem;
 pub mod problem_solving_agent;
 
+// let adj = vec![
+//     (1, vec![5, 8, 9, 11]),
+//     (2, vec![3, 7, 9, 10, 11]),
+//     (3, vec![4, 7, 11]),
+//     (4, vec![5, 11]),
+//     (5, vec![6, 8]),
+//     (6, vec![8]),
+//     (7, vec![10]),
+//     (8, vec![9]),
+//     (9, vec![]),
+//     (10, vec![]),
+//     (11, vec![]),
+// ];
+//
+// for (i, adj) in adj.clone() {
+//     for j in adj {
+//         println!(
+//             "- $angle.l {{C_({i}, {j}), C_({j}, {i})}}, C_({i}, {j}) = C_({j}, {i}) angle.r$"
+//         )
+//     }
+// }
+//
+// let mut matrix = [[false; 11]; 11];
+//
+// for (x, edge) in adj {
+//     for y in edge {
+//         let (x, y) = (x - 1, y - 1);
+//         matrix[x][y] = true;
+//         matrix[y][x] = true;
+//     }
+// }
+//
+// for i in 0..11 {
+//     for j in 0..11 {
+//         for k in 0..11 {
+//             if matrix[i][j] && matrix[i][k] && matrix[j][k] {
+//                 println!(
+//                     "- $angle.l {{C_({i}, {j}), C_({i}, {k}), C_({j}, {k})}}, C_({i}, {j}) = C_({i}, {k} => C_({i}, {j}) != C_({j}, {k})) angle.r$"
+//                 )
+//             }
+//         }
+//     }
+// }
+//
+// let letters = ["A", "B", "C", "D", "E", "1", "2", "H", "I", "J", "S"];
+//
+// for (i, l) in letters.iter().enumerate() {
+//     println!("{l} = {}", i + 1)
+// }
+//
+// let colors = [
+//     [1, 1, 1, 1, 2, 1, 1, 1, 2, 1, 1],
+//     [1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2],
+//     [1, 1, 1, 2, 1, 1, 2, 1, 1, 1, 1],
+//     [1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1],
+//     [2, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1],
+//     [1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1],
+//     [1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1],
+//     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+//     [2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+//     [1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+//     [1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+// ];
+//
+// print!("  ");
+// for letter in letters {
+//     print!(" {letter} ")
+// }
+// println!();
+// for (i, row) in matrix.into_iter().enumerate() {
+//     print!("{}:", letters[i]);
+//     for col in row {
+//         print!(" {} ", if col { 'X' } else { '-' })
+//     }
+//     println!();
+//     // println!("{:?}", row)
+// }
+//
+// print!("  ");
+// for letter in letters {
+//     print!(" {letter} ")
+// }
+// println!();
+// for (i, row) in colors.into_iter().enumerate() {
+//     print!("{}:", letters[i]);
+//     for col in row {
+//         print!(" {} ", if col == 1 { ' ' } else { '2' })
+//     }
+//     println!();
+//     // println!("{:?}", row)
+// }
+//
+// // for row in matrix {
+// //     println!("{:?}", row);
+// // }
+// // println!("{:?}", matrix);
+//
+// return;
+
 //pub fn steepest_descent<P, S, H>(problem: &P, rng: &mut impl Rng) -> Option<S>
 //where
 //    H: Ord + Copy,
