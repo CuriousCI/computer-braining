@@ -13,8 +13,6 @@ constraint forall(i in 0..n - 1, j in 2..k)(positions[i * k + j] == positions[i 
 
 constraint all_different(positions);
 
-% gcc(positions,[1, 1, 1, 1, 1, 1, 1, 1])?
-
 
 
 % array[1..k * n] of var 1..n: cards;
