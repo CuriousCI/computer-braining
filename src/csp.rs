@@ -1,4 +1,7 @@
-use std::{collections::BTreeSet, path::Iter};
+use std::{
+    collections::{BTreeSet, VecDeque},
+    path::Iter,
+};
 
 pub type Assignment = Vec<Option<usize>>;
 
@@ -6,14 +9,18 @@ pub type Domain = BTreeSet<usize>;
 
 pub struct Constraint(pub Vec<usize>, pub Box<dyn Fn(&Assignment) -> bool>);
 
-pub enum Cons {
+pub enum Simple {
     Eq(usize),
     Neq(usize),
     Lt(usize),
     Leq(usize),
     Gt(usize),
     Geq(usize),
-    Predicate,
+}
+
+pub enum ConstraintType {
+    Simple(Box<dyn Fn(&Assignment) -> usize>, Simple),
+    Predicate(Constraint),
 }
 
 // a constraint at this point is some kind of function of the values, and use it to compare, or
@@ -69,13 +76,13 @@ impl CSP {
     pub fn make_node_consistent(&mut self) -> bool {
         let mut assignment = vec![None; self.domains.len()];
 
-        for Constraint(vars, cons) in self.unary.iter() {
+        for Constraint(vars, c) in self.unary.iter() {
             let var = vars[0];
             let mut removed = vec![];
 
             for &val in self.domains[var].iter() {
                 assignment[var] = Some(val);
-                if !cons(&assignment) {
+                if !c(&assignment) {
                     removed.push(val);
                 }
             }
@@ -91,6 +98,7 @@ impl CSP {
             assignment[var] = None;
         }
 
+        println!("{:?}", self.domains);
         true
     }
 
@@ -99,8 +107,93 @@ impl CSP {
     // }
 
     pub fn gac_3(&mut self) -> bool {
+        let mut queue = VecDeque::new();
+
+        for c in self.general.iter() {
+            for &var in c.0.iter() {
+                queue.push_back((var, c));
+            }
+        }
+
+        while let Some((var, c)) = queue.pop_front() {
+            let mut removed = vec![];
+
+            let other_vars: Vec<_> = c.0.iter().filter(|&&var_2| var_2 != var).collect();
+            let mut assignment = vec![None; self.domains.len()];
+            for &val in self.domains[var].iter() {
+                assignment[var] = Some(val);
+                for &&other_var in other_vars.iter() {
+                    assignment[other_var] = self.domains[other_var].first().copied();
+                }
+
+                let mut satisfied = false;
+
+                for combination in
+                    self.combinations(other_vars.clone().into_iter().copied().collect())
+                {
+                    // println!("{:?}", combination);
+                    for (var, val_2) in combination {
+                        assignment[var] = Some(val_2);
+                    }
+
+                    if c.1(&assignment) {
+                        satisfied = true;
+                        break;
+                    }
+                }
+
+                if !satisfied {
+                    removed.push(val);
+                }
+            }
+
+            for val in removed.iter() {
+                self.domains[var].remove(val);
+            }
+
+            if !removed.is_empty() {
+                if self.domains[var].is_empty() {
+                    return false;
+                }
+
+                for &other_var in other_vars {
+                    queue.push_back((other_var, c));
+                }
+            }
+        }
+
         true
     }
+
+    fn combinations(&self, vars: Vec<usize>) -> Vec<Vec<(usize, usize)>> {
+        if vars.is_empty() {
+            vec![vec![]]
+        } else {
+            let mut combinations = vec![];
+
+            let mut rest = vars.clone();
+            let last = rest.pop().unwrap();
+
+            for combination in self.combinations(rest) {
+                for &val in self.domains[last].iter() {
+                    let mut c = combination.clone();
+                    c.push((last, val));
+                    combinations.push(c);
+                }
+            }
+
+            combinations
+        }
+    }
+
+    // pub fn remove_inconsistencies(&mut self, var, c) -> bool {
+    //     let mut removed_value = false;
+    //
+    //
+    //     for val in self.domains[var] {}
+    //
+    //     removed_value
+    // }
 
     pub fn backtracking(&self) -> Option<Assignment> {
         let mut stack: Vec<(usize, usize)> = Vec::new();

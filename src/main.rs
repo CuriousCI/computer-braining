@@ -47,6 +47,9 @@ fn main() {
     if !csp.make_node_consistent() {
         println!("there isn't a solution")
     }
+    if !csp.gac_3() {
+        println!("there isn't a solution")
+    }
     println!("{:?}", time.elapsed());
 
     let time = Instant::now();

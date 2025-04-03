@@ -22,7 +22,7 @@
 #set raw(lang: "Rust")
 #set table(stroke: 0.25pt)
 
-= E.A.5.3
+= E.A.5.6
 
 == Modellazione (Cards)
 
