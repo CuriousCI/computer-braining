@@ -1,4 +1,9 @@
-use ai::csp::{Assignment, CSP, Constraint, Description};
+use ai::{
+    csp::{Assignment, CSP, Constraint, Description},
+    iterative_search::steepest_descent,
+    problem::Heuristic,
+};
+use models::constraint::Constraints;
 // use ai::frontiers::{AStar, MinCost};
 // use ai::problem_solving_agent::Agent;
 // use models::hp_2d_protein_folding::{Alphabet, AminoAcid, Energy, Pos, Protein, Sequence};
@@ -16,45 +21,49 @@ use std::{collections::BTreeSet, time::Instant};
 pub mod models;
 
 fn main() {
-    let mut description = Description::default();
-    description.extend(vec![BTreeSet::from_iter(1..=5); 5]);
-    description.extend([
-        Constraint(
-            vec![0, 2],
-            Box::new(|ass| matches!((ass[0], ass[2]), (Some(v0), Some(v2)) if v0 > v2)),
-        ),
-        Constraint(
-            vec![1, 2],
-            Box::new(|ass| matches!((ass[1], ass[2]), (Some(v1), Some(v2)) if v1 <= v2)),
-        ),
-        Constraint(
-            vec![2, 3],
-            Box::new(|ass| matches!((ass[2], ass[3]), (Some(v2), Some(v3)) if v2.pow(2) + v3.pow(2) <= 15)),
-        ),
-        Constraint(
-            vec![4],
-            Box::new(|ass| matches!(ass[4], Some(val) if val >= 3)),
-        ),
-        Constraint(
-            vec![0, 4],
-            Box::new(|ass| matches!((ass[0], ass[4]), (Some(v0), Some(v4)) if v0 + v4 >= 3)),
-        ),
-    ]);
+    let sol = steepest_descent(&Constraints, [3, 1, 4, 5, 2]);
 
-    let mut csp: CSP = description.into();
+    println!("{:?} - {:?}", sol, Constraints.heuristic(&sol));
 
-    let time = Instant::now();
-    if !csp.make_node_consistent() {
-        println!("there isn't a solution")
-    }
-    if !csp.gac_3() {
-        println!("there isn't a solution")
-    }
-    println!("{:?}", time.elapsed());
-
-    let time = Instant::now();
-    println!("{:?}", csp.backtracking());
-    println!("{:?}", time.elapsed());
+    // let mut description = Description::default();
+    // description.extend(vec![BTreeSet::from_iter(1..=5); 5]);
+    // description.extend([
+    //     Constraint(
+    //         vec![0, 2],
+    //         Box::new(|ass| matches!((ass[0], ass[2]), (Some(v0), Some(v2)) if v0 > v2)),
+    //     ),
+    //     Constraint(
+    //         vec![1, 2],
+    //         Box::new(|ass| matches!((ass[1], ass[2]), (Some(v1), Some(v2)) if v1 <= v2)),
+    //     ),
+    //     Constraint(
+    //         vec![2, 3],
+    //         Box::new(|ass| matches!((ass[2], ass[3]), (Some(v2), Some(v3)) if v2.pow(2) + v3.pow(2) <= 15)),
+    //     ),
+    //     Constraint(
+    //         vec![4],
+    //         Box::new(|ass| matches!(ass[4], Some(val) if val >= 3)),
+    //     ),
+    //     Constraint(
+    //         vec![0, 4],
+    //         Box::new(|ass| matches!((ass[0], ass[4]), (Some(v0), Some(v4)) if v0 + v4 >= 3)),
+    //     ),
+    // ]);
+    //
+    // let mut csp: CSP = description.into();
+    //
+    // let time = Instant::now();
+    // if !csp.make_node_consistent() {
+    //     println!("there isn't a solution")
+    // }
+    // if !csp.gac_3() {
+    //     println!("there isn't a solution")
+    // }
+    // println!("{:?}", time.elapsed());
+    //
+    // let time = Instant::now();
+    // println!("{:?}", csp.backtracking());
+    // println!("{:?}", time.elapsed());
 
     // let domains = vec![]
 

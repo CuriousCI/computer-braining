@@ -1,3 +1,4 @@
+pub mod constraint;
 pub mod graph;
 pub mod hp_2d_protein_folding;
 pub mod n_queens;
