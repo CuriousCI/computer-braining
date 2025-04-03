@@ -4,6 +4,194 @@ pub mod iterative_search;
 pub mod problem;
 pub mod problem_solving_agent;
 
+// let n = 4;
+// let domain = BTreeSet::from_iter(1..=n);
+// let mut n_queens = CSP::new(vec![domain; n]);
+//
+// for i in 0..n {
+//     for j in 0..n {
+//         if i != j {
+//             n_queens.add_constraint(Box::new(move |ass| match (ass[i], ass[j]) {
+//                 (Some(q_i), Some(q_j)) => q_i != q_j,
+//                 _ => true,
+//             }));
+//
+//             n_queens.add_constraint(Box::new(move |ass| match (ass[i], ass[j]) {
+//                 (Some(q_i), Some(q_j)) => i.abs_diff(j) != q_i.abs_diff(q_j),
+//                 _ => true,
+//             }));
+//         }
+//     }
+// }
+//
+// let time = Instant::now();
+// println!("{:?}", n_queens.backtracking());
+// println!("{:?}", time.elapsed());
+
+// let domain = BTreeSet::from_iter([1, 2, 3, 4, 5, 6, 7]);
+//
+// let mut example = CSP::new(vec![domain.clone(), domain.clone(), domain.clone()]);
+// example.add_constraint(|ass: &Assignment| match (ass[0], ass[1]) {
+//     (Some(x_0), Some(x_1)) => x_0 > x_1,
+//     _ => true,
+// });
+//
+// example.add_constraint(|ass| match (ass[1], ass[2]) {
+//     (Some(x_1), Some(x_2)) => x_1 >= x_2 + 2,
+//     _ => true,
+// });
+//
+// example.add_constraint(|ass| match ass[2] {
+//     Some(x_2) => x_2 == 2,
+//     _ => true,
+// });
+//
+// println!("{:?}", example.backtracking())
+
+// match assignment[var] {
+//     Some(val) => {},
+//     None => continue;
+// }
+
+// for value in
+
+// assignment: Assignment,
+// variables: usize,
+
+// pub type Constraint = impl Fn(usize) -> usize;
+
+// pub struct Assignment;
+//
+// pub trait FromAssignment {
+//     fn from_assignment(assignment: &Assignment) -> Self;
+// }
+//
+// pub trait Handler<T> {
+//     fn call(self, assignment: Assignment);
+// }
+//
+// impl<F, T> Handler<T> for F
+// where
+//     F: Fn(T),
+//     T: FromAssignment,
+// {
+//     fn call(self, assignment: Assignment) {
+//         (self)(T::from_assignment(&assignment))
+//     }
+// }
+//
+// impl<F, T1, T2> Handler<(T1, T2)> for F
+// where
+//     F: Fn(T1, T2),
+//     T1: FromAssignment,
+//     T2: FromAssignment,
+// {
+//     fn call(self, assignment: Assignment) {
+//         (self)(
+//             T1::from_assignment(&assignment),
+//             T2::from_assignment(&assignment),
+//         )
+//     }
+// }
+//
+// pub fn trigger<T, H>(assignment: Assignment, handler: H)
+// where
+//     H: Handler<T>,
+// {
+//     handler.call(assignment);
+// }
+//
+// pub struct CSP {}
+//
+// impl CSP {
+//     pub fn new() -> Self {
+//         Self {}
+//     }
+// }
+
+//let context = Context::new("magic".into(), 33);
+//
+//trigger(context.clone(), print_id);
+
+// The _"state of the board"_ is known as _"position"_ in chess
+// An action corresponds to moving the queen in col i to row j
+// Definition of the n-queens problem
+// Generates a new state s.t. the queen in column `col` is in row `row`
+//
+// I tried a solution which in which the position isn't cloned, but it's less efficient. I'll trust Rust on this one.
+// This heuristic counts both the number of *direct* attacks and *indirect* attacks. It has
+// proven to be more effecting at finding results (it carries more information than just the
+// direct attacks)
+//impl Local<Reverse<usize>> for NQueens {
+// The simplest way to implement the neighbourhood is to allow a queen to move only above or
+// below.
+//
+// I tried allowing movement in all positions, and this happened:
+// - with steepest_ascent time went from 50ms to 2s
+// - the resulting attacks went from 50 to 0
+//
+// So allowing more moves takes way more time, but finds way better results.
+// By using this idea I tried implementing a "halo region" _(by allowing certain number of
+// moves above and below)_.
+//
+// The halo region balances the quality of the results and the time take (a good enough halo
+// region size can be both very fast and effecting at finding a solution)
+
+// Used by parallel_steepest_ascent to parallelize the calculation of the utility
+//
+// By using parallelization for 1000-queens times went down from 460s to 75s (on my 6 core computer)
+// Used to generate the initial state bu iterative improvement algorithms
+
+//}
+//.into_iter()
+
+//.into_iter()
+
+//.collect::<Vec<_>>()
+//.into_iter()
+//.filter(|(x, y)| x >= &0 && y >= &0)
+
+//} else if amino_acid.depth == 2 {
+//    vec![]
+
+//if amino_acid.depth == 0 {
+//    vec![((0, 1), 0)]
+//} else {
+//[(x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)]
+
+// let parent = amino_acid.prev.clone();
+// let grandpa = parent.clone().and_then(|parent| parent.prev.clone());
+
+// vec![(x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)]
+
+// // check if it is straight or angle
+// let parent = amino_acid.prev.clone();
+// let grandpa = parent.clone().and_then(|parent| parent.prev.clone());
+//
+// if let Some(parent) = parent {
+//     if let Some(grandpa) = grandpa {
+//         if parent.pos.1.abs_diff(amino_acid.pos.1)
+//             + grandpa.pos.1.abs_diff(parent.pos.1)
+//             == 2
+//             || parent.pos.0.abs_diff(amino_acid.pos.0)
+//                 + grandpa.pos.0.abs_diff(parent.pos.0)
+//                 == 2
+//         {
+//             vec![(x + 1, y), (x, y + 1)]
+//         // } else if parent.pos.0.abs_diff(amino_acid.pos.0)
+//         //     + grandpa.pos.0.abs_diff(parent.pos.0)
+//         //     == 2
+//         // {
+//         //     vec![(x + 1, y), (x, y + 1)]
+//         } else {
+//             vec![(x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)]
+//         }
+//     } else {
+//         vec![(x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)]
+//     }
+// } else {
+// }
+
 // let adj = vec![
 //     (1, vec![5, 8, 9, 11]),
 //     (2, vec![3, 7, 9, 10, 11]),

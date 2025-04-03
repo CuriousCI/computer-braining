@@ -27,7 +27,8 @@
 % 10 -> 2, 7
 % 11 -> 1, 2, 3, 4
 
-set of int: V = 1..11;
+int: N = 11;
+set of int: V = 1..N;
 array [V, V] of var 1..3: C;
 
 any: E = [|
@@ -44,10 +45,14 @@ any: E = [|
     true, true, true, true, false, false, false, false, false, false, false
 |];
 
-constraint  forall(i in V, j in V, k in V)(
-    (E[k, i] /\ E[k, j] /\ E[i, j]) -> (C[k, i] == C[k, j] -> C[k, i] != C[i, j])
+% constraint  forall(i in V, j in V, k in V)(
+    % (E[k, i] /\ E[k, j] /\ E[i, j]) -> (C[k, i] == C[k, j] -> C[k, i] != C[i, j])
+%);
+
+constraint  forall(i in V, j in i + 1..N, k in j + 1..N)(
+    (E[i, j] /\ E[i, k] /\ E[j, k]) -> (C[i, k] == C[i, j] -> C[i, k] != C[j, k])
 );
 
-constraint  forall(i in V, j in V)(
-    C[i, j] == C[j, i]
-);
+% constraint  forall(i in V, j in V)(
+%    C[i, j] == C[j, i]
+% );
