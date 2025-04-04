@@ -12,15 +12,16 @@ pub type Sequence = Vec<Alphabet>;
 
 pub type Energy = i64;
 
-pub struct Protein(Sequence);
-
 pub type Pos = (i64, i64);
 
-#[derive(Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
+pub struct Protein(Sequence);
+
+#[derive(Hash, Eq, PartialEq)]
 pub struct AminoAcid {
     pub pos: Pos,
     pub prev: Option<Rc<AminoAcid>>,
     pub depth: usize,
+    pub first_turn: bool,
 }
 
 impl Protein {
@@ -49,6 +50,7 @@ impl Transition for Protein {
             pos,
             prev: Some(amino_acid.clone()),
             depth: amino_acid.depth + 1,
+            first_turn: amino_acid.first_turn || pos.0 != 0,
         })
     }
 }
@@ -65,32 +67,33 @@ impl Heuristic<Energy> for Protein {
         // - costa poco memorizzarla
         // - evito O(n) calcoli
 
-        let mut min_x = amino_acid.pos.0;
-        let mut max_x = amino_acid.pos.0;
-        let mut min_y = amino_acid.pos.1;
-        let mut max_y = amino_acid.pos.1;
+        // si può calcolare in modo incrementale?
+        // la calcolo una volta all'inizio, e poi la espando,
+        // tecnicamente mi devo mantenere gli estremi, sia in verticale sia in orizzontale
+        // praticamente non serve più di tanto
 
-        let mut prev = amino_acid.prev.as_ref();
-        while let Some(p) = prev {
-            if let Alphabet::H = self[p.depth] {
-                min_x = min_x.min(p.pos.0);
-                max_x = max_x.max(p.pos.0);
-                min_y = min_y.min(p.pos.1);
-                max_y = max_y.max(p.pos.1);
-            }
+        0
 
-            prev = p.prev.as_ref();
-        }
-
-        ((max_x - min_x) + (max_y - min_y)) / 3
+        // let mut min_x = amino_acid.pos.0;
+        // let mut max_x = amino_acid.pos.0;
+        // let mut min_y = amino_acid.pos.1;
+        // let mut max_y = amino_acid.pos.1;
+        //
+        // let mut prev = amino_acid.prev.as_ref();
+        // while let Some(p) = prev {
+        //     if let Alphabet::H = self[p.depth] {
+        //         min_x = min_x.min(p.pos.0);
+        //         max_x = max_x.max(p.pos.0);
+        //         min_y = min_y.min(p.pos.1);
+        //         max_y = max_y.max(p.pos.1);
+        //     }
+        //
+        //     prev = p.prev.as_ref();
+        // }
+        //
+        // ((max_x - min_x) + (max_y - min_y)) / 3
     }
 }
-
-// next position, nah
-// direction (maybe? Still hard to check for translations)
-// impl Eq for AminoAcid, s.t. two amino acids are equal if they have the same directions, but rotated
-// rotation... what does rotation mean in this context?
-// can I prevent a duplicating move before doing it?
 
 impl Exploration<Energy> for Protein {
     fn expand(&self, amino_acid: &Self::State) -> impl Iterator<Item = (Self::Action, Energy)> {
@@ -98,26 +101,10 @@ impl Exploration<Energy> for Protein {
 
         let actions = if amino_acid.depth == 0 {
             vec![(x, y + 1)]
-        } else if amino_acid.depth == 1 {
+        } else if amino_acid.depth == 1 || !amino_acid.first_turn {
             vec![(x + 1, y), (x, y + 1)]
         } else {
-            let mut result = vec![(x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)];
-            if let Some(parent) = amino_acid.prev.as_ref() {
-                if let Some(grandpa) = parent.prev.as_ref() {
-                    let (p_x, p_y) = parent.pos;
-                    let (g_x, g_y) = grandpa.pos;
-
-                    result = match (x - p_x, p_x - g_x, y - p_y, p_y - g_y) {
-                        (1, 1, _, _) => vec![(x + 1, y), (x, y + 1)],
-                        (-1, -1, _, _) => vec![(x - 1, y), (x, y - 1)],
-                        (_, _, 1, 1) => vec![(x, y + 1), (x + 1, y)],
-                        (_, _, -1, -1) => vec![(x, y - 1), (x - 1, y)],
-                        _ => vec![(x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)],
-                    }
-                }
-            }
-
-            result
+            vec![(x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)]
         };
 
         actions

@@ -1,8 +1,102 @@
 pub mod csp;
+pub mod exploration;
 pub mod frontiers;
 pub mod iterative_search;
 pub mod problem;
-pub mod problem_solving_agent;
+
+// next position, nah
+// direction (maybe? Still hard to check for translations)
+// impl Eq for AminoAcid, s.t. two amino acids are equal if they have the same directions, but rotated
+// rotation... what does rotation mean in this context?
+// can I prevent a duplicating move before doing it?
+
+// } else {
+//     vec![(x + 1, y), (x, y + 1)]
+
+// let mut result = vec![(x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)];
+// if let Some(parent) = amino_acid.prev.as_ref() {
+//     if let Some(grandpa) = parent.prev.as_ref() {
+//         let (p_x, p_y) = parent.pos;
+//         let (g_x, g_y) = grandpa.pos;
+//
+//         if amino_acid.first_turn {
+//             result = vec![(x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)]
+//         } else {
+//             result = match (x - p_x, p_x - g_x, y - p_y, p_y - g_y) {
+//                 (1, 1, _, _) => vec![(x + 1, y), (x, y + 1)],
+//                 (-1, -1, _, _) => vec![(x - 1, y), (x, y - 1)],
+//                 (_, _, 1, 1) => vec![(x, y + 1), (x + 1, y)],
+//                 (_, _, -1, -1) => vec![(x, y - 1), (x - 1, y)],
+//                 _ => vec![(x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)],
+//             }
+//         }
+//     }
+// }
+//
+// result
+// #[derive(Clone, Hash, Eq, PartialEq, Ord, PartialOrd)]
+
+// let sol = steepest_descent(&Constraints, [3, 1, 4, 5, 2]);
+//
+// println!("{:?} - {:?}", sol, Constraints.heuristic(&sol));
+// csp::{Assignment, CSP, Constraint, Description},
+// use ai::frontiers::{AStar, MinCost};
+// use ai::problem_solving_agent::Agent;
+// use models::hp_2d_protein_folding::{Alphabet, AminoAcid, Energy, Pos, Protein, Sequence};
+// use rand::rng;
+// use rand::seq::IndexedRandom;
+// use std::{collections::BTreeSet, time::Instant};
+// use std::rc::Rc;
+// use std::time::Instant;
+
+// cplex optimization studio
+// pruning dell'albero di ricerca
+// MILP: mixed integer linear programming
+// GAC e framework
+
+// let mut description = Description::default();
+// description.extend(vec![BTreeSet::from_iter(1..=5); 5]);
+// description.extend([
+//     Constraint(
+//         vec![0, 2],
+//         Box::new(|ass| matches!((ass[0], ass[2]), (Some(v0), Some(v2)) if v0 > v2)),
+//     ),
+//     Constraint(
+//         vec![1, 2],
+//         Box::new(|ass| matches!((ass[1], ass[2]), (Some(v1), Some(v2)) if v1 <= v2)),
+//     ),
+//     Constraint(
+//         vec![2, 3],
+//         Box::new(|ass| matches!((ass[2], ass[3]), (Some(v2), Some(v3)) if v2.pow(2) + v3.pow(2) <= 15)),
+//     ),
+//     Constraint(
+//         vec![4],
+//         Box::new(|ass| matches!(ass[4], Some(val) if val >= 3)),
+//     ),
+//     Constraint(
+//         vec![0, 4],
+//         Box::new(|ass| matches!((ass[0], ass[4]), (Some(v0), Some(v4)) if v0 + v4 >= 3)),
+//     ),
+// ]);
+//
+// let mut csp: CSP = description.into();
+//
+// let time = Instant::now();
+// if !csp.make_node_consistent() {
+//     println!("there isn't a solution")
+// }
+// if !csp.gac_3() {
+//     println!("there isn't a solution")
+// }
+// println!("{:?}", time.elapsed());
+//
+// let time = Instant::now();
+// println!("{:?}", csp.backtracking());
+// println!("{:?}", time.elapsed());
+
+// let domains = vec![]
+
+// let domains =
 
 // let n = 4;
 // let domain = BTreeSet::from_iter(1..=n);

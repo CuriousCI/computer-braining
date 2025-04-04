@@ -1,174 +1,106 @@
 use ai::{
-    csp::{Assignment, CSP, Constraint, Description},
-    iterative_search::steepest_descent,
-    problem::Heuristic,
+    exploration::Agent,
+    frontiers::{AStar, MinCost},
 };
-use models::constraint::Constraints;
-// use ai::frontiers::{AStar, MinCost};
-// use ai::problem_solving_agent::Agent;
-// use models::hp_2d_protein_folding::{Alphabet, AminoAcid, Energy, Pos, Protein, Sequence};
-// use rand::rng;
-// use rand::seq::IndexedRandom;
-use std::{collections::BTreeSet, time::Instant};
-// use std::rc::Rc;
-// use std::time::Instant;
-
-// cplex optimization studio
-// pruning dell'albero di ricerca
-// MILP: mixed integer linear programming
-// GAC e framework
-
+use models::hp_2d_protein_folding::{Alphabet, AminoAcid, Energy, Pos, Protein};
+use std::time::Instant;
 pub mod models;
 
 fn main() {
-    let sol = steepest_descent(&Constraints, [3, 1, 4, 5, 2]);
+    use Alphabet::*;
 
-    println!("{:?} - {:?}", sol, Constraints.heuristic(&sol));
-
-    // let mut description = Description::default();
-    // description.extend(vec![BTreeSet::from_iter(1..=5); 5]);
-    // description.extend([
-    //     Constraint(
-    //         vec![0, 2],
-    //         Box::new(|ass| matches!((ass[0], ass[2]), (Some(v0), Some(v2)) if v0 > v2)),
-    //     ),
-    //     Constraint(
-    //         vec![1, 2],
-    //         Box::new(|ass| matches!((ass[1], ass[2]), (Some(v1), Some(v2)) if v1 <= v2)),
-    //     ),
-    //     Constraint(
-    //         vec![2, 3],
-    //         Box::new(|ass| matches!((ass[2], ass[3]), (Some(v2), Some(v3)) if v2.pow(2) + v3.pow(2) <= 15)),
-    //     ),
-    //     Constraint(
-    //         vec![4],
-    //         Box::new(|ass| matches!(ass[4], Some(val) if val >= 3)),
-    //     ),
-    //     Constraint(
-    //         vec![0, 4],
-    //         Box::new(|ass| matches!((ass[0], ass[4]), (Some(v0), Some(v4)) if v0 + v4 >= 3)),
-    //     ),
-    // ]);
-    //
-    // let mut csp: CSP = description.into();
-    //
-    // let time = Instant::now();
-    // if !csp.make_node_consistent() {
-    //     println!("there isn't a solution")
-    // }
-    // if !csp.gac_3() {
-    //     println!("there isn't a solution")
-    // }
-    // println!("{:?}", time.elapsed());
-    //
-    // let time = Instant::now();
-    // println!("{:?}", csp.backtracking());
-    // println!("{:?}", time.elapsed());
-
-    // let domains = vec![]
-
-    // let domains =
-
-    // use Alphabet::*;
-    //
+    let sequence = vec![H, H, P, H, P, P, H, H, H, P, P, P, P, H, H, P, H, P, H, P];
+    // let sequence = vec![H, H, P, H, P, P, H, H, H, P, P, P, P, H, H, P];
+    // println!("{}", sequence.len());
     // let mut rng = rng();
     // let sequence: Sequence = (0..22)
     //     .filter_map(|_| [P, H].choose(&mut rng))
     //     .map(Clone::clone)
     //     .collect();
-    //
-    // let mut agent = Agent::new(Protein::new(sequence.clone()));
-    //
-    // let mut conformation = vec![(0, 0)];
-    //
-    // let time = Instant::now();
-    //
-    // let mut energy = 0;
-    // while let Some(pos) =
-    //     agent.function::<Rc<AminoAcid>, MinCost<Rc<AminoAcid>, Pos, Energy>>(Rc::new(AminoAcid {
-    //         pos: (0, 0),
-    //         prev: None,
-    //         depth: 0,
-    //     }))
-    // {
-    //     conformation.push(pos);
-    // }
-    //
-    // println!("{:?}", time.elapsed());
-    //
-    // let max_col = conformation.iter().map(|(x, _)| *x).max().unwrap_or(0);
-    // let max_row = conformation.iter().map(|(_, y)| *y).max().unwrap_or(0);
-    // let min_col = conformation.iter().map(|(x, _)| *x).min().unwrap_or(0);
-    // let min_row = conformation.iter().map(|(_, y)| *y).min().unwrap_or(0);
-    //
-    // for y in min_row..max_row + 2 {
-    //     for x in min_col..max_col + 2 {
-    //         if let Some((i, _)) = conformation
-    //             .iter()
-    //             .enumerate()
-    //             .find(|(_, (p_x, p_y))| x == *p_x && y == *p_y)
-    //         {
-    //             if x == 0 && y == 0 {
-    //                 print!("X")
-    //             } else {
-    //                 print!("{:?}", sequence[i])
-    //             }
-    //         } else {
-    //             print!(".")
-    //         }
-    //     }
-    //     println!()
-    // }
-    //
-    // for (i, pos) in conformation.iter().enumerate() {
-    //     println!("{:?}: {:?}", sequence[i], pos)
-    // }
-    //
-    // let mut agent = Agent::new(Protein::new(sequence.clone()));
-    //
-    // let mut conformation = vec![(0, 0)];
-    //
-    // let time = Instant::now();
-    //
-    // while let Some(pos) =
-    //     agent.function::<Rc<AminoAcid>, AStar<Rc<AminoAcid>, Pos, Energy>>(Rc::new(AminoAcid {
-    //         pos: (0, 0),
-    //         prev: None,
-    //         depth: 0,
-    //     }))
-    // {
-    //     conformation.push(pos);
-    // }
-    //
-    // println!("\n{:?}", time.elapsed());
-    //
-    // let max_col = conformation.iter().map(|(x, _)| *x).max().unwrap_or(0);
-    // let max_row = conformation.iter().map(|(_, y)| *y).max().unwrap_or(0);
-    // let min_col = conformation.iter().map(|(x, _)| *x).min().unwrap_or(0);
-    // let min_row = conformation.iter().map(|(_, y)| *y).min().unwrap_or(0);
-    //
-    // for y in min_row..max_row + 2 {
-    //     for x in min_col..max_col + 2 {
-    //         if let Some((i, _)) = conformation
-    //             .iter()
-    //             .enumerate()
-    //             .find(|(_, (p_x, p_y))| x == *p_x && y == *p_y)
-    //         {
-    //             if x == 0 && y == 0 {
-    //                 print!("X")
-    //             } else {
-    //                 print!("{:?}", sequence[i])
-    //             }
-    //         } else {
-    //             print!(".")
-    //         }
-    //     }
-    //     println!()
-    // }
-    //
-    // for (i, pos) in conformation.iter().enumerate() {
-    //     println!("{:?}: {:?}", sequence[i], pos)
-    // }
+
+    let mut agent = Agent::new(Protein::new(sequence.clone()));
+
+    let mut conformation = vec![(0, 0)];
+    let time = Instant::now();
+    while let Some(pos) = agent.function::<AminoAcid, MinCost<Pos, Energy>>(AminoAcid {
+        pos: (0, 0),
+        prev: None,
+        depth: 0,
+        first_turn: false,
+    }) {
+        conformation.push(pos);
+    }
+    println!("{:?}", time.elapsed());
+
+    let max_col = conformation.iter().map(|(x, _)| *x).max().unwrap_or(0);
+    let max_row = conformation.iter().map(|(_, y)| *y).max().unwrap_or(0);
+    let min_col = conformation.iter().map(|(x, _)| *x).min().unwrap_or(0);
+    let min_row = conformation.iter().map(|(_, y)| *y).min().unwrap_or(0);
+
+    for y in min_row..max_row + 2 {
+        for x in min_col..max_col + 2 {
+            if let Some((i, _)) = conformation
+                .iter()
+                .enumerate()
+                .find(|(_, (p_x, p_y))| x == *p_x && y == *p_y)
+            {
+                if x == 0 && y == 0 {
+                    print!("X")
+                } else {
+                    print!("{:?}", sequence[i])
+                }
+            } else {
+                print!(".")
+            }
+        }
+        println!()
+    }
+
+    for (i, pos) in conformation.iter().enumerate() {
+        println!("{:?}: {:?}", sequence[i], pos)
+    }
+
+    let mut agent = Agent::new(Protein::new(sequence.clone()));
+
+    let mut conformation = vec![(0, 0)];
+    let time = Instant::now();
+    while let Some(pos) = agent.function::<AminoAcid, AStar<Pos, Energy>>(AminoAcid {
+        pos: (0, 0),
+        prev: None,
+        depth: 0,
+        first_turn: false,
+    }) {
+        conformation.push(pos);
+    }
+    println!("\n{:?}", time.elapsed());
+
+    let max_col = conformation.iter().map(|(x, _)| *x).max().unwrap_or(0);
+    let max_row = conformation.iter().map(|(_, y)| *y).max().unwrap_or(0);
+    let min_col = conformation.iter().map(|(x, _)| *x).min().unwrap_or(0);
+    let min_row = conformation.iter().map(|(_, y)| *y).min().unwrap_or(0);
+
+    for y in min_row..max_row + 2 {
+        for x in min_col..max_col + 2 {
+            if let Some((i, _)) = conformation
+                .iter()
+                .enumerate()
+                .find(|(_, (p_x, p_y))| x == *p_x && y == *p_y)
+            {
+                if x == 0 && y == 0 {
+                    print!("X")
+                } else {
+                    print!("{:?}", sequence[i])
+                }
+            } else {
+                print!(".")
+            }
+        }
+        println!()
+    }
+
+    for (i, pos) in conformation.iter().enumerate() {
+        println!("{:?}: {:?}", sequence[i], pos)
+    }
 }
 
 // let sequence = vec![H, H, H, P, P, H, P, H, H, P, H, H, P, H, H, P, H, P];

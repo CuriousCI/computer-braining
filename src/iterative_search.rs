@@ -27,9 +27,6 @@ where
     }
 }
 
-// Same as above, but
-// - parallelization helps a lot with bigger instances
-// - it requires a stricter contract on the problems (with Send + Sync)
 pub fn parallel_steepest_ascent<P, S, H>(problem: &P, rng: &mut impl Rng) -> Option<S>
 where
     P: Sync,
@@ -136,6 +133,10 @@ where
 
     None
 }
+
+// Same as above, but
+// - parallelization helps a lot with bigger instances
+// - it requires a stricter contract on the problems (with Send + Sync)
 
 pub fn local_beam() {}
 

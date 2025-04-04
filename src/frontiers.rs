@@ -1,99 +1,84 @@
 use std::{
     cmp::Reverse,
     collections::{HashMap, VecDeque},
-    hash::Hash,
     ops::Add,
-    rc::Rc,
 };
 
-use crate::problem_solving_agent::*;
+use crate::exploration::*;
 
-pub struct BFS<S, A, U>(VecDeque<(S, Rc<Node<A, U>>)>);
+#[derive(Default)]
+pub struct BFS(VecDeque<(usize, usize)>);
 
-impl<S, A, U> Default for BFS<S, A, U> {
-    fn default() -> Self {
-        Self(Default::default())
-    }
-}
-
-impl<S, A, U> Frontier<S, A, U> for BFS<S, A, U> {
-    fn next(&mut self) -> Option<(S, Rc<Node<A, U>>)> {
+impl<A, H> Frontier<A, H> for BFS {
+    fn next(&mut self) -> Option<(usize, usize)> {
         self.0.pop_front()
     }
 
-    fn insert(&mut self, state: S, node: Rc<Node<A, U>>) {
+    fn insert(&mut self, state: usize, node: usize, _nodes: &[Node<A, H>]) {
         self.0.push_back((state, node));
     }
 }
 
-pub struct DFS<S, A, U>(Vec<(S, Rc<Node<A, U>>)>);
+#[derive(Default)]
+pub struct DFS(Vec<(usize, usize)>);
 
-impl<S, A, U> Default for DFS<S, A, U> {
-    fn default() -> Self {
-        Self(Default::default())
-    }
-}
-
-impl<S, A, U> Frontier<S, A, U> for DFS<S, A, U> {
-    fn next(&mut self) -> Option<(S, Rc<Node<A, U>>)> {
+impl<A, H> Frontier<A, H> for DFS {
+    fn next(&mut self) -> Option<(usize, usize)> {
         self.0.pop()
     }
 
-    fn insert(&mut self, state: S, node: Rc<Node<A, U>>) {
+    fn insert(&mut self, state: usize, node: usize, _nodes: &[Node<A, H>]) {
         self.0.push((state, node));
     }
 }
 
 use priority_queue::PriorityQueue;
 
-pub struct PriorityFrontier<S, A, N, U>(
-    PriorityQueue<S, Reverse<(U, S)>>,
-    HashMap<S, Rc<Node<A, U>>>,
-    std::marker::PhantomData<N>,
+pub struct PriorityFrontier<A, N, H>(
+    PriorityQueue<usize, Reverse<H>>,
+    HashMap<usize, usize>,
+    std::marker::PhantomData<(A, N)>,
 )
 where
-    S: Ord + Hash,
-    N: FromNode<A, U>;
+    N: FromNode<A, H>;
 
-impl<S, A, N, U> Default for PriorityFrontier<S, A, N, U>
+impl<A, N, H> Default for PriorityFrontier<A, N, H>
 where
-    U: Default + Ord,
-    S: Ord + Hash + Clone,
-    N: FromNode<A, U>,
+    H: Default + Ord,
+    N: FromNode<A, H>,
 {
     fn default() -> Self {
         Self(Default::default(), Default::default(), Default::default())
     }
 }
 
-impl<S, A, N, U> Frontier<S, A, U> for PriorityFrontier<S, A, N, U>
+impl<A, N, H> Frontier<A, H> for PriorityFrontier<A, N, H>
 where
-    U: Default + Ord,
-    S: Hash + Ord + Clone,
-    N: FromNode<A, U>,
+    H: Default + Ord,
+    N: FromNode<A, H>,
 {
-    fn next(&mut self) -> Option<(S, Rc<Node<A, U>>)> {
+    fn next(&mut self) -> Option<(usize, usize)> {
         self.0.pop().and_then(|(state, _)| {
-            let node = self.1.get(&state)?.clone();
-            Some((state, node))
+            let node = self.1.get(&state)?;
+            Some((state, *node))
         })
     }
 
-    fn insert(&mut self, state: S, node: Rc<Node<A, U>>) {
-        self.0
-            .push(state.clone(), Reverse((N::value(&node), state.clone())));
+    fn insert(&mut self, state: usize, node: usize, nodes: &[Node<A, H>]) {
+        self.0.push(state, Reverse(N::value(&nodes[node])));
         self.1.insert(state, node);
     }
 
-    fn change(&mut self, state: &S, node: Rc<Node<A, U>>) {
+    fn change(&mut self, state: &usize, node: usize, nodes: &[Node<A, H>]) {
         if self
             .1
             .get(state)
-            .is_none_or(|prev| N::value(prev) > N::value(&node))
+            .is_none_or(|&prev| N::value(&nodes[prev]) > N::value(&nodes[node]))
         {
             self.0
-                .change_priority(state, Reverse((N::value(&node), state.clone())));
-            self.1.insert(state.clone(), node);
+                .change_priority(state, Reverse(N::value(&nodes[node])));
+
+            self.1.insert(*state, node);
         }
     }
 }
@@ -131,6 +116,109 @@ where
     }
 }
 
-pub type MinCost<S, A, U> = PriorityFrontier<S, A, MinCostPolicy, U>;
-pub type BestFirst<S, A, U> = PriorityFrontier<S, A, BestFirstPolicy, U>;
-pub type AStar<S, A, U> = PriorityFrontier<S, A, AStarPolicy, U>;
+pub type MinCost<A, H> = PriorityFrontier<A, MinCostPolicy, H>;
+pub type BestFirst<A, H> = PriorityFrontier<A, BestFirstPolicy, H>;
+pub type AStar<A, H> = PriorityFrontier<A, AStarPolicy, H>;
+
+// Reverse((N::value(&nodes[node]), state.clone())),
+// self.0
+//     .change_priority(state, Reverse((N::value(&nodes[node]), state.clone())));
+
+// hash::Hash,
+
+// impl<S> Default for BFS {
+//     fn default() -> Self {
+//         Self(Default::default())
+//     }
+// }
+
+// pub struct DFS<S>(Vec<(S, usize)>);
+//
+// impl<S> Default for DFS<S> {
+//     fn default() -> Self {
+//         Self(Default::default())
+//     }
+// }
+//
+// impl<S, A, H> Frontier<S, A, H> for DFS<S> {
+//     fn next(&mut self) -> Option<(S, usize)> {
+//         self.0.pop()
+//     }
+//
+//     fn insert(&mut self, state: S, node: usize, _nodes: &[Node<A, H>]) {
+//         self.0.push((state, node));
+//     }
+// }
+// impl<S> Default for DFS<S> {
+//     fn default() -> Self {
+//         Self(Default::default())
+//     }
+// }
+// PriorityQueue<S, Reverse<(H, S)>>,
+// S: Ord + Hash,
+// S: Ord + Hash + Clone,
+// S: Hash + Ord + Clone,
+
+// pub struct BFS<S, A, U>(VecDeque<(S, Rc<Node<A, U>>)>);
+// fn next(&mut self) -> Option<(S, Rc<Node<A, U>>)> {
+//     self.0.pop_front()
+// }
+//
+// fn insert(&mut self, state: S, node: Rc<Node<A, U>>) {
+//     self.0.push_back((state, node));
+// }
+
+// pub struct DFS<S, A, U>(Vec<(S, Rc<Node<A, U>>)>);
+// fn next(&mut self) -> Option<(S, Rc<Node<A, U>>)> {
+//     self.0.pop()
+// }
+//
+// fn insert(&mut self, state: S, node: Rc<Node<A, U>>) {
+//     self.0.push((state, node));
+// }
+
+// pub struct PriorityFrontier<S, A, N, H>(
+//     PriorityQueue<S, Reverse<(H, S)>>,
+//     HashMap<S, Rc<Node<A, H>>>,
+//     std::marker::PhantomData<N>,
+// )
+// where
+//     S: Ord + Hash,
+//     N: FromNode<A, H>;
+
+// if self
+//     .1
+//     .get(state)
+//     .is_none_or(|prev| N::value(prev) > N::value(&node))
+// {
+//     self.0
+//         .change_priority(state, Reverse((N::value(&node), state.clone())));
+//     self.1.insert(state.clone(), node);
+// }
+
+// fn insert(&mut self, state: S, node: Rc<Node<A, U>>) {
+//     self.0
+//         .push(state.clone(), Reverse((N::value(&node), state.clone())));
+//     self.1.insert(state, node);
+// }
+//
+
+// fn next(&mut self) -> Option<(S, Rc<Node<A, U>>)> {
+//     self.0.pop().and_then(|(state, _)| {
+//         let node = self.1.get(&state)?.clone();
+//         Some((state, node))
+//     })
+// }
+//
+
+// fn change(&mut self, state: &S, node: Rc<Node<A, U>>) {
+//     if self
+//         .1
+//         .get(state)
+//         .is_none_or(|prev| N::value(prev) > N::value(&node))
+//     {
+//         self.0
+//             .change_priority(state, Reverse((N::value(&node), state.clone())));
+//         self.1.insert(state.clone(), node);
+//     }
+// }
