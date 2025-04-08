@@ -10,18 +10,18 @@ pub enum Alphabet {
 
 pub type Sequence = Vec<Alphabet>;
 
-pub type Energy = i64;
+pub type Energy = i16;
 
-pub type Pos = (i64, i64);
+pub type Pos = (i16, i16);
 
 pub struct Protein(Sequence);
 
-#[derive(Hash, Eq, PartialEq)]
+#[derive(Hash, Eq, PartialEq, Default)]
 pub struct AminoAcid {
-    pub pos: Pos,
-    pub prev: Option<Rc<AminoAcid>>,
-    pub depth: usize,
-    pub first_turn: bool,
+    pos: Pos,
+    prev: Option<Rc<AminoAcid>>,
+    depth: usize,
+    first_turn: bool,
 }
 
 impl Protein {
@@ -57,12 +57,14 @@ impl Transition for Protein {
 
 impl Goal for Protein {
     fn is_goal(&self, amino_acid: &Self::State) -> bool {
-        amino_acid.depth == self.len() - 1
+        amino_acid.depth + 1 == self.len()
     }
 }
 
 impl Heuristic<Energy> for Protein {
     fn heuristic(&self, amino_acid: &Self::State) -> Energy {
+        0
+
         // Questa info si può portare dietro nello stato
         // - costa poco memorizzarla
         // - evito O(n) calcoli
@@ -72,7 +74,32 @@ impl Heuristic<Energy> for Protein {
         // tecnicamente mi devo mantenere gli estremi, sia in verticale sia in orizzontale
         // praticamente non serve più di tanto
 
-        0
+        // let mut h = 0;
+        //
+        // let mut grandpa = amino_acid.prev.as_ref().and_then(|a| a.prev.as_ref());
+        // let mut curr = Some(amino_acid);
+        //
+        // while let (Some(p), Some(c)) = (grandpa, curr) {
+        //     if let (Alphabet::H, Alphabet::H) = (&self[p.depth], &self[c.depth]) {
+        //         if p.pos.0.abs_diff(c.pos.0) + p.pos.1.abs_diff(c.pos.1) > 1 {
+        //             h += 1;
+        //         }
+        //     }
+        //
+        //     grandpa = p.prev.as_ref();
+        //     curr = c.prev.as_ref();
+        // }
+
+        // for i in 0..self.len() - 2 {
+        //     match (self.get(i), self.get(i + 2)) {
+        //         (Some(&Alphabet::H), Some(&Alphabet::H)) => {
+        //             if
+        //         }
+        //         _ => (),
+        //     }
+        // }
+
+        // -h
 
         // let mut min_x = amino_acid.pos.0;
         // let mut max_x = amino_acid.pos.0;
@@ -101,7 +128,7 @@ impl Exploration<Energy> for Protein {
 
         let actions = if amino_acid.depth == 0 {
             vec![(x, y + 1)]
-        } else if amino_acid.depth == 1 || !amino_acid.first_turn {
+        } else if !amino_acid.first_turn {
             vec![(x + 1, y), (x, y + 1)]
         } else {
             vec![(x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)]
@@ -111,12 +138,14 @@ impl Exploration<Energy> for Protein {
             .into_iter()
             .filter(|pos| {
                 let mut prev = amino_acid.prev.as_ref();
-                while let Some(p) = prev {
-                    if &p.pos == pos {
+                while let Some(prev_amino_acid) = prev {
+                    if &prev_amino_acid.pos == pos {
                         return false;
                     }
-                    prev = p.prev.as_ref();
+
+                    prev = prev_amino_acid.prev.as_ref();
                 }
+
                 true
             })
             .map(|pos| match self[amino_acid.depth + 1] {

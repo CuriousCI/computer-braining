@@ -1,33 +1,46 @@
 use std::{
     cmp::Reverse,
     collections::{HashMap, VecDeque},
+    hash::Hash,
     ops::Add,
 };
 
 use crate::exploration::*;
 
-#[derive(Default)]
+// #[derive(Default)]
 pub struct BFS(VecDeque<(usize, usize)>);
+
+impl Default for BFS {
+    fn default() -> Self {
+        Self(Default::default())
+    }
+}
 
 impl<A, H> Frontier<A, H> for BFS {
     fn next(&mut self) -> Option<(usize, usize)> {
         self.0.pop_front()
     }
 
-    fn insert(&mut self, state: usize, node: usize, _nodes: &[Node<A, H>]) {
+    fn insert(&mut self, state: usize, node: usize, _info: &[Node<A, H>]) {
         self.0.push_back((state, node));
     }
 }
 
-#[derive(Default)]
+// #[derive(Default)]
 pub struct DFS(Vec<(usize, usize)>);
+
+impl Default for DFS {
+    fn default() -> Self {
+        Self(Default::default())
+    }
+}
 
 impl<A, H> Frontier<A, H> for DFS {
     fn next(&mut self) -> Option<(usize, usize)> {
         self.0.pop()
     }
 
-    fn insert(&mut self, state: usize, node: usize, _nodes: &[Node<A, H>]) {
+    fn insert(&mut self, state: usize, node: usize, _info: &[Node<A, H>]) {
         self.0.push((state, node));
     }
 }
@@ -36,7 +49,8 @@ use priority_queue::PriorityQueue;
 
 pub struct PriorityFrontier<A, N, H>(
     PriorityQueue<usize, Reverse<H>>,
-    HashMap<usize, usize>,
+    Vec<usize>,
+    // HashMap<usize, usize>,
     std::marker::PhantomData<(A, N)>,
 )
 where
@@ -58,21 +72,23 @@ where
     N: FromNode<A, H>,
 {
     fn next(&mut self) -> Option<(usize, usize)> {
-        self.0.pop().and_then(|(state, _)| {
-            let node = self.1.get(&state)?;
-            Some((state, *node))
-        })
+        self.0.pop().map(|(state, _)| (state, self.1[state]))
     }
+
+    // let node = self.1[state];
+    // let node = self.1.get(&state)?;
+    // Some((state, *node))
+    // self.1.insert(state, node);
 
     fn insert(&mut self, state: usize, node: usize, nodes: &[Node<A, H>]) {
         self.0.push(state, Reverse(N::value(&nodes[node])));
-        self.1.insert(state, node);
+        self.1.push(node);
     }
 
-    fn change(&mut self, state: &usize, node: usize, nodes: &[Node<A, H>]) {
+    fn update(&mut self, state: &usize, node: usize, nodes: &[Node<A, H>]) {
         if self
             .1
-            .get(state)
+            .get(*state)
             .is_none_or(|&prev| N::value(&nodes[prev]) > N::value(&nodes[node]))
         {
             self.0

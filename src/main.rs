@@ -9,6 +9,9 @@ pub mod models;
 fn main() {
     use Alphabet::*;
 
+    // let sequence = vec![
+    //     H, H, P, H, P, P, H, H, H, P, P, P, P, H, H, P, H, P, H, P, P, H, P, H, P, H, H,
+    // ];
     let sequence = vec![H, H, P, H, P, P, H, H, H, P, P, P, P, H, H, P, H, P, H, P];
     // let sequence = vec![H, H, P, H, P, P, H, H, H, P, P, P, P, H, H, P];
     // println!("{}", sequence.len());
@@ -22,12 +25,9 @@ fn main() {
 
     let mut conformation = vec![(0, 0)];
     let time = Instant::now();
-    while let Some(pos) = agent.function::<AminoAcid, MinCost<Pos, Energy>>(AminoAcid {
-        pos: (0, 0),
-        prev: None,
-        depth: 0,
-        first_turn: false,
-    }) {
+    while let Some(pos) =
+        agent.tree_function::<AminoAcid, MinCost<Pos, Energy>>(AminoAcid::default())
+    {
         conformation.push(pos);
     }
     println!("{:?}", time.elapsed());
@@ -60,16 +60,24 @@ fn main() {
         println!("{:?}: {:?}", sequence[i], pos)
     }
 
+    let mut energy = 0;
+    for (i, &(u_x, u_y)) in conformation.iter().enumerate() {
+        for (j, &(v_x, v_y)) in conformation[..0.max(i.abs_diff(1))].iter().enumerate() {
+            if let (H, H) = (&sequence[i], &sequence[j]) {
+                if u_x.abs_diff(v_x) + u_y.abs_diff(v_y) == 1 {
+                    energy += 1;
+                }
+            }
+        }
+    }
+    println!("-{energy}\n\n");
+
     let mut agent = Agent::new(Protein::new(sequence.clone()));
 
     let mut conformation = vec![(0, 0)];
     let time = Instant::now();
-    while let Some(pos) = agent.function::<AminoAcid, AStar<Pos, Energy>>(AminoAcid {
-        pos: (0, 0),
-        prev: None,
-        depth: 0,
-        first_turn: false,
-    }) {
+    while let Some(pos) = agent.tree_function::<AminoAcid, AStar<Pos, Energy>>(AminoAcid::default())
+    {
         conformation.push(pos);
     }
     println!("\n{:?}", time.elapsed());
@@ -101,6 +109,18 @@ fn main() {
     for (i, pos) in conformation.iter().enumerate() {
         println!("{:?}: {:?}", sequence[i], pos)
     }
+
+    let mut energy = 0;
+    for (i, &(u_x, u_y)) in conformation.iter().enumerate() {
+        for (j, &(v_x, v_y)) in conformation[..0.max(i.abs_diff(1))].iter().enumerate() {
+            if let (H, H) = (&sequence[i], &sequence[j]) {
+                if u_x.abs_diff(v_x) + u_y.abs_diff(v_y) == 1 {
+                    energy += 1;
+                }
+            }
+        }
+    }
+    println!("-{energy}\n\n");
 }
 
 // let sequence = vec![H, H, H, P, P, H, P, H, H, P, H, H, P, H, H, P, H, P];
