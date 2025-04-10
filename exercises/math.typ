@@ -14,14 +14,14 @@
 //   [ #heading(outlined: false, level: 4, text(rgb(color))[*#title*]) #body ]
 // )
 
-#let definition(body, title: "") = block(stroke: (thickness: .5pt, paint: silver, dash: "dashed"), width: 100%, inset: 1em,
-  note(
-    "Definizione",
-    "definition",
-    title,
-    body
-  )
-)
+// #let definition(body, title: "") = block(stroke: (thickness: .5pt, paint: silver, dash: "dashed"), width: 100%, inset: 1em,
+//   note(
+//     "Definizione",
+//     "definition",
+//     title,
+//     body
+//   )
+// )
 
 #let proposition(body, title: "") = note(
   "Proposizione",
@@ -84,12 +84,21 @@
   body
 )
 
+#let definitions = counter("definition")
+#let definition(body, title: "") = note(
+  "",
+  "",
+  [Def. #definitions.step() #context definitions.display() #title],
+  body
+)
+
+
 #let observations = counter("observation")
-#let observation(body) = note(
+#let observation(body, title: "") = note(
   "",
   "",
   // "#0969da", 
-  [Osservazione #observations.step() #context observations.display()],
+  [Oss. #observations.step() #context observations.display() #title],
   body
 )
 

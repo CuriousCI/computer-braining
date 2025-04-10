@@ -3,11 +3,75 @@ use ai::{
     frontiers::{AStar, MinCost},
 };
 use models::hp_2d_protein_folding::{Alphabet, AminoAcid, Energy, Pos, Protein};
-use std::time::Instant;
+use rayon::prelude::*;
+use std::time::{Duration, Instant};
 pub mod models;
 
 fn main() {
     use Alphabet::*;
+
+    const LENGTH: usize = 20;
+    const EXECUT: usize = 10000;
+
+    // let sequences: Vec<Vec<_>> = (0..EXECUT)
+    //     .map(|i| {
+    //         (1..LENGTH)
+    //             .map(|v| {
+    //                 let cnt = ((i as f64 / EXECUT as f64) * (LENGTH as f64)) as usize;
+    //                 if v < cnt { H } else { P }
+    //             })
+    //             .collect()
+    //     })
+    //     .collect();
+    //
+    // let simulation_time = Instant::now();
+    // let times: Vec<_> = sequences
+    //     .into_par_iter()
+    //     .map(|s| {
+    //         let h_count = s.iter().filter(|a| matches!(a, H)).count();
+    //
+    //         let time = Instant::now();
+    //         let mut agent = Agent::new(Protein::new(s.clone()));
+    //         while agent
+    //             .tree_function::<AminoAcid, MinCost<Pos, Energy>>(AminoAcid::default())
+    //             .is_some()
+    //         {}
+    //
+    //         (time.elapsed(), h_count)
+    //     })
+    //     .collect();
+    //
+    // println!("simulation: {:?}", simulation_time.elapsed());
+
+    // let mut rng = rng();
+    // if rng.random_bool((i as f64 / EXECUT as f64).clamp(0.0, 1.0)) {
+    // let mut h_count = 0;
+    // for (i, a) in s[..s.len() - 2].iter().enumerate() {
+    //     if matches!((a, s[i + 2].clone()), (H, H)) {
+    //         h_count += 1;
+    //     }
+    // }
+
+    // il costo è numero di contatti non realizzati
+
+    // let mut sums = [Duration::new(0, 0); LENGTH];
+    // let mut cnts = [0; LENGTH];
+    //
+    // for (t, h_count) in times {
+    //     cnts[h_count] += 1;
+    //     sums[h_count] += t;
+    // }
+    //
+    // let avg: Vec<_> = sums
+    //     .iter()
+    //     .zip(cnts)
+    //     .map(|(s, n)| s.as_millis() as f64 / n as f64)
+    //     .collect();
+    //
+    // println!("{:?}", avg);
+
+    // let mut conformation = vec![(0, 0)];
+    // conformation.push(pos);
 
     // let sequence = vec![
     //     H, H, P, H, P, P, H, H, H, P, P, P, P, H, H, P, H, P, H, P, P, H, P, H, P, H, H,

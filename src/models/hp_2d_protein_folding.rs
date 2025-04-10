@@ -22,6 +22,7 @@ pub struct AminoAcid {
     prev: Option<Rc<AminoAcid>>,
     depth: usize,
     first_turn: bool,
+    // heuristic: usize,
 }
 
 impl Protein {
@@ -63,6 +64,41 @@ impl Goal for Protein {
 
 impl Heuristic<Energy> for Protein {
     fn heuristic(&self, amino_acid: &Self::State) -> Energy {
+        // 3 non made contacts only for the first and final
+        // amminoacid, otherwise an amminoacid in the middle can make
+        // only two contacts
+        //
+        // heuristic... think of it as
+        // "minimize the number of 'not made contacts'"
+        //
+        // given a conformation, the heuristic is the
+        // "number of contacts I don't expect to make"
+        // (and it should be smaller than the actual
+        // contacts I don't make, so I have to be certain
+        // that a certain contact can be made... I also
+        // need to check I don't count twice the same contact,
+        // or at least consider the fact that they are mutually exclusive,
+        // maybe a contact can't be made if ANY of the previous already assigned
+        // proteins can't be reached)
+        // at this point the problem is the same, but inverted, how can I simplify it?
+        // and in some way keep it in the state (with a low overhead) without needing
+        // to recalculate again? (does it depend on the whole protein or just the
+        // new amminoacid added?)
+        //
+        // Given an H not yet assigned, a contact can be made iff
+        // - I have an H with an even distance
+        // - I have enough spots for it
+        // Not enough... there's a limited number of H
+        // I can consider for "non made contacts" at most the 2 previous candidates
+        // So I can basically look at the last 3 H at even distance
+        // from the current H (not assigned), and check if a contact can be made for
+        // those amminoacids, and it can't be made if
+        // - the distance needed to touch is greater than 1/2 the distance
+        // - the amminoacid has no empty neighbours covered
+        //
+        // ...thechnically one should store the empty
+        // precalc the "next H"
+
         0
 
         // Questa info si può portare dietro nello stato
@@ -89,36 +125,8 @@ impl Heuristic<Energy> for Protein {
         //     grandpa = p.prev.as_ref();
         //     curr = c.prev.as_ref();
         // }
-
-        // for i in 0..self.len() - 2 {
-        //     match (self.get(i), self.get(i + 2)) {
-        //         (Some(&Alphabet::H), Some(&Alphabet::H)) => {
-        //             if
-        //         }
-        //         _ => (),
-        //     }
-        // }
-
+        //
         // -h
-
-        // let mut min_x = amino_acid.pos.0;
-        // let mut max_x = amino_acid.pos.0;
-        // let mut min_y = amino_acid.pos.1;
-        // let mut max_y = amino_acid.pos.1;
-        //
-        // let mut prev = amino_acid.prev.as_ref();
-        // while let Some(p) = prev {
-        //     if let Alphabet::H = self[p.depth] {
-        //         min_x = min_x.min(p.pos.0);
-        //         max_x = max_x.max(p.pos.0);
-        //         min_y = min_y.min(p.pos.1);
-        //         max_y = max_y.max(p.pos.1);
-        //     }
-        //
-        //     prev = p.prev.as_ref();
-        // }
-        //
-        // ((max_x - min_x) + (max_y - min_y)) / 3
     }
 }
 
@@ -172,3 +180,30 @@ impl Exploration<Energy> for Protein {
             .into_iter()
     }
 }
+
+// for i in 0..self.len() - 2 {
+//     match (self.get(i), self.get(i + 2)) {
+//         (Some(&Alphabet::H), Some(&Alphabet::H)) => {
+//             if
+//         }
+//         _ => (),
+//     }
+// }
+// let mut min_x = amino_acid.pos.0;
+// let mut max_x = amino_acid.pos.0;
+// let mut min_y = amino_acid.pos.1;
+// let mut max_y = amino_acid.pos.1;
+//
+// let mut prev = amino_acid.prev.as_ref();
+// while let Some(p) = prev {
+//     if let Alphabet::H = self[p.depth] {
+//         min_x = min_x.min(p.pos.0);
+//         max_x = max_x.max(p.pos.0);
+//         min_y = min_y.min(p.pos.1);
+//         max_y = max_y.max(p.pos.1);
+//     }
+//
+//     prev = p.prev.as_ref();
+// }
+//
+// ((max_x - min_x) + (max_y - min_y)) / 3
