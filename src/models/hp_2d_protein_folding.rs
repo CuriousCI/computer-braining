@@ -173,7 +173,8 @@ impl Exploration<Energy> for Protein {
                         }
                         prev = p.prev.as_ref();
                     }
-                    (pos, 3 - count)
+                    (pos, if amino_acid.depth == 0 { 3 } else { 2 } - count)
+                    // (pos, 3 - count)
                 }
             })
             .collect::<Vec<_>>()
