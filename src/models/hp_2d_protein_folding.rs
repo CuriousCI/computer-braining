@@ -1,4 +1,4 @@
-use std::{ops::Deref, rc::Rc};
+use std::{cmp::Reverse, ops::Deref, rc::Rc};
 
 use ai::problem::{Exploration, Goal, Heuristic, Problem, Transition};
 
@@ -8,12 +8,30 @@ pub enum Alphabet {
     P,
 }
 
+pub enum Move {
+    Left,
+    Right,
+    Up,
+}
+
+// massimo contatti persi è un certo k
+// l'incrocio costa più di k, ma non troppo, se aumento i contatti si riduce il costo
+// e peggiora se ci sono più
+
+// quand'è che c'è una sovrapposizione, solamente guardando gli spostamenti?
+// ^ ^ >
+// se c'è un certo tipo di azioni si deve per forza intersecare ad un certo punto?
+// senza dover salvare le posizoni esplorate?
+
 pub type Sequence = Vec<Alphabet>;
+
+pub type Conformation = Vec<(i16, i16)>;
 
 pub type Energy = i16;
 
 pub type Pos = (i16, i16);
 
+#[derive(Clone)]
 pub struct Protein(Sequence);
 
 #[derive(Hash, Eq, PartialEq, Default)]
@@ -28,6 +46,21 @@ pub struct AminoAcid {
 impl Protein {
     pub fn new(sequence: Sequence) -> Self {
         Self(sequence)
+    }
+
+    pub fn energy(&self, conformation: Conformation) -> Reverse<usize> {
+        let mut energy = 0;
+        for (i, &(u_x, u_y)) in conformation.iter().enumerate() {
+            for (j, &(v_x, v_y)) in conformation[..0.max(i.abs_diff(1))].iter().enumerate() {
+                if let (Alphabet::H, Alphabet::H) = (&self[i], &self[j]) {
+                    if u_x.abs_diff(v_x) + u_y.abs_diff(v_y) == 1 {
+                        energy += 1;
+                    }
+                }
+            }
+        }
+
+        Reverse(energy)
     }
 }
 
@@ -130,6 +163,21 @@ impl Heuristic<Energy> for Protein {
     }
 }
 
+// costo di cammino somma dei costi di passo
+// g > 0
+// immaginare che per quel costo la proteina si conformerà idealmente
+//
+// problema di massimizzazione, non di minimizzazione
+// cammino che costa di più
+// ricerca di costo massimo
+//
+// 1 - utilità
+// numero di contatti mancati con amminoacidi precedenti
+// capire bene il problema dell'approccio attuale
+//
+// mantenere le violazioni nell'approccio iterativo, e costi per numero di violazioni
+// numero vicino
+
 impl Exploration<Energy> for Protein {
     fn expand(&self, amino_acid: &Self::State) -> impl Iterator<Item = (Self::Action, Energy)> {
         let (x, y) = amino_acid.pos;
@@ -140,22 +188,24 @@ impl Exploration<Energy> for Protein {
             vec![(x + 1, y), (x, y + 1)]
         } else {
             vec![(x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)]
+                .into_iter()
+                .filter(|pos| {
+                    let mut prev = amino_acid.prev.as_ref();
+                    while let Some(prev_amino_acid) = prev {
+                        if &prev_amino_acid.pos == pos {
+                            return false;
+                        }
+
+                        prev = prev_amino_acid.prev.as_ref();
+                    }
+
+                    true
+                })
+                .collect()
         };
 
         actions
             .into_iter()
-            .filter(|pos| {
-                let mut prev = amino_acid.prev.as_ref();
-                while let Some(prev_amino_acid) = prev {
-                    if &prev_amino_acid.pos == pos {
-                        return false;
-                    }
-
-                    prev = prev_amino_acid.prev.as_ref();
-                }
-
-                true
-            })
             .map(|pos| match self[amino_acid.depth + 1] {
                 Alphabet::P => (pos, 0),
                 Alphabet::H => {

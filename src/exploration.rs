@@ -30,7 +30,7 @@ where
 {
     plan: Option<VecDeque<A>>,
     problem: P,
-    heuristic: std::marker::PhantomData<H>,
+    _marker: std::marker::PhantomData<H>,
 }
 
 impl<S, A, P, H> Deref for Agent<S, A, P, H>
@@ -55,7 +55,7 @@ where
         Self {
             plan: None,
             problem,
-            heuristic: Default::default(),
+            _marker: Default::default(),
         }
     }
 

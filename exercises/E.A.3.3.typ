@@ -124,6 +124,10 @@ Dopo un po' di riflessione queste sono alcune idee per un'euristica che sulla ca
 
 - sarebbe interessante vedere se questo numero è memorizzabile all'interno dello stato, e se c'è un modo per aggiornarlo ad ogni transizione, senza doverlo ricalcolare da capo (velocizzerebbe di molto i calcoli)
 
+- Altra cosa interessante da vedere è il fatto che per alcune conformazioni è possibile dire subito se tutte e tre le azioni sono lecite, a quel punto magia non serve ricontrollare tutta la conformazione per non sovrapposizione, ma bisogna capire se  è facile capire quali sono queste conformazioni, 
+
+- TODO: usa un'heap per l'albero
+
 // 3 non made contacts only for the first and final
 // amminoacid, otherwise an amminoacid in the middle can make
 // only two contacts
@@ -174,6 +178,16 @@ Dopo un po' di riflessione queste sono alcune idee per un'euristica che sulla ca
 
     Servirebbe provare a trovare un valore che dipenda non solo dal numero di H, ma anche dalla loro disposizione.
 ]
+
+// [NaN, NaN, 67608.41176470589, 53837.28571428572, 26421.0, 14406.0, 3153.68, 3101.5384615384614, 2097.684210526316, 500.6470588235294, 1145.0, 777.0769230769231, 593.1578947368421, 339.3888888888889, 237.0, 633.3529411764706, 797.7222222222222, 277.7142857142857, 365.45454545454544, 232.63636363636363]
+
+// [NaN, NaN, 67608, 53837, 26421, 14406, 3153, 3101, 2097, 500, 1145, 777, 593, 339, 237, 633, 797, 277, 365, 232]
+
+// [NaN, NaN, 68516.13043478261, 23748.25, 26104.9375, 10718.6875, 6334.263157894737, 3499.9583333333335, 807.4166666666666, 153.76923076923077, 755.1363636363636, 551.9411764705883, 375.5, 284.3333333333333, 185.4, 532.8, 383.3529411764706, 395.8, 181.04761904761904, 484.5833333333333]
+
+// [NaN, NaN, 68516, 23748, 26104, 10718, 6334, 3499, 807, 153, 755, 551, 375, 284, 185, 532, 383, 395, 181, 484]
+
+// raporto h / n
 
 == Possibili miglioramenti
 

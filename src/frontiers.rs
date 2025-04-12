@@ -1,20 +1,14 @@
 use std::{
     cmp::Reverse,
-    collections::{HashMap, VecDeque},
+    collections::{BinaryHeap, HashMap, VecDeque},
     hash::Hash,
     ops::Add,
 };
 
 use crate::exploration::*;
 
-// #[derive(Default)]
+#[derive(Default)]
 pub struct BFS(VecDeque<(usize, usize)>);
-
-impl Default for BFS {
-    fn default() -> Self {
-        Self(Default::default())
-    }
-}
 
 impl<A, H> Frontier<A, H> for BFS {
     fn next(&mut self) -> Option<(usize, usize)> {
@@ -26,14 +20,8 @@ impl<A, H> Frontier<A, H> for BFS {
     }
 }
 
-// #[derive(Default)]
+#[derive(Default)]
 pub struct DFS(Vec<(usize, usize)>);
-
-impl Default for DFS {
-    fn default() -> Self {
-        Self(Default::default())
-    }
-}
 
 impl<A, H> Frontier<A, H> for DFS {
     fn next(&mut self) -> Option<(usize, usize)> {
@@ -47,6 +35,37 @@ impl<A, H> Frontier<A, H> for DFS {
 
 use priority_queue::PriorityQueue;
 
+pub struct TreePriorityFrontier<A, N, H>(
+    BinaryHeap<(Reverse<H>, usize)>,
+    std::marker::PhantomData<(A, N)>,
+)
+where
+    N: FromNode<A, H>;
+
+impl<A, N, H> Default for TreePriorityFrontier<A, N, H>
+where
+    H: Ord,
+    N: FromNode<A, H>,
+{
+    fn default() -> Self {
+        Self(Default::default(), Default::default())
+    }
+}
+
+impl<A, N, H> Frontier<A, H> for TreePriorityFrontier<A, N, H>
+where
+    H: Ord,
+    N: FromNode<A, H>,
+{
+    fn next(&mut self) -> Option<(usize, usize)> {
+        self.0.pop().map(|(_, s)| (s, s))
+    }
+
+    fn insert(&mut self, state: usize, node: usize, nodes: &[Node<A, H>]) {
+        self.0.push((Reverse(N::value(&nodes[node])), state))
+    }
+}
+
 pub struct PriorityFrontier<A, N, H>(
     PriorityQueue<usize, Reverse<H>>,
     Vec<usize>,
@@ -58,7 +77,7 @@ where
 
 impl<A, N, H> Default for PriorityFrontier<A, N, H>
 where
-    H: Default + Ord,
+    H: Ord,
     N: FromNode<A, H>,
 {
     fn default() -> Self {
@@ -68,7 +87,7 @@ where
 
 impl<A, N, H> Frontier<A, H> for PriorityFrontier<A, N, H>
 where
-    H: Default + Ord,
+    H: Ord,
     N: FromNode<A, H>,
 {
     fn next(&mut self) -> Option<(usize, usize)> {
@@ -133,8 +152,22 @@ where
 }
 
 pub type MinCost<A, H> = PriorityFrontier<A, MinCostPolicy, H>;
+pub type MinCostTree<A, H> = TreePriorityFrontier<A, MinCostPolicy, H>;
 pub type BestFirst<A, H> = PriorityFrontier<A, BestFirstPolicy, H>;
 pub type AStar<A, H> = PriorityFrontier<A, AStarPolicy, H>;
+pub type AStarTree<A, H> = TreePriorityFrontier<A, AStarPolicy, H>;
+
+// impl Default for BFS {
+//     fn default() -> Self {
+//         Self(Default::default())
+//     }
+// }
+
+// impl Default for DFS {
+//     fn default() -> Self {
+//         Self(Default::default())
+//     }
+// }
 
 // Reverse((N::value(&nodes[node]), state.clone())),
 // self.0
