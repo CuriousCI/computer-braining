@@ -40,6 +40,7 @@ where
     loop {
         (state, utility) = match problem
             .expand(&state)
+            // .par_bridge()
             .filter_map(|action| {
                 let new_state = problem.new_state(&state, &action);
                 let new_utility = problem.heuristic(&new_state);

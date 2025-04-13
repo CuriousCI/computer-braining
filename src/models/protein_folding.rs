@@ -1,9 +1,4 @@
-use std::{
-    cmp::Reverse,
-    fmt::Display,
-    ops::{Add, Deref},
-    rc::Rc,
-};
+use std::{cmp::Reverse, ops::Deref, rc::Rc};
 
 use ai::problem::{Exploration, Goal, Heuristic, Problem, Transition};
 
@@ -19,6 +14,13 @@ pub enum Move {
     Up,
 }
 
+pub enum Direction {
+    North,
+    South,
+    East,
+    West,
+}
+
 // massimo contatti persi è un certo k
 // l'incrocio costa più di k, ma non troppo, se aumento i contatti si riduce il costo
 // e peggiora se ci sono più
@@ -32,41 +34,7 @@ pub type Sequence = Vec<Alphabet>;
 
 pub type Conformation = Vec<(i16, i16)>;
 
-// pub type Cost = i16;
-// #[derive(Default, Clone, Eq, PartialEq, PartialOrd, Ord)]
-// pub struct Cost(i16, bool);
-
-// impl Add for Cost {
-//     type Output = Cost;
-//
-//     fn add(self, rhs: Self) -> Self::Output {
-//         if rhs.1 { self } else { rhs }
-//     }
-// }
-
-#[derive(Default, Clone, Eq, PartialEq, PartialOrd, Ord)]
-pub struct Cost {
-    contacts: i16,
-    depth: Reverse<usize>,
-    heuristic: bool,
-}
-
-impl Add for Cost {
-    type Output = Cost;
-
-    fn add(self, rhs: Self) -> Self::Output {
-        Cost {
-            contacts: if rhs.heuristic {
-                self.contacts
-            } else {
-                self.contacts + rhs.contacts
-                // rhs.contacts
-            },
-            depth: rhs.depth.min(self.depth),
-            heuristic: false,
-        }
-    }
-}
+pub type Energy = i16;
 
 pub type Pos = (i16, i16);
 
@@ -140,8 +108,8 @@ impl Goal for Protein {
     }
 }
 
-impl Heuristic<Cost> for Protein {
-    fn heuristic(&self, amino_acid: &Self::State) -> Cost {
+impl Heuristic<Energy> for Protein {
+    fn heuristic(&self, amino_acid: &Self::State) -> Energy {
         // 3 non made contacts only for the first and final
         // amminoacid, otherwise an amminoacid in the middle can make
         // only two contacts
@@ -177,12 +145,7 @@ impl Heuristic<Cost> for Protein {
         // ...thechnically one should store the empty
         // precalc the "next H"
 
-        // Cost(0, true)
-        Cost {
-            depth: Reverse(amino_acid.depth),
-            ..Default::default()
-        }
-        // 0
+        0
 
         // Questa info si può portare dietro nello stato
         // - costa poco memorizzarla
@@ -228,25 +191,15 @@ impl Heuristic<Cost> for Protein {
 // mantenere le violazioni nell'approccio iterativo, e costi per numero di violazioni
 // numero vicino
 
-impl Exploration<Cost> for Protein {
-    fn expand(&self, amino_acid: &Self::State) -> impl Iterator<Item = (Self::Action, Cost)> {
+impl Exploration<Energy> for Protein {
+    fn expand(&self, amino_acid: &Self::State) -> impl Iterator<Item = (Self::Action, Energy)> {
         let (x, y) = amino_acid.pos;
 
         let actions = if amino_acid.depth == 0 {
             vec![(x, y + 1)]
         } else if !amino_acid.first_turn {
             vec![(x + 1, y), (x, y + 1)]
-            // vec![(x + 1, y)]
         } else {
-            // if amino_acid
-            //     .prev
-            //     .as_ref()
-            //     .is_some_and(|prev| prev.pos.0.abs_diff(amino_acid.pos.0) == 1)
-            // {
-            //     // vec![(x, y + 1), (x, y - 1)]
-            // } else {
-            //     // vec![(x + 1, y), (x - 1, y)]
-            // }
             vec![(x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)]
                 .into_iter()
                 .filter(|pos| {
@@ -267,16 +220,7 @@ impl Exploration<Cost> for Protein {
         actions
             .into_iter()
             .map(|pos| match self[amino_acid.depth + 1] {
-                // Alphabet::P => (pos, 0),
-                // Alphabet::P => (pos, Cost(0, false)),
-                Alphabet::P => (
-                    pos,
-                    Cost {
-                        depth: Reverse(amino_acid.depth + 1),
-                        heuristic: false,
-                        ..Default::default()
-                    },
-                ),
+                Alphabet::P => (pos, 0),
                 Alphabet::H => {
                     let mut count = 0;
                     let mut prev = amino_acid
@@ -292,17 +236,8 @@ impl Exploration<Cost> for Protein {
                         }
                         prev = p.prev.as_ref();
                     }
-                    // (pos, if amino_acid.depth == 0 { 3 } else { 2 } - count)
-                    // (pos, count)
-                    // (pos, Cost(count, false))
-                    (
-                        pos,
-                        Cost {
-                            contacts: count,
-                            depth: Reverse(amino_acid.depth + 1),
-                            heuristic: false,
-                        },
-                    )
+                    (pos, if amino_acid.depth == 0 { 3 } else { 2 } - count)
+                    // (pos, 3 - count)
                 }
             })
             .collect::<Vec<_>>()

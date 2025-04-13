@@ -14,7 +14,16 @@ pub struct Node<A, H> {
     pub h: H,
 }
 
+// reference to State
+// each state is referred to by a single node
+// or each node is referred to by a single
+
 pub trait Frontier<A, H>: Default {
+    // fn next(&mut self) -> Option<(usize, usize)>;
+    // fn insert(&mut self, state: usize, node: usize, nodes: &[Node<A, H>]);
+    // fn update(&mut self, _state: &usize, _node: usize, _nodes: &[Node<A, H>]) {}
+
+    // just take nodes, and use node state as key? Hmmm
     fn next(&mut self) -> Option<(usize, usize)>;
     fn insert(&mut self, state: usize, node: usize, nodes: &[Node<A, H>]);
     fn update(&mut self, _state: &usize, _node: usize, _nodes: &[Node<A, H>]) {}

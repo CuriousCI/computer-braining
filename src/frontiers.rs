@@ -1,6 +1,7 @@
 use std::{
     cmp::Reverse,
     collections::{BinaryHeap, HashMap, VecDeque},
+    // fmt::Display,
     hash::Hash,
     ops::Add,
 };
@@ -35,10 +36,7 @@ impl<A, H> Frontier<A, H> for DFS {
 
 use priority_queue::PriorityQueue;
 
-pub struct TreePriorityFrontier<A, N, H>(
-    BinaryHeap<(Reverse<H>, usize)>,
-    std::marker::PhantomData<(A, N)>,
-)
+pub struct TreePriorityFrontier<A, N, H>(BinaryHeap<(H, usize)>, std::marker::PhantomData<(A, N)>)
 where
     N: FromNode<A, H>;
 
@@ -62,7 +60,7 @@ where
     }
 
     fn insert(&mut self, state: usize, node: usize, nodes: &[Node<A, H>]) {
-        self.0.push((Reverse(N::value(&nodes[node])), state))
+        self.0.push((N::value(&nodes[node]), state))
     }
 }
 
