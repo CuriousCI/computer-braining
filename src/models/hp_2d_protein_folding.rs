@@ -6,6 +6,7 @@ use std::{
 };
 
 use ai::problem::{Exploration, Goal, Heuristic, Problem, Transition};
+use rayon::iter::{IntoParallelIterator, ParallelBridge};
 
 #[derive(Clone, Debug)]
 pub enum Alphabet {
@@ -44,29 +45,30 @@ pub type Conformation = Vec<(i16, i16)>;
 //     }
 // }
 
-#[derive(Default, Clone, Eq, PartialEq, PartialOrd, Ord)]
-pub struct Cost {
-    contacts: i16,
-    depth: Reverse<usize>,
-    heuristic: bool,
-}
+pub type Cost = i16;
 
-impl Add for Cost {
-    type Output = Cost;
-
-    fn add(self, rhs: Self) -> Self::Output {
-        Cost {
-            contacts: if rhs.heuristic {
-                self.contacts
-            } else {
-                self.contacts + rhs.contacts
-                // rhs.contacts
-            },
-            depth: rhs.depth.min(self.depth),
-            heuristic: false,
-        }
-    }
-}
+// #[derive(Default, Clone, Eq, PartialEq, PartialOrd, Ord)]
+// pub struct Cost {
+//     contacts: i16,
+//     depth: Reverse<usize>,
+//     heuristic: bool,
+// }
+// impl Add for Cost {
+//     type Output = Cost;
+//
+//     fn add(self, rhs: Self) -> Self::Output {
+//         Cost {
+//             contacts: if rhs.heuristic {
+//                 self.contacts
+//             } else {
+//                 self.contacts + rhs.contacts
+//                 // rhs.contacts
+//             },
+//             depth: rhs.depth.min(self.depth),
+//             heuristic: false,
+//         }
+//     }
+// }
 
 pub type Pos = (i16, i16);
 
@@ -75,6 +77,7 @@ pub type Pos = (i16, i16);
 //     x: i16,
 //     y: i16,
 // }
+// heuristic: usize,
 
 #[derive(Clone)]
 pub struct Protein(Sequence);
@@ -85,7 +88,6 @@ pub struct AminoAcid {
     prev: Option<Rc<AminoAcid>>,
     depth: usize,
     first_turn: bool,
-    // heuristic: usize,
 }
 
 impl Protein {
@@ -93,7 +95,7 @@ impl Protein {
         Self(sequence)
     }
 
-    pub fn energy(&self, conformation: Conformation) -> Reverse<usize> {
+    pub fn energy(&self, conformation: &Conformation) -> Reverse<usize> {
         let mut energy = 0;
         for (i, &(u_x, u_y)) in conformation.iter().enumerate() {
             for (j, &(v_x, v_y)) in conformation[..0.max(i.abs_diff(1))].iter().enumerate() {
@@ -178,11 +180,13 @@ impl Heuristic<Cost> for Protein {
         // precalc the "next H"
 
         // Cost(0, true)
-        Cost {
-            depth: Reverse(amino_acid.depth),
-            ..Default::default()
-        }
-        // 0
+
+        0
+
+        // Cost {
+        //     depth: Reverse(amino_acid.depth),
+        //     ..Default::default()
+        // }
 
         // Questa info si può portare dietro nello stato
         // - costa poco memorizzarla
@@ -271,11 +275,11 @@ impl Exploration<Cost> for Protein {
                 // Alphabet::P => (pos, Cost(0, false)),
                 Alphabet::P => (
                     pos,
-                    Cost {
-                        depth: Reverse(amino_acid.depth + 1),
-                        heuristic: false,
-                        ..Default::default()
-                    },
+                    0, // Cost {
+                      //     depth: Reverse(amino_acid.depth + 1),
+                      //     heuristic: false,
+                      //     ..Default::default()
+                      // },
                 ),
                 Alphabet::H => {
                     let mut count = 0;
@@ -295,14 +299,12 @@ impl Exploration<Cost> for Protein {
                     // (pos, if amino_acid.depth == 0 { 3 } else { 2 } - count)
                     // (pos, count)
                     // (pos, Cost(count, false))
-                    (
-                        pos,
-                        Cost {
-                            contacts: count,
-                            depth: Reverse(amino_acid.depth + 1),
-                            heuristic: false,
-                        },
-                    )
+                    (pos, if amino_acid.depth == 0 { 3 } else { 2 } - count)
+                    // Cost {
+                    //     contacts: count,
+                    //     depth: Reverse(amino_acid.depth + 1),
+                    //     heuristic: false,
+                    // },
                 }
             })
             .collect::<Vec<_>>()

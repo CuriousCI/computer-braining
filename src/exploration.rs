@@ -1,50 +1,59 @@
-use bitvec::prelude::*;
 use std::{
-    collections::{HashMap, VecDeque},
+    collections::{HashSet, VecDeque},
     hash::Hash,
     ops::{Add, Deref},
+    rc::Rc,
 };
 
 use crate::problem::{Exploration, Goal};
 
-#[derive(Eq, PartialEq)]
-pub struct Node<A, H> {
-    prev: Option<(A, usize)>,
-    pub g: H,
-    pub h: H,
+pub struct Node<S, A, V> {
+    prev: Option<(Rc<Self>, A)>,
+    pub state: S,
+    pub cost: V,
+    pub heuristic: V,
 }
 
-// reference to State
-// each state is referred to by a single node
-// or each node is referred to by a single
+impl<S, A, V> Eq for Node<S, A, V> {}
 
-pub trait Frontier<A, H>: Default {
-    // fn next(&mut self) -> Option<(usize, usize)>;
-    // fn insert(&mut self, state: usize, node: usize, nodes: &[Node<A, H>]);
-    // fn update(&mut self, _state: &usize, _node: usize, _nodes: &[Node<A, H>]) {}
-
-    // just take nodes, and use node state as key? Hmmm
-    fn next(&mut self) -> Option<(usize, usize)>;
-    fn insert(&mut self, state: usize, node: usize, nodes: &[Node<A, H>]);
-    fn update(&mut self, _state: &usize, _node: usize, _nodes: &[Node<A, H>]) {}
+impl<S, A, V> PartialEq for Node<S, A, V> {
+    fn eq(&self, _other: &Self) -> bool {
+        true
+    }
 }
 
-pub trait FromNode<A, H> {
-    fn value(node: &Node<A, H>) -> H;
+impl<S, A, V> PartialOrd for Node<S, A, V> {
+    fn partial_cmp(&self, _other: &Self) -> Option<std::cmp::Ordering> {
+        Some(std::cmp::Ordering::Equal)
+    }
 }
 
-pub struct Agent<S, A, P, H>
+impl<S, A, V> Ord for Node<S, A, V> {
+    fn cmp(&self, _other: &Self) -> std::cmp::Ordering {
+        std::cmp::Ordering::Equal
+    }
+}
+
+pub trait Frontier<S, A, V>: Default {
+    fn next(&mut self) -> Option<Rc<Node<S, A, V>>>;
+
+    fn insert(&mut self, node: Rc<Node<S, A, V>>);
+
+    fn update(&mut self, _node: Rc<Node<S, A, V>>) {}
+}
+
+pub struct Agent<S, A, P, V>
 where
-    P: Exploration<H, State = S, Action = A>,
+    P: Exploration<V, State = S, Action = A>,
 {
     plan: Option<VecDeque<A>>,
     problem: P,
-    _marker: std::marker::PhantomData<H>,
+    _marker: std::marker::PhantomData<V>,
 }
 
-impl<S, A, P, H> Deref for Agent<S, A, P, H>
+impl<S, A, P, V> Deref for Agent<S, A, P, V>
 where
-    P: Exploration<H, State = S, Action = A>,
+    P: Exploration<V, State = S, Action = A>,
 {
     type Target = P;
 
@@ -53,12 +62,9 @@ where
     }
 }
 
-impl<S, A, P, H> Agent<S, A, P, H>
+impl<S, A, P, V> Agent<S, A, P, V>
 where
-    S: Eq + Hash + Clone,
-    A: Clone,
-    P: Exploration<H, State = S, Action = A> + Goal,
-    H: Default + Clone + Add<Output = H>,
+    P: Exploration<V, State = S, Action = A>,
 {
     pub fn new(problem: P) -> Self {
         Self {
@@ -67,11 +73,19 @@ where
             _marker: Default::default(),
         }
     }
+}
 
+impl<S, A, P, V> Agent<S, A, P, V>
+where
+    S: Eq + Hash + Clone,
+    A: Clone,
+    P: Exploration<V, State = S, Action = A> + Goal,
+    V: Default + Clone + Add<Output = V>,
+{
     pub fn function<Q, F>(&mut self, perception: Q) -> Option<A>
     where
         Q: TryInto<S>,
-        F: Frontier<A, H>,
+        F: Frontier<S, A, V>,
     {
         if self.plan.is_none() {
             self.plan = self.search::<F>(perception.try_into().ok()?);
@@ -80,136 +94,247 @@ where
         self.plan.as_mut()?.pop_front()
     }
 
-    pub fn tree_function<Q, F>(&mut self, perception: Q) -> Option<A>
-    where
-        Q: TryInto<S>,
-        F: Frontier<A, H>,
-    {
-        if self.plan.is_none() {
-            self.plan = self.tree_search::<F>(perception.try_into().ok()?);
-        };
-
-        self.plan.as_mut()?.pop_front()
-    }
-
     fn search<F>(&self, state: S) -> Option<VecDeque<A>>
     where
-        F: Frontier<A, H>,
+        F: Frontier<S, A, V>,
     {
         let mut frontier = F::default();
+        let mut explored = HashSet::new();
+        let mut in_frontier = HashSet::new();
 
-        let mut info = vec![];
-        let mut state_to_id = HashMap::new();
-        let mut states = vec![];
-        let mut explored = bitvec![];
+        in_frontier.insert(state.clone());
+        frontier.insert(
+            Node {
+                prev: None,
+                cost: Default::default(),
+                heuristic: self.heuristic(&state),
+                state,
+            }
+            .into(),
+        );
 
-        info.push(Node {
-            prev: None,
-            h: self.heuristic(&state),
-            g: Default::default(),
-        });
-
-        states.push(state.clone());
-        state_to_id.insert(state, states.len() - 1);
-        explored.push(false);
-        frontier.insert(states.len() - 1, info.len() - 1, &info);
-
-        let mut iterations = 0;
-        while let Some((state, node)) = frontier.next() {
-            iterations += 1;
-
-            if self.is_goal(&states[state]) {
+        while let Some(node) = frontier.next() {
+            if self.is_goal(&node.state) {
                 let mut plan = VecDeque::new();
                 let mut node = node;
-                while let Some((a, prev)) = info[node].prev.clone() {
-                    plan.push_front(a);
+                while let Some((prev, action)) = node.prev.clone() {
+                    plan.push_front(action);
                     node = prev;
                 }
-                println!("iterations: {iterations}");
+
                 return Some(plan);
             }
 
-            explored.set(state, true);
+            explored.insert(node.state.clone());
+            in_frontier.remove(&node.state);
 
-            for (action, cost) in self.expand(&states[state].clone()) {
-                let state = self.new_state(&states[state], &action);
-                let prev = Some((action, node));
-                let g = info[node].g.clone() + cost;
+            for (action, cost) in self.expand(&node.state) {
+                let state = self.new_state(&node.state, &action);
 
-                match state_to_id.get(&state) {
-                    Some(state) => {
-                        let h = self.heuristic(&states[*state]);
-                        info.push(Node { prev, g, h });
+                if !explored.contains(&state) {
+                    let is_in_frontier = in_frontier.contains(&state);
 
-                        if !explored[*state] {
-                            frontier.update(state, info.len() - 1, &info);
-                        }
+                    let node = Rc::new(Node {
+                        prev: Some((node.clone(), action)),
+                        cost: node.cost.clone() + cost,
+                        heuristic: self.heuristic(&state),
+                        state,
+                    });
+
+                    if is_in_frontier {
+                        frontier.update(node);
+                    } else {
+                        frontier.insert(node);
                     }
-                    None => {
-                        states.push(state);
-                        state_to_id.insert(states.last()?.clone(), states.len() - 1);
-
-                        let h = self.heuristic(states.last()?);
-                        info.push(Node { prev, g, h });
-
-                        explored.push(false);
-                        frontier.insert(states.len() - 1, info.len() - 1, &info);
-                    }
-                };
-            }
-        }
-
-        None
-    }
-
-    // prev: Some((action, node)),
-    // g: info[node].g.clone() + cost,
-    // // prev: Some((action, node)),
-    // g: info[node].g.clone() + cost,
-
-    fn tree_search<F>(&self, state: S) -> Option<VecDeque<A>>
-    where
-        F: Frontier<A, H>,
-    {
-        let mut nodes = vec![];
-        let mut states = vec![];
-        let mut frontier = F::default();
-
-        nodes.push(Node {
-            prev: None,
-            h: self.heuristic(&state),
-            g: Default::default(),
-        });
-        states.push(state);
-        frontier.insert(states.len() - 1, nodes.len() - 1, &nodes);
-
-        while let Some((state, node)) = frontier.next() {
-            if self.is_goal(&states[state]) {
-                let mut plan = VecDeque::new();
-                let mut node = node;
-                while let Some((a, prev)) = nodes[node].prev.clone() {
-                    plan.push_front(a);
-                    node = prev;
                 }
-                return Some(plan);
-            }
-
-            for (action, cost) in self.expand(&states[state].clone()) {
-                let state = self.new_state(&states[state], &action);
-
-                nodes.push(Node {
-                    prev: Some((action, node)),
-                    g: nodes[node].g.clone() + cost,
-                    h: self.heuristic(&state),
-                });
-                states.push(state);
-                frontier.insert(states.len() - 1, nodes.len() - 1, &nodes);
             }
         }
 
         None
     }
 }
+
+// let prev = Some((action, node));
+// let g = info[node].g.clone() + cost;
+// match state_to_id.get(&state) {
+//     Some(state) => {
+//         let h = self.heuristic(&states[*state]);
+//         info.push(Node {
+//             prev,
+//             cost: g,
+//             heuristic: h,
+//         });
+//
+//         if !explored[*state] {
+//             frontier.update(state, info.len() - 1, &info);
+//         }
+//     }
+//     None => {
+//         states.push(state);
+//         state_to_id.insert(states.last()?.clone(), states.len() - 1);
+//
+//         let h = self.heuristic(states.last()?);
+//         info.push(Node {
+//             prev,
+//             cost: g,
+//             heuristic: h,
+//         });
+//
+//         explored.push(false);
+//         frontier.insert(states.len() - 1, info.len() - 1, &info);
+//     }
+// };
+
+// explored.set(state, true);
+
+// let mut info = vec![];
+// let mut state_to_id = HashMap::new();
+// let mut states = vec![];
+// let mut explored = bitvec![];
+// info.push(Node {
+//     prev: None,
+//     heuristic: self.heuristic(&state),
+//     cost: Default::default(),
+// });
+//
+// states.push(state.clone());
+// state_to_id.insert(state, states.len() - 1);
+// explored.push(false);
+// frontier.insert(states.len() - 1, info.len() - 1, &info);
+// let mut iterations = 0;
+// iterations += 1;
+// println!("iterations: {iterations}");
+
+impl<S, A, P, V> Agent<S, A, P, V>
+where
+    A: Clone,
+    P: Exploration<V, State = S, Action = A> + Goal,
+    V: Default + Clone + Add<Output = V>,
+{
+    pub fn function_on_tree<Q, F>(&mut self, perception: Q) -> Option<A>
+    where
+        Q: TryInto<S>,
+        F: Frontier<S, A, V>,
+    {
+        if self.plan.is_none() {
+            self.plan = self.search_on_tree::<F>(perception.try_into().ok()?);
+        };
+
+        self.plan.as_mut()?.pop_front()
+    }
+
+    fn search_on_tree<F>(&self, state: S) -> Option<VecDeque<A>>
+    where
+        F: Frontier<S, A, V>,
+    {
+        let mut frontier = F::default();
+        frontier.insert(
+            Node {
+                prev: None,
+                cost: Default::default(),
+                heuristic: self.heuristic(&state),
+                state,
+            }
+            .into(),
+        );
+
+        while let Some(node) = frontier.next() {
+            if self.is_goal(&node.state) {
+                let mut plan = VecDeque::new();
+                let mut node = node;
+                while let Some((prev, action)) = &node.prev {
+                    plan.push_front(action.clone());
+                    node = prev.clone();
+                }
+
+                return Some(plan);
+            }
+
+            for (action, cost) in self.expand(&node.state) {
+                let state = self.new_state(&node.state, &action);
+                frontier.insert(
+                    Node {
+                        prev: Some((node.clone(), action)),
+                        cost: node.cost.clone() + cost,
+                        heuristic: self.heuristic(&state),
+                        state,
+                    }
+                    .into(),
+                );
+            }
+        }
+
+        None
+    }
+}
+
+// IntoIterator for node, on the actions
+// and just return the node IntoIterator
+
+// prev: Some((action, node)),
+// g: info[node].g.clone() + cost,
+// // prev: Some((action, node)),
+// g: info[node].g.clone() + cost,
+// let mut nodes = vec![];
+// let mut states = vec![];
+// nodes.push(Node {
+//     prev: None,
+//     heuristic: self.heuristic(&state),
+//     cost: Default::default(),
+// });
+// states.push(state);
+// frontier.insert(states.len() - 1, nodes.len() - 1, &nodes);
+
+// nodes.push(Node {
+//     prev: Some((action, node)),
+//     cost: nodes[node].g.clone() + cost,
+//     heuristic: self.heuristic(&state),
+// });
+// states.push(state);
+// frontier.insert(states.len() - 1, nodes.len() - 1, &nodes);
+
+// fn tree_search<F>(&self, state: S) -> Option<VecDeque<A>>
+// where
+//     F: Frontier<S, A, V>,
+// {
+//     let mut nodes = vec![];
+//     let mut states = vec![];
+//     let mut frontier = F::default();
+//
+//     nodes.push(Node {
+//         prev: None,
+//         heuristic: self.heuristic(&state),
+//         cost: Default::default(),
+//     });
+//     states.push(state);
+//     frontier.insert(states.len() - 1, nodes.len() - 1, &nodes);
+//
+//     while let Some((state, node)) = frontier.next() {
+//         if self.is_goal(&states[state]) {
+//             let mut plan = VecDeque::new();
+//             let mut node = node;
+//             while let Some((a, prev)) = nodes[node].prev.clone() {
+//                 plan.push_front(a);
+//                 node = prev;
+//             }
+//             return Some(plan);
+//         }
+//
+//         for (action, cost) in self.expand(&states[state].clone()) {
+//             let state = self.new_state(&states[state], &action);
+//
+//             nodes.push(Node {
+//                 prev: Some((action, node)),
+//                 cost: nodes[node].g.clone() + cost,
+//                 heuristic: self.heuristic(&state),
+//             });
+//             states.push(state);
+//             frontier.insert(states.len() - 1, nodes.len() - 1, &nodes);
+//         }
+//     }
+//
+//     None
+// }
 
 // let mut iterations = 0;
 //     iterations += 1;
@@ -492,3 +617,44 @@ where
 // fn next(&mut self) -> Option<(S, Rc<Node<A, U>>)>;
 // fn insert(&mut self, state: S, node: Rc<Node<A, U>>);
 // fn change(&mut self, _state: &S, _node: Rc<Node<A, U>>) {}
+
+// pub trait FromNode<S, A, H> {
+//     fn value(node: &Node<S, A, H>) -> H;
+// }
+
+// #[derive(Eq, PartialEq)]
+// pub struct Node2<A, H> {
+//     prev: Option<(A, usize)>,
+//     pub g: H,
+//     pub h: H,
+// }
+//
+// #[derive(Eq, PartialEq)]
+// pub struct Node3<S, A, H> {
+//     prev: Option<(A, Rc<Node3<S, A, H>>)>,
+//     state: Box<S>,
+//     pub g: H,
+//     pub h: H,
+// }
+// reference to State
+// each state is referred to by a single node
+// or each node is referred to by a single
+
+// fn next(&mut self) -> Option<(usize, usize)>;
+// fn insert(&mut self, state: usize, node: usize, nodes: &[Node<A, H>]);
+// fn update(&mut self, _state: &usize, _node: usize, _nodes: &[Node<A, H>]) {}
+
+// just take nodes, and use node state as key? Hmmm
+
+// fn next(&mut self) -> Option<(usize, usize)>;
+// fn insert(&mut self, state: usize, node: usize, nodes: &[Node<A, H>]);
+// fn update(&mut self, _state: &usize, _node: usize, _nodes: &[Node<A, H>]) {}
+// use bitvec::prelude::*;
+// #[derive(Eq, PartialEq)]
+// prev
+// from
+// action
+// state
+// prev
+
+// shall the node take a problem? Shall a node be problem specific, with heuristic distinction
