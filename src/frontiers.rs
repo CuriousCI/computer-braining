@@ -413,3 +413,25 @@ pub type AStarTree<S, A, V> = TreePriorityFrontier<S, A, V, AStarPolicy>;
 //         self.0.push((state, node));
 //     }
 // }
+
+// let new_priority = Reverse(P::f(node.cost.clone(), node.heuristic.clone()));
+// let new_node = PriorityNode(node);
+//
+// match self.0.get(&new_node) {
+//     Some((_, prev_priority)) => {
+//         if prev_priority > &new_priority {
+//             self.0.change_priority(&new_node, new_priority);
+//         }
+//     }
+//     None => {
+//         self.0.push(new_node, new_priority);
+//     }
+// }
+
+// if self
+//     .0
+//     .get(&PriorityNode(node.clone()))
+//     .is_none_or(|(_, prev_priority)| prev_priority > &new_priority)
+// {
+//     self.0.change_priority(&PriorityNode(node), new_priority);
+// }

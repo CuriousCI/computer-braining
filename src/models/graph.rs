@@ -1,6 +1,6 @@
 use std::fmt::Debug;
 
-use ai::problem::{Exploration, Goal, Heuristic, Problem, Transition};
+use ai::problem::{Goal, Heuristic, Problem, Search, Transition};
 
 #[derive(Copy, Clone, Ord, PartialEq, Eq, Hash, PartialOrd, Default)]
 pub struct Vert(pub usize);
@@ -45,7 +45,7 @@ impl Heuristic<usize> for Graph {
     }
 }
 
-impl Exploration<usize> for Graph {
+impl Search<usize> for Graph {
     fn expand(&self, vert: &Self::State) -> impl Iterator<Item = (Self::Action, usize)> {
         self.graph[vert.0]
             .iter()

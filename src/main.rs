@@ -90,10 +90,10 @@ fn main() {
     // conformation.push(pos);
 
     // let sequence = vec![H, H, P, P, H, H];
-    // let sequence = vec![
-    //     H, H, P, H, P, P, H, H, H, P, P, P, P, H, H, P, H, P, H, P, P, H, P, H, P, H, H,
-    // ];
-    let sequence = vec![H, H, P, H, P, P, H, H, H, P, P, P, P, H, H, P, H, P, H, P];
+    let sequence = vec![
+        H, H, P, H, P, P, H, H, H, P, P, P, P, H, H, P, H, P, H, P, P, H, P, H, P, H, H,
+    ];
+    // let sequence = vec![H, H, P, H, P, P, H, H, H, P, P, P, P, H, H, P, H, P, H, P];
     // let sequence = vec![H, P, P, P, P, P, P, P, P, P, P, P, P, P, P, P, P, P, P, H];
     // let sequence = vec![H, H, P, H, P, P, H, H, H, P, P, P, P, H, H, P];
     // println!("{}", sequence.len());

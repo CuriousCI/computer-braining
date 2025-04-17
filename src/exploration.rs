@@ -5,30 +5,40 @@ use std::{
     rc::Rc,
 };
 
-use crate::problem::{Exploration, Goal};
+use crate::problem::{Goal, Search};
 
-pub struct Node<S, A, V> {
-    prev: Option<(Rc<Self>, A)>,
-    pub state: S,
-    pub cost: V,
-    pub heuristic: V,
+pub struct Node<P>
+where
+    P: Search,
+{
+    prev: Option<(Rc<Self>, P::Action)>,
+    pub state: P::State,
+    pub cost: P::Value,
+    pub heuristic: P::Value,
 }
 
-impl<S, A, V> Eq for Node<S, A, V> {}
+// pub struct Node<S, A, V> {
+//     prev: Option<(Rc<Self>, A)>,
+//     pub state: S,
+//     pub cost: V,
+//     pub heuristic: V,
+// }
 
-impl<S, A, V> PartialEq for Node<S, A, V> {
+impl<P: Search> Eq for Node<P> {}
+
+impl<P: Search> PartialEq for Node<P> {
     fn eq(&self, _other: &Self) -> bool {
         true
     }
 }
 
-impl<S, A, V> PartialOrd for Node<S, A, V> {
-    fn partial_cmp(&self, _other: &Self) -> Option<std::cmp::Ordering> {
-        Some(std::cmp::Ordering::Equal)
+impl<P: Search> PartialOrd for Node<P> {
+    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+        Some(self.cmp(other))
     }
 }
 
-impl<S, A, V> Ord for Node<S, A, V> {
+impl<P: Search> Ord for Node<P> {
     fn cmp(&self, _other: &Self) -> std::cmp::Ordering {
         std::cmp::Ordering::Equal
     }
@@ -36,24 +46,42 @@ impl<S, A, V> Ord for Node<S, A, V> {
 
 pub trait Frontier<S, A, V>: Default {
     fn next(&mut self) -> Option<Rc<Node<S, A, V>>>;
-
     fn insert(&mut self, node: Rc<Node<S, A, V>>);
-
     fn update(&mut self, _node: Rc<Node<S, A, V>>) {}
 }
 
-pub struct Agent<S, A, P, V>
+// pub struct Agent<S, A, P, V>
+// where
+//     P: Exploration<V, State = S, Action = A>,
+// {
+//     plan: Option<VecDeque<A>>,
+//     problem: P,
+//     _marker: std::marker::PhantomData<V>,
+// }
+// _marker: std::marker::PhantomData<V>,
+
+// impl<S, A, P, V> Deref for Agent<S, A, P, V>
+// where
+//     P: Exploration<V, State = S, Action = A>,
+// {
+//     type Target = P;
+//
+//     fn deref(&self) -> &Self::Target {
+//         &self.problem
+//     }
+// }
+
+pub struct Agent<P>
 where
-    P: Exploration<V, State = S, Action = A>,
+    P: Search,
 {
-    plan: Option<VecDeque<A>>,
+    plan: Option<VecDeque<P::Action>>,
     problem: P,
-    _marker: std::marker::PhantomData<V>,
 }
 
-impl<S, A, P, V> Deref for Agent<S, A, P, V>
+impl<P> Deref for Agent<P>
 where
-    P: Exploration<V, State = S, Action = A>,
+    P: Search,
 {
     type Target = P;
 
@@ -62,30 +90,48 @@ where
     }
 }
 
-impl<S, A, P, V> Agent<S, A, P, V>
+impl<P> Agent<P>
 where
-    P: Exploration<V, State = S, Action = A>,
+    P: Search,
 {
     pub fn new(problem: P) -> Self {
         Self {
             plan: None,
             problem,
-            _marker: Default::default(),
         }
     }
 }
+// _marker: Default::default(),
 
-impl<S, A, P, V> Agent<S, A, P, V>
+// impl<S, A, P, V> Agent<S, A, P, V>
+// where
+//     P: Exploration<V, State = S, Action = A>,
+// {
+//     pub fn new(problem: P) -> Self {
+//         Self {
+//             plan: None,
+//             problem,
+//             _marker: Default::default(),
+//         }
+//     }
+// }
+
+// impl<S, A, P, V> Agent<S, A, P, V>
+// S: Eq + Hash + Clone,
+// A: Clone,
+// P: Exploration<V, State = S, Action = A> + Goal,
+
+impl<P> Agent<P>
 where
-    S: Eq + Hash + Clone,
-    A: Clone,
-    P: Exploration<V, State = S, Action = A> + Goal,
-    V: Default + Clone + Add<Output = V>,
+    P::State: Eq + Hash + Clone,
+    P::Action: Clone,
+    P::Value: Default + Clone + Add<Output = P::Value>,
+    P: Search + Goal,
 {
-    pub fn function<Q, F>(&mut self, perception: Q) -> Option<A>
+    pub fn function<Q, F>(&mut self, perception: Q) -> Option<P::Action>
     where
-        Q: TryInto<S>,
-        F: Frontier<S, A, V>,
+        Q: TryInto<P::State>,
+        F: Frontier<P::State, P::Action, P::Value>,
     {
         if self.plan.is_none() {
             self.plan = self.search::<F>(perception.try_into().ok()?);
@@ -94,9 +140,9 @@ where
         self.plan.as_mut()?.pop_front()
     }
 
-    fn search<F>(&self, state: S) -> Option<VecDeque<A>>
+    fn search<F>(&self, state: P::State) -> Option<VecDeque<P::Action>>
     where
-        F: Frontier<S, A, V>,
+        F: Frontier<P::State, P::Action, P::Value>,
     {
         let mut frontier = F::default();
         let mut explored = HashSet::new();
@@ -205,16 +251,19 @@ where
 // iterations += 1;
 // println!("iterations: {iterations}");
 
-impl<S, A, P, V> Agent<S, A, P, V>
+// impl<S, A, P, V> Agent<S, A, P, V>
+
+// impl<S, A, P, V> Agent<P, V>
+impl<P> Agent<P>
 where
-    A: Clone,
-    P: Exploration<V, State = S, Action = A> + Goal,
-    V: Default + Clone + Add<Output = V>,
+    P::Action: Clone,
+    P::Value: Default + Clone + Add<Output = P::Value>,
+    P: Search + Goal,
 {
-    pub fn function_on_tree<Q, F>(&mut self, perception: Q) -> Option<A>
+    pub fn function_on_tree<Q, F>(&mut self, perception: Q) -> Option<P::Action>
     where
-        Q: TryInto<S>,
-        F: Frontier<S, A, V>,
+        Q: TryInto<P::State>,
+        F: Frontier<P::State, P::Action, P::Value>,
     {
         if self.plan.is_none() {
             self.plan = self.search_on_tree::<F>(perception.try_into().ok()?);
@@ -223,9 +272,9 @@ where
         self.plan.as_mut()?.pop_front()
     }
 
-    fn search_on_tree<F>(&self, state: S) -> Option<VecDeque<A>>
+    fn search_on_tree<F>(&self, state: P::State) -> Option<VecDeque<P::Action>>
     where
-        F: Frontier<S, A, V>,
+        F: Frontier<P::State, P::Action, P::Value>,
     {
         let mut frontier = F::default();
         frontier.insert(

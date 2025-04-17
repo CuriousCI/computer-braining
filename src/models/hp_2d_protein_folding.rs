@@ -4,8 +4,9 @@ use std::{
     ops::{Add, Deref},
     rc::Rc,
 };
+// numero di h - contatti totali
 
-use ai::problem::{Exploration, Goal, Heuristic, Problem, Transition};
+use ai::problem::{Goal, Heuristic, Problem, Search, Transition};
 use rayon::iter::{IntoParallelIterator, ParallelBridge};
 
 #[derive(Clone, Debug)]
@@ -181,7 +182,8 @@ impl Heuristic<Cost> for Protein {
 
         // Cost(0, true)
 
-        0
+        // amino_acid.depth.try_into().unwrap()
+        // 0
 
         // Cost {
         //     depth: Reverse(amino_acid.depth),
@@ -197,22 +199,23 @@ impl Heuristic<Cost> for Protein {
         // tecnicamente mi devo mantenere gli estremi, sia in verticale sia in orizzontale
         // praticamente non serve più di tanto
 
-        // let mut h = 0;
-        //
-        // let mut grandpa = amino_acid.prev.as_ref().and_then(|a| a.prev.as_ref());
-        // let mut curr = Some(amino_acid);
-        //
-        // while let (Some(p), Some(c)) = (grandpa, curr) {
-        //     if let (Alphabet::H, Alphabet::H) = (&self[p.depth], &self[c.depth]) {
-        //         if p.pos.0.abs_diff(c.pos.0) + p.pos.1.abs_diff(c.pos.1) > 1 {
-        //             h += 1;
-        //         }
-        //     }
-        //
-        //     grandpa = p.prev.as_ref();
-        //     curr = c.prev.as_ref();
-        // }
-        //
+        let mut h = 0;
+
+        let mut grandpa = amino_acid.prev.as_ref().and_then(|a| a.prev.as_ref());
+        let mut curr = Some(amino_acid);
+
+        while let (Some(p), Some(c)) = (grandpa, curr) {
+            if let (Alphabet::H, Alphabet::H) = (&self[p.depth], &self[c.depth]) {
+                if p.pos.0.abs_diff(c.pos.0) + p.pos.1.abs_diff(c.pos.1) > 1 {
+                    h += 1;
+                }
+            }
+
+            grandpa = p.prev.as_ref();
+            curr = c.prev.as_ref();
+        }
+
+        (self.len() - h) as i16
         // -h
     }
 }
@@ -232,7 +235,7 @@ impl Heuristic<Cost> for Protein {
 // mantenere le violazioni nell'approccio iterativo, e costi per numero di violazioni
 // numero vicino
 
-impl Exploration<Cost> for Protein {
+impl Search<Cost> for Protein {
     fn expand(&self, amino_acid: &Self::State) -> impl Iterator<Item = (Self::Action, Cost)> {
         let (x, y) = amino_acid.pos;
 

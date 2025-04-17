@@ -12,12 +12,22 @@ pub trait Goal: Problem {
     fn is_goal(&self, state: &Self::State) -> bool;
 }
 
-pub trait Heuristic<H>: Problem {
-    fn heuristic(&self, state: &Self::State) -> H;
+// pub trait Heuristic<V>: Problem {
+//     fn heuristic(&self, state: &Self::State) -> V;
+// }
+
+pub trait Heuristic: Problem {
+    type Value;
+
+    fn heuristic(&self, state: &Self::State) -> Self::Value;
 }
 
-pub trait Exploration<H>: Transition + Heuristic<H> {
-    fn expand(&self, state: &Self::State) -> impl Iterator<Item = (Self::Action, H)>;
+// pub trait Exploration<V>: Transition + Heuristic<V> {
+//     fn expand(&self, state: &Self::State) -> impl Iterator<Item = (Self::Action, V)>;
+// }
+
+pub trait Search: Transition + Heuristic {
+    fn expand(&self, state: &Self::State) -> impl Iterator<Item = (Self::Action, Self::Value)>;
 }
 
 pub trait Local: Transition {

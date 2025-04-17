@@ -1,6 +1,6 @@
 use std::{cmp::Reverse, ops::Deref, rc::Rc};
 
-use ai::problem::{Exploration, Goal, Heuristic, Problem, Transition};
+use ai::problem::{Goal, Heuristic, Problem, Search, Transition};
 
 #[derive(Clone, Debug)]
 pub enum Alphabet {
@@ -191,7 +191,7 @@ impl Heuristic<Energy> for Protein {
 // mantenere le violazioni nell'approccio iterativo, e costi per numero di violazioni
 // numero vicino
 
-impl Exploration<Energy> for Protein {
+impl Search<Energy> for Protein {
     fn expand(&self, amino_acid: &Self::State) -> impl Iterator<Item = (Self::Action, Energy)> {
         let (x, y) = amino_acid.pos;
 
