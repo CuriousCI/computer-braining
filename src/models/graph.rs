@@ -1,57 +1,60 @@
-use std::fmt::Debug;
+// use std::fmt::Debug;
+//
+// use ai::problem::{Actions, GoalBased, Heuristic, Problem, Search};
+//
+// #[derive(Copy, Clone, Ord, PartialEq, Eq, Hash, PartialOrd, Default)]
+// pub struct Vert(pub usize);
+//
+// static VERTICES: [&str; 11] = ["A", "B", "C", "D", "E", "G1", "G2", "H", "I", "J", "S"];
+//
+// impl Debug for Vert {
+//     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+//         f.write_str(VERTICES[self.0])
+//     }
+// }
+//
+// #[derive(Clone)]
+// pub struct Graph {
+//     pub goals: Vec<bool>,
+//     pub graph: Vec<Vec<Vert>>,
+//     pub transition_costs: Vec<Vec<usize>>,
+//     pub heuristic: Vec<usize>,
+// }
+//
+// impl Problem for Graph {
+//     type State = Vert;
+// }
+//
+// impl Actions for Graph {
+//     type Action = Vert;
+//
+//     fn result(&self, _: &Self::State, &next_vert: &Self::Action) -> Self::State {
+//         next_vert
+//     }
+// }
+//
+// impl GoalBased for Graph {
+//     fn goal_test(&self, vert: &Self::State) -> bool {
+//         self.goals[vert.0]
+//     }
+// }
+//
+// impl Heuristic for Graph {
+//     type Value = usize;
+//     fn heuristic(&self, vert: &Self::State) -> usize {
+//         self.heuristic[vert.0]
+//     }
+// }
+//
+// impl Search for Graph {
+//     fn expand(&self, vert: &Self::State) -> impl Iterator<Item = (Self::Action, usize)> {
+//         self.graph[vert.0]
+//             .iter()
+//             .map(|&next_vert| (next_vert, self.transition_costs[vert.0][next_vert.0]))
+//     }
+// }
 
-use ai::problem::{Goal, Heuristic, Problem, Search, Transition};
-
-#[derive(Copy, Clone, Ord, PartialEq, Eq, Hash, PartialOrd, Default)]
-pub struct Vert(pub usize);
-
-static VERTICES: [&str; 11] = ["A", "B", "C", "D", "E", "G1", "G2", "H", "I", "J", "S"];
-
-impl Debug for Vert {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str(VERTICES[self.0])
-    }
-}
-
-#[derive(Clone)]
-pub struct Graph {
-    pub goals: Vec<bool>,
-    pub graph: Vec<Vec<Vert>>,
-    pub transition_costs: Vec<Vec<usize>>,
-    pub heuristic: Vec<usize>,
-}
-
-impl Problem for Graph {
-    type State = Vert;
-}
-
-impl Transition for Graph {
-    type Action = Vert;
-
-    fn new_state(&self, _: &Self::State, &next_vert: &Self::Action) -> Self::State {
-        next_vert
-    }
-}
-
-impl Goal for Graph {
-    fn is_goal(&self, vert: &Self::State) -> bool {
-        self.goals[vert.0]
-    }
-}
-
-impl Heuristic<usize> for Graph {
-    fn heuristic(&self, vert: &Self::State) -> usize {
-        self.heuristic[vert.0]
-    }
-}
-
-impl Search<usize> for Graph {
-    fn expand(&self, vert: &Self::State) -> impl Iterator<Item = (Self::Action, usize)> {
-        self.graph[vert.0]
-            .iter()
-            .map(|&next_vert| (next_vert, self.transition_costs[vert.0][next_vert.0]))
-    }
-}
+// OLD ---
 
 //use ai::problem_solving_agent::{TransitionModel, Value};
 
