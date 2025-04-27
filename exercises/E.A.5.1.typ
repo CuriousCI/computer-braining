@@ -1,32 +1,15 @@
-#import "@preview/fletcher:0.5.5" as fletcher: diagram, node, edge, shapes.circle, shapes.diamond
+#import "template.typ": *
 
-#set text(font: "New Computer Modern", lang: "it", weight: "light", size: 11pt)
-#set page(margin: 1.75in)
-#set par(leading: 0.55em, spacing: 0.85em, first-line-indent: 1.8em, justify: true)
-#set math.equation(numbering: "(1)")
-
-#show figure: set block(breakable: true)
-#show figure.caption: set align(center)
-#show heading: set block(above: 1.4em, below: 1em)
-#show outline.entry.where(level: 1): it => { show repeat : none; v(1.1em, weak: true); text(size: 1em, strong(it)) }
-#show raw: set text(font:"CaskaydiaCove NFM", lang: "it", weight: "light", size: 9pt)
-#show sym.emptyset : sym.diameter 
-
-#let reft(reft) = box(width: 8pt, place(dy: -8pt, 
-  box(radius: 100%, width: 9pt, height: 9pt, inset: 1pt, stroke: .5pt, // fill: black,
-    align(center + horizon, text(font: "CaskaydiaCove NFM", size: 7pt, repr(reft)))
-  )
-))
-
-#set heading(numbering: "1.1")
-#set raw(lang: "Rust")
-#set table(stroke: 0.25pt)
-
-= E.A.5.1
+#show: doc => conf([E.A.5.1 (Steepest Descent)], doc)
 
 == Implementazione
 
-#show raw.where(block: true): block.with(inset: 1em, width: 100%, fill: luma(254), stroke: (left: 5pt + luma(245), rest: 1pt + luma(245)))
+#show raw.where(block: true): block.with(
+  inset: 1em,
+  width: 100%,
+  fill: luma(254),
+  stroke: (left: 5pt + luma(245), rest: 1pt + luma(245)),
+)
 
 È bastato usare il framework che avevo già scritto, e riscrivere il CSP nei termini del framework per risolvere il problema con ```rust steepest_descent()```.
 
@@ -40,7 +23,7 @@ impl Problem for Constraints {
 }
 
 impl Transition for Constraints {
-    type Action = (usize, i64); // assign val to var 
+    type Action = (usize, i64); // assign val to var
 
     fn new_state(&self, state: &Self::State, &(var, val): &Self::Action) -> Self::State {
         let mut new_state = *state;
@@ -77,18 +60,18 @@ impl Local for Constraints {
 
 ```
 fn main() {
-    let solution = 
+    let solution =
         steepest_descent(&Constraints, [3, 1, 4, 5, 2]);
 
     println!(
-        "{:?} - {:?}", 
-        solution, 
+        "{:?} - {:?}",
+        solution,
         Constraints.heuristic(&solution)
     );
 }
 ```
 
-Non ho disegnato l'albero, ma di seguito sono elencate le azioni intraprese, i vicini e i loro costi. Manca la relazione d'ordine per stati che hanno costi equivalenti, ma significherebbe modificare l'implementazione di ```rust steepest_descent()``` in modo che richieda una relazione d'ordine totale sugli stati _(si potrebbe fare, ma non vale la pena modificare l'algoritmo)_. 
+Non ho disegnato l'albero, ma di seguito sono elencate le azioni intraprese, i vicini e i loro costi. Manca la relazione d'ordine per stati che hanno costi equivalenti, ma significherebbe modificare l'implementazione di ```rust steepest_descent()``` in modo che richieda una relazione d'ordine totale sugli stati _(si potrebbe fare, ma non vale la pena modificare l'algoritmo)_.
 
 ```rust
 stato iniziale: [3, 1, 4, 5, 2] - 129

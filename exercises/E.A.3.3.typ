@@ -1,54 +1,41 @@
 #import "math.typ": *
+#import "template.typ": *
 
-#set text(font: "New Computer Modern", lang: "it", weight: "light", size: 11pt)
-#set page(margin: 1.75in)
-// #set par(leading: 0.55em, spacing: 0.85em, first-line-indent: 1.8em, justify: true)
-#set par(leading: 0.55em, spacing: 0.85em, first-line-indent: 1.8em, justify: true)
-#set math.equation(numbering: "(1)")
-#set heading(numbering: "1.1")
-#set raw(lang: "Rust")
-
-#show figure.caption: set align(center)
-#show heading: set block(above: 1.4em, below: 1em)
-#show raw: set text(font:"CaskaydiaCove NFM", lang: "it", weight: "light", size: 9pt)
-#show sym.emptyset : sym.diameter 
-
-
-= E.A.3.3 (ProteinFolding)
+#show: doc => conf([E.A.3.3 (HP 2D-Protein Folding)], doc)
 
 == Modello
 
 Una proteina è una sequenza di amminoacidi $a_1, ..., a_n space.en t.c. space.en a_i in {H, P}$.
 
 #definition(title: [conformazione (stato)])[
-Una conformazione è un assegnamento $p_1, .., p_k "con" 1 <= k <= n space.en t.c.$ 
-- $p_i in ZZ^2$ // _(posizione)_
-- $"dist"(p_i, p_(i + 1)) = 1$ _(adiacenza)_
-- $exists.not p_i, p_j space.en i != j and p_i = p_j$ _(non sovrapposizione)_
-Una conformazione è detta _parziale_ se $k < n$, _completa_ altrimenti (una conformazione completa è considerata uno stato obiettivo per la ricerca).
+  Una conformazione è un assegnamento $p_1, .., p_k "con" 1 <= k <= n space.en t.c.$
+  - $p_i in ZZ^2$ // _(posizione)_
+  - $"dist"(p_i, p_(i + 1)) = 1$ _(adiacenza)_
+  - $exists.not p_i, p_j space.en i != j and p_i = p_j$ _(non sovrapposizione)_
+  Una conformazione è detta _parziale_ se $k < n$, _completa_ altrimenti (una conformazione completa è considerata uno stato obiettivo per la ricerca).
 ]
 
 #definition(title: [modello di transizione])[
   Data una conformazione $p_1, ..., p_k$, l'insieme delle azioni $A^p_k$ è definito come segue: $A^p_k = emptyset "se" k = n$, altrimenti se $k < n$
 
-$
-& A^p_k = {(x, y) | \
-& quad (x, y) in ZZ^2 and \
-& quad exists x_k, y_k \ 
-& quad quad p_k = (x_k, y_k) and \
-& quad quad ( \
-& quad quad quad ((x = x_k + 1 or x = x_k - 1) and y = y_k) or\
-& quad quad quad ((y = y_k + 1 or y = y_k - 1) and x = x_k) \
-& quad quad ) and \
-& quad quad exists.not p_i space.en p_i = (x, y) \
-& }
-$
+  $
+    & A^p_k = {(x, y) | \
+      & quad (x, y) in ZZ^2 and \
+      & quad exists x_k, y_k \
+      & quad quad p_k = (x_k, y_k) and \
+      & quad quad ( \
+        & quad quad quad ((x = x_k + 1 or x = x_k - 1) and y = y_k) or\
+        & quad quad quad ((y = y_k + 1 or y = y_k - 1) and x = x_k) \
+        & quad quad ) and \
+      & quad quad exists.not p_i space.en p_i = (x, y) \
+      & }
+  $
 ]
 
-Dato uno stato $p_1, ..., p_k$ e data un'azione $alpha_(k + 1) in A^p_k$, lo stato generato è $p'_1, ..., p'_(k + 1)$ t.c. 
+Dato uno stato $p_1, ..., p_k$ e data un'azione $alpha_(k + 1) in A^p_k$, lo stato generato è $p'_1, ..., p'_(k + 1)$ t.c.
 
 $
-p'_i = cases(
+  p'_i = cases(
   p_i & "se" i <= k \
   alpha_(k + 1)  & "se" i = k + 1
 )
@@ -58,13 +45,13 @@ $
 
 Si considera che, indipendentemente dalla percezione, lo stato iniziale è $p_1 = (0, 0)$ (per evitare conformazioni equivalenti ma traslate). Da questa modellazione del problema deriva un'importante osservazione, che permette di ottimizzare gli algoritmi di ricerca:
 
-// Dato che $A^p_0$ non è mai definito (non c'è un amminoacido "precedente" da cui continuare, quindi non esistono $x_0, y_0$), 
+// Dato che $A^p_0$ non è mai definito (non c'è un amminoacido "precedente" da cui continuare, quindi non esistono $x_0, y_0$),
 
 #observation[
-Il grafo di ricerca per *ProteinFolding* è un *albero*.
+  Il grafo di ricerca per *ProteinFolding* è un *albero*.
 
-\
-*Dim.* Per dimostrarlo bisogna far vedere che non è possibile raggiungere lo stesso stato con sequenze di azioni diverse. Per assurdo, si supponga che lo stato $p_1, ..., p_k$ sia stato raggiunto con due sequenze di azioni $alpha_1, ..., alpha_k$ e $beta_1, ..., beta_k$ diverse, per cui esiste $i "t.c." alpha_i != beta_i$, quindi, per il modello di transizione, $p_i = alpha_i != beta_i = p_i => p_i != p_i$, contraddizione. _(forse viene meglio per induzione su $k$, ma devo impostare meglio cosa voglio dimostrare, inoltre credo che dovrei usare in qualche modo la definizione di azione)_
+  \
+  *Dim.* Per dimostrarlo bisogna far vedere che non è possibile raggiungere lo stesso stato con sequenze di azioni diverse. Per assurdo, si supponga che lo stato $p_1, ..., p_k$ sia stato raggiunto con due sequenze di azioni $alpha_1, ..., alpha_k$ e $beta_1, ..., beta_k$ diverse, per cui esiste $i "t.c." alpha_i != beta_i$, quindi, per il modello di transizione, $p_i = alpha_i != beta_i = p_i => p_i != p_i$, contraddizione. _(forse viene meglio per induzione su $k$, ma devo impostare meglio cosa voglio dimostrare, inoltre credo che dovrei usare in qualche modo la definizione di azione)_
 ]
 
 L'*Oss. 1* permette di ottimizzare la ricerca, perché se dopo una transizione ogni stato è garantito nuovo, non serve controllare se questo è già stato esplorato o sta già in frontiera.
@@ -73,12 +60,12 @@ Dato che il problema presenta forti *simmetrie*, si può ridurre lo spazio di ri
 
 1. $A^p_1 = {(0, 1)}$ (rotazioni)
 2. per $p_1, ..., p_k$ con $k > 1$
-    1. se $forall j space.en j <= k space.en exists y_j space.en p_j = (0, y_j)$ (la conformazione non ha nessuna piega), allora $A^p_k = {(0, y_k + 1), (1, y_k)}$
-    2. altrimenti $A^p_k$ è la stessa in *Def. 2*
+  1. se $forall j space.en j <= k space.en exists y_j space.en p_j = (0, y_j)$ (la conformazione non ha nessuna piega), allora $A^p_k = {(0, y_k + 1), (1, y_k)}$
+  2. altrimenti $A^p_k$ è la stessa in *Def. 2*
 
 #observation[
   Nel caso 2.1 le nuove azioni garantiscono la non sovrapposizione. In particolare:
-  - per l'azione $(1, y_k)$ la garanzia deriva dal fatto che la conformazione ha tutte $x = 0$ 
+  - per l'azione $(1, y_k)$ la garanzia deriva dal fatto che la conformazione ha tutte $x = 0$
   - per l'azione $(0, y_k + 1)$ l'argomentazione è un po' più complicata, ma sostanzialmente bisogna usare l'_adiacenza_ della conformazione per far vedere che non è possibile che ci sia un amminoacido in quella posizione (se tutte le $x$ sono 0), perché altrimenti si avrebbero due amminoacidi adiacenti nella sequenza ma con distanza 2 nella conformazione (bisognerebbe anche far vedere che $y_(k + 1$ non torna indietro, quindi che la conformazione è formata da $y_i >= 0$
 
   Questo è particolarmente vantaggioso, perché, se la non sovrapposizione è garantita di base, non serve controllare se le azioni la rispettano (un controllo che normalmente è in $O(k)$, qui sto provando a spremere la performance in tutti i modi possibili)
@@ -101,9 +88,9 @@ Tecnicamente bisognerebbe dimostrare che le nuove definizioni per $A^p_k$ rispet
 
   *Passo induttivo*
   1. se non c'è una piega
-      - allora la conformazione è dritta, dato che la conformazione precedente non ha simmetrie o rotazioni, non si può generare roba simmetrica andando avanti, e facendo il giro a destra non c'è roba ruotata o simmetrica
+    - allora la conformazione è dritta, dato che la conformazione precedente non ha simmetrie o rotazioni, non si può generare roba simmetrica andando avanti, e facendo il giro a destra non c'è roba ruotata o simmetrica
   2. se c'è una piega
-      - usare in qualche modo modo l'ipotesi induttiva per far vedere che partendo da una sequenza senza simmetrie le nuove azioni non possono generare stati simmetrici
+    - usare in qualche modo modo l'ipotesi induttiva per far vedere che partendo da una sequenza senza simmetrie le nuove azioni non possono generare stati simmetrici
 ]
 
 == Euristica
@@ -111,12 +98,12 @@ Tecnicamente bisognerebbe dimostrare che le nuove definizioni per $A^p_k$ rispet
 Due parole veloci sul come l'idea di fondo è che proteine H vicine nella sequenza devono stare vicine nella proteina finale, o, in generale gli stati più "promettenti" sono quelli che hanno "meno contatti non realizzati" per ora.
 
 #definition(title: "Costo")[
-    Tocca dare ad un certo punto la definizione di costo. Ad alto livello il costo è dato dal "numero di contatti H non realizzati", e l'obiettivo è minimizzarlo.
+  Tocca dare ad un certo punto la definizione di costo. Ad alto livello il costo è dato dal "numero di contatti H non realizzati", e l'obiettivo è minimizzarlo.
 ]
 
-Per ora ho provato diverse euristiche, ma per nessuna era perfettamente chiaro il funzionamento (anche se i risultati erano molto promettenti, queste euristiche misuravano parametri che non erano legati a come viene effettivamente misurato il costo), e non era chiaro se fosse garantita la consistenza. 
+Per ora ho provato diverse euristiche, ma per nessuna era perfettamente chiaro il funzionamento (anche se i risultati erano molto promettenti, queste euristiche misuravano parametri che non erano legati a come viene effettivamente misurato il costo), e non era chiaro se fosse garantita la consistenza.
 
-Dopo un po' di riflessione queste sono alcune idee per un'euristica che sulla carta dovrebbe funzionare benissimo (modulo i dettagli implementativi) 
+Dopo un po' di riflessione queste sono alcune idee per un'euristica che sulla carta dovrebbe funzionare benissimo (modulo i dettagli implementativi)
 
 - solo l'amminoacido finale e quello iniziale possono avere 3 contatti, un amminoacido H in mezzo ne può avere al massimo 2 (devo capire bene perché, ma questa osservazione velocizza i tempi in un modo assurdo, forse per come vengono influenzati i costi... devo sempre verificare se è corretta; inoltre questa osservazione non è legata all'euristica, influenza direttamente il costo)
 
@@ -124,7 +111,7 @@ Dopo un po' di riflessione queste sono alcune idee per un'euristica che sulla ca
 
 - sarebbe interessante vedere se questo numero è memorizzabile all'interno dello stato, e se c'è un modo per aggiornarlo ad ogni transizione, senza doverlo ricalcolare da capo (velocizzerebbe di molto i calcoli)
 
-- Altra cosa interessante da vedere è il fatto che per alcune conformazioni è possibile dire subito se tutte e tre le azioni sono lecite, a quel punto magia non serve ricontrollare tutta la conformazione per non sovrapposizione, ma bisogna capire se  è facile capire quali sono queste conformazioni, 
+- Altra cosa interessante da vedere è il fatto che per alcune conformazioni è possibile dire subito se tutte e tre le azioni sono lecite, a quel punto magia non serve ricontrollare tutta la conformazione per non sovrapposizione, ma bisogna capire se è facile capire quali sono queste conformazioni,
 
 - TODO: usa un'heap per l'albero
 
@@ -168,15 +155,14 @@ Dopo un po' di riflessione queste sono alcune idee per un'euristica che sulla ca
 ]
 
 
-#observation(title: [Consistenza])[
-]
+#observation(title: [Consistenza])[ ]
 
 #observation(title: [Critical ratio])[
-    Per la critical ration il discorso è ancora un po' fumoso: ho provato diverse esecuzioni sul cluster, in un caso fissando $n$ e generando le H in modo casuale (anche il numero di H è deciso in modo uniforme)... ma i risultati non erano consistenti (c'erano diversi picchi e ogni volta cambiavano per numero di H diversi). Quindi ipotizzo che la critical ratio non dipenda solo dal rapporto fra $n$ e il numero di H.
+  Per la critical ration il discorso è ancora un po' fumoso: ho provato diverse esecuzioni sul cluster, in un caso fissando $n$ e generando le H in modo casuale (anche il numero di H è deciso in modo uniforme)... ma i risultati non erano consistenti (c'erano diversi picchi e ogni volta cambiavano per numero di H diversi). Quindi ipotizzo che la critical ratio non dipenda solo dal rapporto fra $n$ e il numero di H.
 
-    Provando con H tutte adiacenti, invece, si vede come per poche H c'è un solo picco, ed è sempre nello stesso posto. Ma il problema è che queste H sono tutte adiacenti, e non sono rappresentative del caso medio.
+  Provando con H tutte adiacenti, invece, si vede come per poche H c'è un solo picco, ed è sempre nello stesso posto. Ma il problema è che queste H sono tutte adiacenti, e non sono rappresentative del caso medio.
 
-    Servirebbe provare a trovare un valore che dipenda non solo dal numero di H, ma anche dalla loro disposizione.
+  Servirebbe provare a trovare un valore che dipenda non solo dal numero di H, ma anche dalla loro disposizione.
 ]
 
 // [NaN, NaN, 67608.41176470589, 53837.28571428572, 26421.0, 14406.0, 3153.68, 3101.5384615384614, 2097.684210526316, 500.6470588235294, 1145.0, 777.0769230769231, 593.1578947368421, 339.3888888888889, 237.0, 633.3529411764706, 797.7222222222222, 277.7142857142857, 365.45454545454544, 232.63636363636363]
@@ -196,14 +182,14 @@ Dopo un po' di riflessione queste sono alcune idee per un'euristica che sulla ca
 // https://doc.rust-lang.org/reference/items/unions.html
 
 #align(center)[
-```rust
-pub struct AminoAcid {
-    pos: Pos,
-    prev: Option<Rc<AminoAcid>>,
-    depth: usize,
-    first_turn: bool,
-}
-```
+  ```rust
+  pub struct AminoAcid {
+      pos: Pos,
+      prev: Option<Rc<AminoAcid>>,
+      depth: usize,
+      first_turn: bool,
+  }
+  ```
 ]
 
 - verificare in modo più intelligente la non sovrapposizione di un'azione senza dover scorrere tutta la proteina
@@ -227,7 +213,7 @@ pub struct AminoAcid {
 
 // #show figure: set block(breakable: true)
 // #show outline.entry.where(level: 1): it => { show repeat : none; v(1.1em, weak: true); text(size: 1em, strong(it)) }
-// #let reft(reft) = box(width: 8pt, place(dy: -8pt, 
+// #let reft(reft) = box(width: 8pt, place(dy: -8pt,
 //   box(radius: 100%, width: 9pt, height: 9pt, inset: 1pt, stroke: .5pt, // fill: black,
 //     align(center + horizon, text(font: "CaskaydiaCove NFM", size: 7pt, repr(reft)))
 //   )
@@ -236,26 +222,26 @@ pub struct AminoAcid {
 // #import "@preview/fletcher:0.5.5" as fletcher: diagram, node, edge, shapes.circle, shapes.diamond
 
 // Per assurdo, se fosse possibile, vorrebbe dire che uno stato $p_1, ..., p_k$ è stato raggiunto partendo da due stati $q_1, ..., q_(k - 1)$ e $r_1, ..., r_(k - 1)$, in uno di due modi:
-//     1. $q_i = r_i$ per ogni $0 <= i <= k - 1$, e $q_k != r_k$, quindi, per come sono definite le azioni, $p_k = q_k != r_k = p_k => p_k != p_k -><-$  
+//     1. $q_i = r_i$ per ogni $0 <= i <= k - 1$, e $q_k != r_k$, quindi, per come sono definite le azioni, $p_k = q_k != r_k = p_k => p_k != p_k -><-$
 //     2. $exists q_i != r_i$ per un qualche $0 <= i <= k - 1 ==> p_i = q_i != r_i = p_i$, ma questo non è possibile, perché non ci sono azioni che riassegnano una posizione già assegnata $-><-$
 
-  // , ma questo non è possibile, perché si avrebbe $q_i != p_i = r_i$, ma la sequenza $q_1, ..., q_k$ è uguale a $p_1, ..., p_k$
+// , ma questo non è possibile, perché si avrebbe $q_i != p_i = r_i$, ma la sequenza $q_1, ..., q_k$ è uguale a $p_1, ..., p_k$
 
-    // - $q_i = r_i$ per ogni $0 <= i <= k - 1$, e sono stati dati assegnamenti diversi a $q_k$ e $r_k$, ma ciò non è possibile, perché $q_k = p_k = r_k$
-    // - $exists q_i != r_i$ per un qualche $0 <= i <= k - 1$, ma questo non è possibile, perché si avrebbe $q_i != p_i = r_i$, ma la sequenza $q_1, ..., q_k$ è uguale a $p_1, ..., p_k$
-    
-    // *diversi* 
+// - $q_i = r_i$ per ogni $0 <= i <= k - 1$, e sono stati dati assegnamenti diversi a $q_k$ e $r_k$, ma ciò non è possibile, perché $q_k = p_k = r_k$
+// - $exists q_i != r_i$ per un qualche $0 <= i <= k - 1$, ma questo non è possibile, perché si avrebbe $q_i != p_i = r_i$, ma la sequenza $q_1, ..., q_k$ è uguale a $p_1, ..., p_k$
+
+// *diversi*
 
 
-  // $
-  // A^p_k = cases(
-  //   emptyset & "se " k = n \
-  //   {(x, y) | (x, y) in ZZ^2 and exists x_k, y_k space.en p_k = (x_k, y_k) }
-  // )
-  // $
+// $
+// A^p_k = cases(
+//   emptyset & "se " k = n \
+//   {(x, y) | (x, y) in ZZ^2 and exists x_k, y_k space.en p_k = (x_k, y_k) }
+// )
+// $
 
-  // Dato uno stato *non obiettivo* (quindi $k < n$), l'insieme di azioni consiste nei possibili assegnamenti per $p_(k + 1)$ che rispettano le condizioni di _adiacenza_ e _sovrapposizione_.
-  // Un'insieme di azioni $A = { alpha in ZZ^2 }$.
+// Dato uno stato *non obiettivo* (quindi $k < n$), l'insieme di azioni consiste nei possibili assegnamenti per $p_(k + 1)$ che rispettano le condizioni di _adiacenza_ e _sovrapposizione_.
+// Un'insieme di azioni $A = { alpha in ZZ^2 }$.
 
 // - $p_0 = (0, 0)$ (origine)
 //ai primi $k$ amminoacidi, con $0 <= k <= n$
@@ -267,7 +253,7 @@ pub struct AminoAcid {
 
 // #definition(title: [conformazione completa (obiettivo)])[Uno stato è obiettivo quando $k = n$.]
 
-    // , dati $p_(i - 1) = (0, y_(i - 1))$ le azioni possibili sono $(0, y_(i - 1) + 1)$ (andare avanti) e $(1, y_(i - 1))$ girare a destra (queste due sono sempre possibili per come è costruita la catena, TODO: ottimizzare questo caso per non controllare se sono valide, altrimenti andare avanti, metterlo sotto forma di osservazione / teorema)
-    // - altrimenti permetti solo l'azione che va avanti o a destra
+// , dati $p_(i - 1) = (0, y_(i - 1))$ le azioni possibili sono $(0, y_(i - 1) + 1)$ (andare avanti) e $(1, y_(i - 1))$ girare a destra (queste due sono sempre possibili per come è costruita la catena, TODO: ottimizzare questo caso per non controllare se sono valide, altrimenti andare avanti, metterlo sotto forma di osservazione / teorema)
+// - altrimenti permetti solo l'azione che va avanti o a destra
 
-      // ma dato che non sono simmetriche quelle sotto non è simmetrica neanche quella sopra, come riottengo l'ipotesi induttiva $k$ per una proteina lunga $k + 1$
+// ma dato che non sono simmetriche quelle sotto non è simmetrica neanche quella sopra, come riottengo l'ipotesi induttiva $k$ per una proteina lunga $k + 1$

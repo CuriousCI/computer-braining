@@ -1,33 +1,18 @@
-#set text(font: "New Computer Modern", lang: "it", weight: "light", size: 11pt)
-#set page(margin: 1.75in)
-#set par(leading: 0.55em, spacing: 0.85em, first-line-indent: 1.8em, justify: true)
-#set math.equation(numbering: "(1)")
+#import "template.typ": *
 
-#show figure: set block(breakable: true)
-#show figure.caption: set align(center)
-#show heading: set block(above: 1.4em, below: 1em)
-#show outline.entry.where(level: 1): it => { show repeat : none; v(1.1em, weak: true); text(size: 1em, strong(it)) }
-#show raw: set text(font:"CaskaydiaCove NFM", lang: "it", weight: "light", size: 9pt)
-#show sym.emptyset : sym.diameter 
-
-#let reft(reft) = box(width: 8pt, place(dy: -8pt, 
-  box(radius: 100%, width: 9pt, height: 9pt, inset: 1pt, stroke: .5pt, // fill: black,
-    align(center + horizon, text(font: "CaskaydiaCove NFM", size: 7pt, repr(reft)))
-  )
-))
-
-#set heading(numbering: "1.1")
-#set raw(lang: "Rust")
-#set table(stroke: 0.25pt)
-
-= E.A.5.4
+#show: doc => conf([E.A.5.4 (Generalised Arc-Consistency)], doc)
 
 == Node consistency
 
-#show raw.where(block: true): block.with(inset: 1em, width: 100%, fill: luma(254), stroke: (left: 5pt + luma(245), rest: 1pt + luma(245)))
+#show raw.where(block: true): block.with(
+  inset: 1em,
+  width: 100%,
+  fill: luma(254),
+  stroke: (left: 5pt + luma(245), rest: 1pt + luma(245)),
+)
 
 ```rust
-// self è l'istanza di un CSP 
+// self è l'istanza di un CSP
 pub fn make_node_consistent(&mut self) -> bool {
     // Assegnamento vuoto usato per controllare i vincoli
     let mut assignment = vec![None; self.domains.len()];
@@ -79,60 +64,60 @@ I risultati di GAC-3
 ```rust
 X1 > X3, viene rimosso 1 dal dominio di X1
 [
-  {2, 3, 4, 5}, {1, 2, 3, 4, 5}, {1, 2, 3, 4, 5}, 
+  {2, 3, 4, 5}, {1, 2, 3, 4, 5}, {1, 2, 3, 4, 5},
   {1, 2, 3, 4, 5}, {3, 4, 5}
 ]
 
 X1 > X3, viene rimosso 5 dal dominio di X3
 [
-  {2, 3, 4, 5}, {1, 2, 3, 4, 5}, {1, 2, 3, 4}, 
+  {2, 3, 4, 5}, {1, 2, 3, 4, 5}, {1, 2, 3, 4},
   {1, 2, 3, 4, 5}, {3, 4, 5}
 ]
 
 X2 <= X3, viene rimosso 5 dal dominio di X2
 [
-  {2, 3, 4, 5}, {1, 2, 3, 4}, {1, 2, 3, 4}, 
+  {2, 3, 4, 5}, {1, 2, 3, 4}, {1, 2, 3, 4},
   {1, 2, 3, 4, 5}, {3, 4, 5}
 ]
 
 X2 <= X3, non cambia nulla
 [
-  {2, 3, 4, 5}, {1, 2, 3, 4}, {1, 2, 3, 4}, 
+  {2, 3, 4, 5}, {1, 2, 3, 4}, {1, 2, 3, 4},
   {1, 2, 3, 4, 5}, {3, 4, 5}
 ]
 
 X3^2 + X4^2 <= 15, viene rimosso 4 dal dominio di X3
 [
-  {2, 3, 4, 5}, {1, 2, 3, 4}, {1, 2, 3}, 
+  {2, 3, 4, 5}, {1, 2, 3, 4}, {1, 2, 3},
   {1, 2, 3, 4, 5}, {3, 4, 5}
 ]
 
 X3^2 + X4^2 <= 15, viene rimosso 4 dal dominio di X4
 [{2, 3, 4, 5}, {1, 2, 3, 4}, {1, 2, 3}, {1, 2, 3}, {3, 4, 5}]
 
-X1 + X5 >= 3, non cambia nulla 
+X1 + X5 >= 3, non cambia nulla
 [{2, 3, 4, 5}, {1, 2, 3, 4}, {1, 2, 3}, {1, 2, 3}, {3, 4, 5}]
 
-X1 + X5 >= 3, non cambia nulla 
+X1 + X5 >= 3, non cambia nulla
 [{2, 3, 4, 5}, {1, 2, 3, 4}, {1, 2, 3}, {1, 2, 3}, {3, 4, 5}]
 
-X1 > X3, non cambia nulla 
+X1 > X3, non cambia nulla
 [{2, 3, 4, 5}, {1, 2, 3, 4}, {1, 2, 3}, {1, 2, 3}, {3, 4, 5}]
 
-X1 > X3, non cambia nulla 
+X1 > X3, non cambia nulla
 [{2, 3, 4, 5}, {1, 2, 3, 4}, {1, 2, 3}, {1, 2, 3}, {3, 4, 5}]
 
-X2 <= X3, non cambia nulla 
+X2 <= X3, non cambia nulla
 [{2, 3, 4, 5}, {1, 2, 3, 4}, {1, 2, 3}, {1, 2, 3}, {3, 4, 5}]
 
-X2 <= X3, non cambia nulla 
+X2 <= X3, non cambia nulla
 [{2, 3, 4, 5}, {1, 2, 3, 4}, {1, 2, 3}, {1, 2, 3}, {3, 4, 5}]
 
-X2 <= X3, non cambia nulla 
+X2 <= X3, non cambia nulla
 [{2, 3, 4, 5}, {1, 2, 3, 4}, {1, 2, 3}, {1, 2, 3}, {3, 4, 5}]
 ```
 
-Nota: questo è il peggior codice che ho scritto nell'ultimo periodo, ma a corto di tempo ci si accontenta di far funzionare le cose. 
+Nota: questo è il peggior codice che ho scritto nell'ultimo periodo, ma a corto di tempo ci si accontenta di far funzionare le cose.
 
 ```rust
 pub fn gac_3(&mut self) -> bool {
@@ -153,7 +138,7 @@ pub fn gac_3(&mut self) -> bool {
         for &val in self.domains[var].iter() {
             assignment[var] = Some(val);
             for &&other_var in other_vars.iter() {
-                assignment[other_var] = 
+                assignment[other_var] =
                     self.domains[other_var].first().copied();
             }
 

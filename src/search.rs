@@ -295,6 +295,91 @@ where
     }
 }
 
+pub struct NodeArena<'a, P: Problem, T> {
+    parent: Option<(&'a Self, P::Action)>,
+    pub state: P::State,
+    pub f: T,
+}
+
+impl<P: Problem, T: Priority<V>, V> Priority<V> for &NodeArena<'_, P, T> {
+    fn priority(&self) -> V {
+        self.f.priority()
+    }
+}
+
+use bumpalo::Bump;
+
+impl<P> Agent<P, P::Action>
+where
+    P: Problem + GoalBased,
+    P::Action: Clone,
+{
+    pub fn function_on_tree_arena<'a, F, T>(
+        &mut self,
+        perception: impl TryInto<P::State>,
+        bump: &'a Bump,
+    ) -> Option<P::Action>
+    where
+        F: Frontier<&'a NodeArena<'a, P, T>>,
+        T: Default + Clone + Add<Output = T> + 'a,
+        P: Utility<T> + 'a,
+    {
+        if self.plan.is_none() {
+            self.plan = self.search_on_tree_arena::<F, T>(perception.try_into().ok()?, bump);
+        };
+
+        self.plan.as_mut()?.pop_front()
+    }
+
+    fn search_on_tree_arena<'a, F, T>(
+        &self,
+        state: P::State,
+        arena: &'a Bump,
+    ) -> Option<VecDeque<P::Action>>
+    where
+        F: Frontier<&'a NodeArena<'a, P, T>>,
+        T: Default + Clone + Add<Output = T> + 'a,
+        P: Utility<T> + 'a,
+    {
+        let mut frontier = F::default();
+
+        let node = arena.alloc(NodeArena {
+            parent: None,
+            state,
+            f: Default::default(),
+        });
+
+        frontier.insert(node);
+
+        while let Some(node) = frontier.pop() {
+            if self.problem.goal_test(&node.state) {
+                let mut plan = VecDeque::new();
+                let mut node = &node;
+                while let Some((parent, action)) = &node.parent {
+                    plan.push_front(action.clone());
+                    node = parent;
+                }
+
+                return Some(plan);
+            }
+
+            for action in self.problem.actions(&node.state) {
+                let state = self.problem.result(&node.state, &action);
+
+                let node = arena.alloc(NodeArena {
+                    f: node.f.clone() + self.problem.utility(&node.state, &state, &action),
+                    parent: Some((node, action)),
+                    state,
+                });
+
+                frontier.insert(node);
+            }
+        }
+
+        None
+    }
+}
+
 // - problema
 //      - viene dall'agente, easy
 // - utilità

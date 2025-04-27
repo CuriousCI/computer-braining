@@ -1,0 +1,2512 @@
+desc: --pages-as-heap=yes --depth=50 --stacks=no --detailed-freq=100 --max-snapshots=1000
+cmd: ./target/release/ai
+time_unit: i
+#-----------
+snapshot=0
+#-----------
+time=0
+mem_heap_B=28672
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=1
+#-----------
+time=0
+mem_heap_B=315392
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=2
+#-----------
+time=0
+mem_heap_B=376832
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=3
+#-----------
+time=0
+mem_heap_B=397312
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=4
+#-----------
+time=0
+mem_heap_B=401408
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=5
+#-----------
+time=0
+mem_heap_B=561152
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=6
+#-----------
+time=0
+mem_heap_B=606208
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=7
+#-----------
+time=0
+mem_heap_B=618496
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=8
+#-----------
+time=0
+mem_heap_B=622592
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=9
+#-----------
+time=0
+mem_heap_B=626688
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=10
+#-----------
+time=0
+mem_heap_B=630784
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=11
+#-----------
+time=0
+mem_heap_B=638976
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=12
+#-----------
+time=0
+mem_heap_B=643072
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=13
+#-----------
+time=0
+mem_heap_B=647168
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=14
+#-----------
+time=0
+mem_heap_B=647168
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=detailed
+n2: 647168 (page allocation syscalls) mmap/mremap/brk, --alloc-fns, etc.
+ n0: 643072 0x0: ???
+ n0: 4096 in 1 place, below massif's threshold (1.00%)
+#-----------
+snapshot=15
+#-----------
+time=0
+mem_heap_B=643072
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=16
+#-----------
+time=0
+mem_heap_B=643072
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=17
+#-----------
+time=27417
+mem_heap_B=663552
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=18
+#-----------
+time=27490
+mem_heap_B=667648
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=19
+#-----------
+time=27533
+mem_heap_B=671744
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=20
+#-----------
+time=27576
+mem_heap_B=679936
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=21
+#-----------
+time=29974
+mem_heap_B=741376
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=22
+#-----------
+time=31165
+mem_heap_B=749568
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=23
+#-----------
+time=32385
+mem_heap_B=2756608
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=24
+#-----------
+time=32440
+mem_heap_B=4169728
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=25
+#-----------
+time=32483
+mem_heap_B=4521984
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=26
+#-----------
+time=32526
+mem_heap_B=4546560
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=27
+#-----------
+time=32855
+mem_heap_B=4599808
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=28
+#-----------
+time=37214
+mem_heap_B=4784128
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=29
+#-----------
+time=37287
+mem_heap_B=4927488
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=30
+#-----------
+time=37330
+mem_heap_B=4943872
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=31
+#-----------
+time=37373
+mem_heap_B=4952064
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=32
+#-----------
+time=53214
+mem_heap_B=4964352
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=33
+#-----------
+time=198081
+mem_heap_B=4964352
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=detailed
+n3: 4964352 (page allocation syscalls) mmap/mremap/brk, --alloc-fns, etc.
+ n1: 4321280 0x40227A2: __mmap64 (mmap64.c:58)
+  n5: 4321280 0x40227A2: mmap (mmap64.c:46)
+   n1: 2211840 0x400710B: _dl_map_segment (dl-map-segments.h:29)
+    n1: 2211840 0x400710B: _dl_map_segments (dl-map-segments.h:101)
+     n1: 2211840 0x400710B: _dl_map_object_from_fd (dl-load.c:1265)
+      n2: 2211840 0x40086A0: _dl_map_object (dl-load.c:2182)
+       n1: 2191360 0x4003620: openaux (dl-deps.c:64)
+        n1: 2191360 0x4002378: _dl_catch_exception (dl-catch.c:241)
+         n1: 2191360 0x4003A77: _dl_map_object_deps (dl-deps.c:232)
+          n1: 2191360 0x401E9E2: dl_main (rtld.c:1928)
+           n1: 2191360 0x401B6DE: _dl_sysdep_start (dl-sysdep.c:141)
+            n1: 2191360 0x401CD85: _dl_start_final (rtld.c:496)
+             n1: 2191360 0x401CD85: _dl_start (rtld.c:581)
+              n0: 2191360 0x401BCC7: ??? (in /usr/lib/ld-linux-x86-64.so.2)
+       n0: 20480 in 1 place, below massif's threshold (1.00%)
+   n1: 1974272 0x4007269: _dl_map_segments (dl-map-segments.h:139)
+    n1: 1974272 0x4007269: _dl_map_object_from_fd (dl-load.c:1265)
+     n2: 1974272 0x40086A0: _dl_map_object (dl-load.c:2182)
+      n1: 1957888 0x4003620: openaux (dl-deps.c:64)
+       n1: 1957888 0x4002378: _dl_catch_exception (dl-catch.c:241)
+        n1: 1957888 0x4003A77: _dl_map_object_deps (dl-deps.c:232)
+         n1: 1957888 0x401E9E2: dl_main (rtld.c:1928)
+          n1: 1957888 0x401B6DE: _dl_sysdep_start (dl-sysdep.c:141)
+           n1: 1957888 0x401CD85: _dl_start_final (rtld.c:496)
+            n1: 1957888 0x401CD85: _dl_start (rtld.c:581)
+             n0: 1957888 0x401BCC7: ??? (in /usr/lib/ld-linux-x86-64.so.2)
+      n0: 16384 in 1 place, below massif's threshold (1.00%)
+   n1: 61440 0x400AE64: _dl_sysdep_read_whole_file (dl-misc.c:49)
+    n1: 61440 0x4013CD3: _dl_load_cache_lookup (dl-cache.c:395)
+     n1: 61440 0x40088B5: _dl_map_object (dl-load.c:2049)
+      n1: 61440 0x4003620: openaux (dl-deps.c:64)
+       n1: 61440 0x4002378: _dl_catch_exception (dl-catch.c:241)
+        n1: 61440 0x4003A77: _dl_map_object_deps (dl-deps.c:232)
+         n1: 61440 0x401E9E2: dl_main (rtld.c:1928)
+          n1: 61440 0x401B6DE: _dl_sysdep_start (dl-sysdep.c:141)
+           n1: 61440 0x401CD85: _dl_start_final (rtld.c:496)
+            n1: 61440 0x401CD85: _dl_start (rtld.c:581)
+             n0: 61440 0x401BCC7: ??? (in /usr/lib/ld-linux-x86-64.so.2)
+   n1: 53248 0x4007EC6: _dl_map_segments (dl-map-segments.h:186)
+    n1: 53248 0x4007EC6: _dl_map_object_from_fd (dl-load.c:1265)
+     n1: 53248 0x40086A0: _dl_map_object (dl-load.c:2182)
+      n1: 53248 0x4003620: openaux (dl-deps.c:64)
+       n1: 53248 0x4002378: _dl_catch_exception (dl-catch.c:241)
+        n1: 53248 0x4003A77: _dl_map_object_deps (dl-deps.c:232)
+         n1: 53248 0x401E9E2: dl_main (rtld.c:1928)
+          n1: 53248 0x401B6DE: _dl_sysdep_start (dl-sysdep.c:141)
+           n1: 53248 0x401CD85: _dl_start_final (rtld.c:496)
+            n1: 53248 0x401CD85: _dl_start (rtld.c:581)
+             n0: 53248 0x401BCC7: ??? (in /usr/lib/ld-linux-x86-64.so.2)
+   n0: 20480 in 1 place, below massif's threshold (1.00%)
+ n0: 643072 0x0: ???
+ n0: 0 in 1 place, below massif's threshold (1.00%)
+#-----------
+snapshot=34
+#-----------
+time=198081
+mem_heap_B=4960256
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=35
+#-----------
+time=200936
+mem_heap_B=5038080
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=36
+#-----------
+time=298113
+mem_heap_B=5050368
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=37
+#-----------
+time=1198568
+mem_heap_B=5185536
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=38
+#-----------
+time=2206329
+mem_heap_B=5320704
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=39
+#-----------
+time=3340023
+mem_heap_B=5455872
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=40
+#-----------
+time=4230490
+mem_heap_B=5591040
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=41
+#-----------
+time=5383284
+mem_heap_B=5726208
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=42
+#-----------
+time=6527384
+mem_heap_B=5861376
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=43
+#-----------
+time=7143780
+mem_heap_B=5996544
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=44
+#-----------
+time=8314116
+mem_heap_B=6131712
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=45
+#-----------
+time=9535116
+mem_heap_B=6266880
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=46
+#-----------
+time=10727820
+mem_heap_B=6402048
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=47
+#-----------
+time=11894243
+mem_heap_B=6537216
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=48
+#-----------
+time=13026523
+mem_heap_B=6668288
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=49
+#-----------
+time=13063860
+mem_heap_B=6803456
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=50
+#-----------
+time=14233276
+mem_heap_B=6938624
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=51
+#-----------
+time=15387170
+mem_heap_B=7073792
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=52
+#-----------
+time=16552168
+mem_heap_B=7208960
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=53
+#-----------
+time=17715897
+mem_heap_B=7344128
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=54
+#-----------
+time=18878354
+mem_heap_B=7479296
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=55
+#-----------
+time=20047259
+mem_heap_B=7614464
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=56
+#-----------
+time=21224205
+mem_heap_B=7749632
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=57
+#-----------
+time=22402517
+mem_heap_B=7884800
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=58
+#-----------
+time=23565420
+mem_heap_B=8019968
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=59
+#-----------
+time=24732665
+mem_heap_B=8155136
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=60
+#-----------
+time=25779705
+mem_heap_B=8417280
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=61
+#-----------
+time=25912025
+mem_heap_B=8552448
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=62
+#-----------
+time=27000703
+mem_heap_B=8687616
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=63
+#-----------
+time=28136905
+mem_heap_B=8822784
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=64
+#-----------
+time=29312539
+mem_heap_B=8957952
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=65
+#-----------
+time=30476718
+mem_heap_B=9093120
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=66
+#-----------
+time=31666852
+mem_heap_B=9228288
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=67
+#-----------
+time=32864340
+mem_heap_B=9363456
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=68
+#-----------
+time=34059857
+mem_heap_B=9498624
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=69
+#-----------
+time=35271330
+mem_heap_B=9633792
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=70
+#-----------
+time=36470879
+mem_heap_B=9768960
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=71
+#-----------
+time=37666138
+mem_heap_B=9904128
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=72
+#-----------
+time=38858417
+mem_heap_B=10039296
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=73
+#-----------
+time=40057227
+mem_heap_B=10174464
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=74
+#-----------
+time=41239625
+mem_heap_B=10309632
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=75
+#-----------
+time=42430075
+mem_heap_B=10444800
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=76
+#-----------
+time=43611565
+mem_heap_B=10579968
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=77
+#-----------
+time=44811836
+mem_heap_B=10715136
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=78
+#-----------
+time=46004920
+mem_heap_B=10850304
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=79
+#-----------
+time=47194451
+mem_heap_B=10985472
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=80
+#-----------
+time=48378724
+mem_heap_B=11120640
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=81
+#-----------
+time=49562642
+mem_heap_B=11255808
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=82
+#-----------
+time=50736320
+mem_heap_B=11390976
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=83
+#-----------
+time=51418219
+mem_heap_B=11915264
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=84
+#-----------
+time=51895943
+mem_heap_B=12050432
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=85
+#-----------
+time=53064993
+mem_heap_B=12185600
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=86
+#-----------
+time=54254972
+mem_heap_B=12320768
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=87
+#-----------
+time=55444287
+mem_heap_B=12455936
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=88
+#-----------
+time=56632285
+mem_heap_B=12591104
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=89
+#-----------
+time=57829678
+mem_heap_B=12726272
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=90
+#-----------
+time=59017239
+mem_heap_B=12861440
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=91
+#-----------
+time=60234398
+mem_heap_B=12996608
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=92
+#-----------
+time=61440628
+mem_heap_B=13131776
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=93
+#-----------
+time=62706564
+mem_heap_B=13266944
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=94
+#-----------
+time=63941544
+mem_heap_B=13402112
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=95
+#-----------
+time=65207064
+mem_heap_B=13537280
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=96
+#-----------
+time=66470587
+mem_heap_B=13672448
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=97
+#-----------
+time=67694929
+mem_heap_B=13807616
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=98
+#-----------
+time=68946666
+mem_heap_B=13942784
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=99
+#-----------
+time=70190387
+mem_heap_B=14077952
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=100
+#-----------
+time=71386480
+mem_heap_B=14213120
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=101
+#-----------
+time=72624885
+mem_heap_B=14348288
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=102
+#-----------
+time=73780340
+mem_heap_B=15396864
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=103
+#-----------
+time=83351219
+mem_heap_B=16445440
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=104
+#-----------
+time=92958892
+mem_heap_B=17494016
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=105
+#-----------
+time=102440177
+mem_heap_B=18542592
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=106
+#-----------
+time=105288359
+mem_heap_B=18542592
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=detailed
+n6: 18542592 (page allocation syscalls) mmap/mremap/brk, --alloc-fns, etc.
+ n1: 8380416 0x4949997: brk (brk.c:37)
+  n1: 8380416 0x495211C: sbrk (sbrk.c:74)
+   n1: 8380416 0x48E7441: __glibc_morecore (morecore.c:29)
+    n1: 8380416 0x48E83B1: sysmalloc (malloc.c:2711)
+     n2: 8380416 0x48E95EC: _int_malloc (malloc.c:4539)
+      n2: 8245248 0x48EA2C1: malloc (malloc.c:3406)
+       n1: 4730880 0x112F54: ai::search::Agent<P,<P as ai::problem::Problem>::Action>::function_on_tree (in /home/cicio/projects/ai/target/release/ai)
+        n1: 4730880 0x11145D: ai::main (in /home/cicio/projects/ai/target/release/ai)
+         n1: 4730880 0x111092: std::sys::backtrace::__rust_begin_short_backtrace (in /home/cicio/projects/ai/target/release/ai)
+          n1: 4730880 0x111088: std::rt::lang_start::{{closure}} (in /home/cicio/projects/ai/target/release/ai)
+           n1: 4730880 0x12EB9F: std::rt::lang_start_internal (in /home/cicio/projects/ai/target/release/ai)
+            n0: 4730880 0x1123B4: main (in /home/cicio/projects/ai/target/release/ai)
+       n1: 3514368 0x112DFB: ai::search::Agent<P,<P as ai::problem::Problem>::Action>::function_on_tree (in /home/cicio/projects/ai/target/release/ai)
+        n1: 3514368 0x11145D: ai::main (in /home/cicio/projects/ai/target/release/ai)
+         n1: 3514368 0x111092: std::sys::backtrace::__rust_begin_short_backtrace (in /home/cicio/projects/ai/target/release/ai)
+          n1: 3514368 0x111088: std::rt::lang_start::{{closure}} (in /home/cicio/projects/ai/target/release/ai)
+           n1: 3514368 0x12EB9F: std::rt::lang_start_internal (in /home/cicio/projects/ai/target/release/ai)
+            n0: 3514368 0x1123B4: main (in /home/cicio/projects/ai/target/release/ai)
+      n0: 135168 in 1 place, below massif's threshold (1.00%)
+ n1: 4341760 0x4950E52: __mmap64 (mmap64.c:58)
+  n2: 4341760 0x4950E52: mmap (mmap64.c:46)
+   n1: 4194304 0x48E7240: sysmalloc_mmap_fallback.constprop.0 (malloc.c:2510)
+    n1: 4194304 0x48E80BD: sysmalloc (malloc.c:2734)
+     n1: 4194304 0x48E95EC: _int_malloc (malloc.c:4539)
+      n1: 4194304 0x48EA2C1: malloc (malloc.c:3406)
+       n1: 4194304 0x112DFB: ai::search::Agent<P,<P as ai::problem::Problem>::Action>::function_on_tree (in /home/cicio/projects/ai/target/release/ai)
+        n1: 4194304 0x11145D: ai::main (in /home/cicio/projects/ai/target/release/ai)
+         n1: 4194304 0x111092: std::sys::backtrace::__rust_begin_short_backtrace (in /home/cicio/projects/ai/target/release/ai)
+          n1: 4194304 0x111088: std::rt::lang_start::{{closure}} (in /home/cicio/projects/ai/target/release/ai)
+           n1: 4194304 0x12EB9F: std::rt::lang_start_internal (in /home/cicio/projects/ai/target/release/ai)
+            n0: 4194304 0x1123B4: main (in /home/cicio/projects/ai/target/release/ai)
+   n0: 147456 in 2 places, all below massif's threshold (1.00%)
+ n1: 4259840 0x40227A2: __mmap64 (mmap64.c:58)
+  n3: 4259840 0x40227A2: mmap (mmap64.c:46)
+   n1: 2211840 0x400710B: _dl_map_segment (dl-map-segments.h:29)
+    n1: 2211840 0x400710B: _dl_map_segments (dl-map-segments.h:101)
+     n1: 2211840 0x400710B: _dl_map_object_from_fd (dl-load.c:1265)
+      n2: 2211840 0x40086A0: _dl_map_object (dl-load.c:2182)
+       n1: 2191360 0x4003620: openaux (dl-deps.c:64)
+        n1: 2191360 0x4002378: _dl_catch_exception (dl-catch.c:241)
+         n1: 2191360 0x4003A77: _dl_map_object_deps (dl-deps.c:232)
+          n1: 2191360 0x401E9E2: dl_main (rtld.c:1928)
+           n1: 2191360 0x401B6DE: _dl_sysdep_start (dl-sysdep.c:141)
+            n1: 2191360 0x401CD85: _dl_start_final (rtld.c:496)
+             n1: 2191360 0x401CD85: _dl_start (rtld.c:581)
+              n0: 2191360 0x401BCC7: ??? (in /usr/lib/ld-linux-x86-64.so.2)
+       n0: 20480 in 1 place, below massif's threshold (1.00%)
+   n1: 1974272 0x4007269: _dl_map_segments (dl-map-segments.h:139)
+    n1: 1974272 0x4007269: _dl_map_object_from_fd (dl-load.c:1265)
+     n2: 1974272 0x40086A0: _dl_map_object (dl-load.c:2182)
+      n1: 1957888 0x4003620: openaux (dl-deps.c:64)
+       n1: 1957888 0x4002378: _dl_catch_exception (dl-catch.c:241)
+        n1: 1957888 0x4003A77: _dl_map_object_deps (dl-deps.c:232)
+         n1: 1957888 0x401E9E2: dl_main (rtld.c:1928)
+          n1: 1957888 0x401B6DE: _dl_sysdep_start (dl-sysdep.c:141)
+           n1: 1957888 0x401CD85: _dl_start_final (rtld.c:496)
+            n1: 1957888 0x401CD85: _dl_start (rtld.c:581)
+             n0: 1957888 0x401BCC7: ??? (in /usr/lib/ld-linux-x86-64.so.2)
+      n0: 16384 in 1 place, below massif's threshold (1.00%)
+   n0: 73728 in 3 places, all below massif's threshold (1.00%)
+ n1: 917504 0x4954DB0: mremap (mremap.c:49)
+  n1: 917504 0x48EAE13: mremap_chunk (malloc.c:3079)
+   n1: 917504 0x48EAE13: realloc (malloc.c:3558)
+    n1: 917504 0x10F08C: alloc::raw_vec::finish_grow (in /home/cicio/projects/ai/target/release/ai)
+     n1: 917504 0x113813: alloc::raw_vec::RawVec<T,A>::grow_one (in /home/cicio/projects/ai/target/release/ai)
+      n1: 917504 0x113BA3: alloc::collections::binary_heap::BinaryHeap<T,A>::push (in /home/cicio/projects/ai/target/release/ai)
+       n1: 917504 0x112F87: ai::search::Agent<P,<P as ai::problem::Problem>::Action>::function_on_tree (in /home/cicio/projects/ai/target/release/ai)
+        n1: 917504 0x11145D: ai::main (in /home/cicio/projects/ai/target/release/ai)
+         n1: 917504 0x111092: std::sys::backtrace::__rust_begin_short_backtrace (in /home/cicio/projects/ai/target/release/ai)
+          n1: 917504 0x111088: std::rt::lang_start::{{closure}} (in /home/cicio/projects/ai/target/release/ai)
+           n1: 917504 0x12EB9F: std::rt::lang_start_internal (in /home/cicio/projects/ai/target/release/ai)
+            n0: 917504 0x1123B4: main (in /home/cicio/projects/ai/target/release/ai)
+ n0: 643072 0x0: ???
+ n0: 0 in 1 place, below massif's threshold (1.00%)
+#-----------
+snapshot=107
+#-----------
+time=105288359
+mem_heap_B=18538496
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=108
+#-----------
+time=105288359
+mem_heap_B=18542592
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=109
+#-----------
+time=105288359
+mem_heap_B=19591168
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=110
+#-----------
+time=112043309
+mem_heap_B=20639744
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=111
+#-----------
+time=121713121
+mem_heap_B=21688320
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=112
+#-----------
+time=131188558
+mem_heap_B=22736896
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=113
+#-----------
+time=140560394
+mem_heap_B=23785472
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=114
+#-----------
+time=149997316
+mem_heap_B=24834048
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=115
+#-----------
+time=159422391
+mem_heap_B=25882624
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=116
+#-----------
+time=168968050
+mem_heap_B=26931200
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=117
+#-----------
+time=178587610
+mem_heap_B=27979776
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=118
+#-----------
+time=188294281
+mem_heap_B=29028352
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=119
+#-----------
+time=198264475
+mem_heap_B=30076928
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=120
+#-----------
+time=207714912
+mem_heap_B=31125504
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=121
+#-----------
+time=213360594
+mem_heap_B=31125504
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=detailed
+n6: 31125504 (page allocation syscalls) mmap/mremap/brk, --alloc-fns, etc.
+ n1: 15740928 0x4950E52: __mmap64 (mmap64.c:58)
+  n2: 15740928 0x4950E52: mmap (mmap64.c:46)
+   n1: 15728640 0x48E7240: sysmalloc_mmap_fallback.constprop.0 (malloc.c:2510)
+    n1: 15728640 0x48E80BD: sysmalloc (malloc.c:2734)
+     n1: 15728640 0x48E95EC: _int_malloc (malloc.c:4539)
+      n1: 15728640 0x48EA2C1: malloc (malloc.c:3406)
+       n1: 15728640 0x112DFB: ai::search::Agent<P,<P as ai::problem::Problem>::Action>::function_on_tree (in /home/cicio/projects/ai/target/release/ai)
+        n1: 15728640 0x11145D: ai::main (in /home/cicio/projects/ai/target/release/ai)
+         n1: 15728640 0x111092: std::sys::backtrace::__rust_begin_short_backtrace (in /home/cicio/projects/ai/target/release/ai)
+          n1: 15728640 0x111088: std::rt::lang_start::{{closure}} (in /home/cicio/projects/ai/target/release/ai)
+           n1: 15728640 0x12EB9F: std::rt::lang_start_internal (in /home/cicio/projects/ai/target/release/ai)
+            n0: 15728640 0x1123B4: main (in /home/cicio/projects/ai/target/release/ai)
+   n0: 12288 in 2 places, all below massif's threshold (1.00%)
+ n1: 8380416 0x4949997: brk (brk.c:37)
+  n1: 8380416 0x495211C: sbrk (sbrk.c:74)
+   n1: 8380416 0x48E7441: __glibc_morecore (morecore.c:29)
+    n1: 8380416 0x48E83B1: sysmalloc (malloc.c:2711)
+     n2: 8380416 0x48E95EC: _int_malloc (malloc.c:4539)
+      n2: 8245248 0x48EA2C1: malloc (malloc.c:3406)
+       n1: 4730880 0x112F54: ai::search::Agent<P,<P as ai::problem::Problem>::Action>::function_on_tree (in /home/cicio/projects/ai/target/release/ai)
+        n1: 4730880 0x11145D: ai::main (in /home/cicio/projects/ai/target/release/ai)
+         n1: 4730880 0x111092: std::sys::backtrace::__rust_begin_short_backtrace (in /home/cicio/projects/ai/target/release/ai)
+          n1: 4730880 0x111088: std::rt::lang_start::{{closure}} (in /home/cicio/projects/ai/target/release/ai)
+           n1: 4730880 0x12EB9F: std::rt::lang_start_internal (in /home/cicio/projects/ai/target/release/ai)
+            n0: 4730880 0x1123B4: main (in /home/cicio/projects/ai/target/release/ai)
+       n1: 3514368 0x112DFB: ai::search::Agent<P,<P as ai::problem::Problem>::Action>::function_on_tree (in /home/cicio/projects/ai/target/release/ai)
+        n1: 3514368 0x11145D: ai::main (in /home/cicio/projects/ai/target/release/ai)
+         n1: 3514368 0x111092: std::sys::backtrace::__rust_begin_short_backtrace (in /home/cicio/projects/ai/target/release/ai)
+          n1: 3514368 0x111088: std::rt::lang_start::{{closure}} (in /home/cicio/projects/ai/target/release/ai)
+           n1: 3514368 0x12EB9F: std::rt::lang_start_internal (in /home/cicio/projects/ai/target/release/ai)
+            n0: 3514368 0x1123B4: main (in /home/cicio/projects/ai/target/release/ai)
+      n0: 135168 in 1 place, below massif's threshold (1.00%)
+ n1: 4259840 0x40227A2: __mmap64 (mmap64.c:58)
+  n3: 4259840 0x40227A2: mmap (mmap64.c:46)
+   n1: 2211840 0x400710B: _dl_map_segment (dl-map-segments.h:29)
+    n1: 2211840 0x400710B: _dl_map_segments (dl-map-segments.h:101)
+     n1: 2211840 0x400710B: _dl_map_object_from_fd (dl-load.c:1265)
+      n2: 2211840 0x40086A0: _dl_map_object (dl-load.c:2182)
+       n1: 2191360 0x4003620: openaux (dl-deps.c:64)
+        n1: 2191360 0x4002378: _dl_catch_exception (dl-catch.c:241)
+         n1: 2191360 0x4003A77: _dl_map_object_deps (dl-deps.c:232)
+          n1: 2191360 0x401E9E2: dl_main (rtld.c:1928)
+           n1: 2191360 0x401B6DE: _dl_sysdep_start (dl-sysdep.c:141)
+            n1: 2191360 0x401CD85: _dl_start_final (rtld.c:496)
+             n1: 2191360 0x401CD85: _dl_start (rtld.c:581)
+              n0: 2191360 0x401BCC7: ??? (in /usr/lib/ld-linux-x86-64.so.2)
+       n0: 20480 in 1 place, below massif's threshold (1.00%)
+   n1: 1974272 0x4007269: _dl_map_segments (dl-map-segments.h:139)
+    n1: 1974272 0x4007269: _dl_map_object_from_fd (dl-load.c:1265)
+     n2: 1974272 0x40086A0: _dl_map_object (dl-load.c:2182)
+      n1: 1957888 0x4003620: openaux (dl-deps.c:64)
+       n1: 1957888 0x4002378: _dl_catch_exception (dl-catch.c:241)
+        n1: 1957888 0x4003A77: _dl_map_object_deps (dl-deps.c:232)
+         n1: 1957888 0x401E9E2: dl_main (rtld.c:1928)
+          n1: 1957888 0x401B6DE: _dl_sysdep_start (dl-sysdep.c:141)
+           n1: 1957888 0x401CD85: _dl_start_final (rtld.c:496)
+            n1: 1957888 0x401CD85: _dl_start (rtld.c:581)
+             n0: 1957888 0x401BCC7: ??? (in /usr/lib/ld-linux-x86-64.so.2)
+      n0: 16384 in 1 place, below massif's threshold (1.00%)
+   n0: 73728 in 3 places, all below massif's threshold (1.00%)
+ n1: 2101248 0x4954DB0: mremap (mremap.c:49)
+  n1: 2101248 0x48EAE13: mremap_chunk (malloc.c:3079)
+   n1: 2101248 0x48EAE13: realloc (malloc.c:3558)
+    n1: 2101248 0x10F08C: alloc::raw_vec::finish_grow (in /home/cicio/projects/ai/target/release/ai)
+     n1: 2101248 0x113813: alloc::raw_vec::RawVec<T,A>::grow_one (in /home/cicio/projects/ai/target/release/ai)
+      n1: 2101248 0x113BA3: alloc::collections::binary_heap::BinaryHeap<T,A>::push (in /home/cicio/projects/ai/target/release/ai)
+       n1: 2101248 0x112F87: ai::search::Agent<P,<P as ai::problem::Problem>::Action>::function_on_tree (in /home/cicio/projects/ai/target/release/ai)
+        n1: 2101248 0x11145D: ai::main (in /home/cicio/projects/ai/target/release/ai)
+         n1: 2101248 0x111092: std::sys::backtrace::__rust_begin_short_backtrace (in /home/cicio/projects/ai/target/release/ai)
+          n1: 2101248 0x111088: std::rt::lang_start::{{closure}} (in /home/cicio/projects/ai/target/release/ai)
+           n1: 2101248 0x12EB9F: std::rt::lang_start_internal (in /home/cicio/projects/ai/target/release/ai)
+            n0: 2101248 0x1123B4: main (in /home/cicio/projects/ai/target/release/ai)
+ n0: 643072 0x0: ???
+ n0: 0 in 1 place, below massif's threshold (1.00%)
+#-----------
+snapshot=122
+#-----------
+time=213360594
+mem_heap_B=31121408
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=123
+#-----------
+time=213360594
+mem_heap_B=31125504
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=124
+#-----------
+time=213360594
+mem_heap_B=33222656
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=125
+#-----------
+time=217185007
+mem_heap_B=34271232
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=126
+#-----------
+time=226729784
+mem_heap_B=35319808
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=127
+#-----------
+time=236168172
+mem_heap_B=36368384
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=128
+#-----------
+time=246046017
+mem_heap_B=37416960
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=129
+#-----------
+time=255891653
+mem_heap_B=38465536
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=130
+#-----------
+time=265636543
+mem_heap_B=39514112
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=131
+#-----------
+time=275453425
+mem_heap_B=40562688
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=132
+#-----------
+time=285199474
+mem_heap_B=41611264
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=133
+#-----------
+time=294975733
+mem_heap_B=42659840
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=134
+#-----------
+time=304713747
+mem_heap_B=43708416
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=135
+#-----------
+time=314525902
+mem_heap_B=44756992
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=136
+#-----------
+time=325350353
+mem_heap_B=45805568
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=137
+#-----------
+time=336220131
+mem_heap_B=46854144
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=138
+#-----------
+time=347060237
+mem_heap_B=47902720
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=139
+#-----------
+time=357934971
+mem_heap_B=48951296
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=140
+#-----------
+time=368734024
+mem_heap_B=49999872
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=141
+#-----------
+time=379526248
+mem_heap_B=51048448
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=142
+#-----------
+time=390329831
+mem_heap_B=52097024
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=143
+#-----------
+time=401076421
+mem_heap_B=53145600
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=144
+#-----------
+time=411778568
+mem_heap_B=54194176
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=145
+#-----------
+time=422526314
+mem_heap_B=55242752
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=146
+#-----------
+time=433235042
+mem_heap_B=56291328
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=147
+#-----------
+time=444031979
+mem_heap_B=57339904
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=148
+#-----------
+time=450705559
+mem_heap_B=57339904
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=detailed
+n6: 57339904 (page allocation syscalls) mmap/mremap/brk, --alloc-fns, etc.
+ n1: 39858176 0x4950E52: __mmap64 (mmap64.c:58)
+  n2: 39858176 0x4950E52: mmap (mmap64.c:46)
+   n1: 39845888 0x48E7240: sysmalloc_mmap_fallback.constprop.0 (malloc.c:2510)
+    n1: 39845888 0x48E80BD: sysmalloc (malloc.c:2734)
+     n1: 39845888 0x48E95EC: _int_malloc (malloc.c:4539)
+      n1: 39845888 0x48EA2C1: malloc (malloc.c:3406)
+       n1: 39845888 0x112DFB: ai::search::Agent<P,<P as ai::problem::Problem>::Action>::function_on_tree (in /home/cicio/projects/ai/target/release/ai)
+        n1: 39845888 0x11145D: ai::main (in /home/cicio/projects/ai/target/release/ai)
+         n1: 39845888 0x111092: std::sys::backtrace::__rust_begin_short_backtrace (in /home/cicio/projects/ai/target/release/ai)
+          n1: 39845888 0x111088: std::rt::lang_start::{{closure}} (in /home/cicio/projects/ai/target/release/ai)
+           n1: 39845888 0x12EB9F: std::rt::lang_start_internal (in /home/cicio/projects/ai/target/release/ai)
+            n0: 39845888 0x1123B4: main (in /home/cicio/projects/ai/target/release/ai)
+   n0: 12288 in 2 places, all below massif's threshold (1.00%)
+ n1: 8380416 0x4949997: brk (brk.c:37)
+  n1: 8380416 0x495211C: sbrk (sbrk.c:74)
+   n1: 8380416 0x48E7441: __glibc_morecore (morecore.c:29)
+    n1: 8380416 0x48E83B1: sysmalloc (malloc.c:2711)
+     n2: 8380416 0x48E95EC: _int_malloc (malloc.c:4539)
+      n2: 8245248 0x48EA2C1: malloc (malloc.c:3406)
+       n1: 4730880 0x112F54: ai::search::Agent<P,<P as ai::problem::Problem>::Action>::function_on_tree (in /home/cicio/projects/ai/target/release/ai)
+        n1: 4730880 0x11145D: ai::main (in /home/cicio/projects/ai/target/release/ai)
+         n1: 4730880 0x111092: std::sys::backtrace::__rust_begin_short_backtrace (in /home/cicio/projects/ai/target/release/ai)
+          n1: 4730880 0x111088: std::rt::lang_start::{{closure}} (in /home/cicio/projects/ai/target/release/ai)
+           n1: 4730880 0x12EB9F: std::rt::lang_start_internal (in /home/cicio/projects/ai/target/release/ai)
+            n0: 4730880 0x1123B4: main (in /home/cicio/projects/ai/target/release/ai)
+       n1: 3514368 0x112DFB: ai::search::Agent<P,<P as ai::problem::Problem>::Action>::function_on_tree (in /home/cicio/projects/ai/target/release/ai)
+        n1: 3514368 0x11145D: ai::main (in /home/cicio/projects/ai/target/release/ai)
+         n1: 3514368 0x111092: std::sys::backtrace::__rust_begin_short_backtrace (in /home/cicio/projects/ai/target/release/ai)
+          n1: 3514368 0x111088: std::rt::lang_start::{{closure}} (in /home/cicio/projects/ai/target/release/ai)
+           n1: 3514368 0x12EB9F: std::rt::lang_start_internal (in /home/cicio/projects/ai/target/release/ai)
+            n0: 3514368 0x1123B4: main (in /home/cicio/projects/ai/target/release/ai)
+      n0: 135168 in 1 place, below massif's threshold (1.00%)
+ n1: 4259840 0x40227A2: __mmap64 (mmap64.c:58)
+  n3: 4259840 0x40227A2: mmap (mmap64.c:46)
+   n1: 2211840 0x400710B: _dl_map_segment (dl-map-segments.h:29)
+    n1: 2211840 0x400710B: _dl_map_segments (dl-map-segments.h:101)
+     n1: 2211840 0x400710B: _dl_map_object_from_fd (dl-load.c:1265)
+      n2: 2211840 0x40086A0: _dl_map_object (dl-load.c:2182)
+       n1: 2191360 0x4003620: openaux (dl-deps.c:64)
+        n1: 2191360 0x4002378: _dl_catch_exception (dl-catch.c:241)
+         n1: 2191360 0x4003A77: _dl_map_object_deps (dl-deps.c:232)
+          n1: 2191360 0x401E9E2: dl_main (rtld.c:1928)
+           n1: 2191360 0x401B6DE: _dl_sysdep_start (dl-sysdep.c:141)
+            n1: 2191360 0x401CD85: _dl_start_final (rtld.c:496)
+             n1: 2191360 0x401CD85: _dl_start (rtld.c:581)
+              n0: 2191360 0x401BCC7: ??? (in /usr/lib/ld-linux-x86-64.so.2)
+       n0: 20480 in 1 place, below massif's threshold (1.00%)
+   n1: 1974272 0x4007269: _dl_map_segments (dl-map-segments.h:139)
+    n1: 1974272 0x4007269: _dl_map_object_from_fd (dl-load.c:1265)
+     n2: 1974272 0x40086A0: _dl_map_object (dl-load.c:2182)
+      n1: 1957888 0x4003620: openaux (dl-deps.c:64)
+       n1: 1957888 0x4002378: _dl_catch_exception (dl-catch.c:241)
+        n1: 1957888 0x4003A77: _dl_map_object_deps (dl-deps.c:232)
+         n1: 1957888 0x401E9E2: dl_main (rtld.c:1928)
+          n1: 1957888 0x401B6DE: _dl_sysdep_start (dl-sysdep.c:141)
+           n1: 1957888 0x401CD85: _dl_start_final (rtld.c:496)
+            n1: 1957888 0x401CD85: _dl_start (rtld.c:581)
+             n0: 1957888 0x401BCC7: ??? (in /usr/lib/ld-linux-x86-64.so.2)
+      n0: 16384 in 1 place, below massif's threshold (1.00%)
+   n0: 73728 in 3 places, all below massif's threshold (1.00%)
+ n1: 4198400 0x4954DB0: mremap (mremap.c:49)
+  n1: 4198400 0x48EAE13: mremap_chunk (malloc.c:3079)
+   n1: 4198400 0x48EAE13: realloc (malloc.c:3558)
+    n1: 4198400 0x10F08C: alloc::raw_vec::finish_grow (in /home/cicio/projects/ai/target/release/ai)
+     n1: 4198400 0x113813: alloc::raw_vec::RawVec<T,A>::grow_one (in /home/cicio/projects/ai/target/release/ai)
+      n1: 4198400 0x113BA3: alloc::collections::binary_heap::BinaryHeap<T,A>::push (in /home/cicio/projects/ai/target/release/ai)
+       n1: 4198400 0x112F87: ai::search::Agent<P,<P as ai::problem::Problem>::Action>::function_on_tree (in /home/cicio/projects/ai/target/release/ai)
+        n1: 4198400 0x11145D: ai::main (in /home/cicio/projects/ai/target/release/ai)
+         n1: 4198400 0x111092: std::sys::backtrace::__rust_begin_short_backtrace (in /home/cicio/projects/ai/target/release/ai)
+          n1: 4198400 0x111088: std::rt::lang_start::{{closure}} (in /home/cicio/projects/ai/target/release/ai)
+           n1: 4198400 0x12EB9F: std::rt::lang_start_internal (in /home/cicio/projects/ai/target/release/ai)
+            n0: 4198400 0x1123B4: main (in /home/cicio/projects/ai/target/release/ai)
+ n0: 643072 0x0: ???
+ n0: 0 in 1 place, below massif's threshold (1.00%)
+#-----------
+snapshot=149
+#-----------
+time=450705559
+mem_heap_B=57335808
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=150
+#-----------
+time=450705559
+mem_heap_B=57339904
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=151
+#-----------
+time=450705559
+mem_heap_B=61534208
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=152
+#-----------
+time=454446700
+mem_heap_B=62582784
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=153
+#-----------
+time=464441490
+mem_heap_B=63631360
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=154
+#-----------
+time=474612327
+mem_heap_B=64679936
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=155
+#-----------
+time=484511719
+mem_heap_B=65728512
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=156
+#-----------
+time=494369949
+mem_heap_B=66777088
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=157
+#-----------
+time=505220835
+mem_heap_B=67825664
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=158
+#-----------
+time=516124996
+mem_heap_B=68874240
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=159
+#-----------
+time=527052363
+mem_heap_B=69922816
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=160
+#-----------
+time=538052087
+mem_heap_B=70971392
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=161
+#-----------
+time=549121955
+mem_heap_B=72019968
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=162
+#-----------
+time=560067846
+mem_heap_B=73068544
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=163
+#-----------
+time=570975859
+mem_heap_B=74117120
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=164
+#-----------
+time=581210472
+mem_heap_B=75165696
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=165
+#-----------
+time=590698667
+mem_heap_B=76214272
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=166
+#-----------
+time=600291024
+mem_heap_B=77262848
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=167
+#-----------
+time=609738669
+mem_heap_B=78311424
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=168
+#-----------
+time=619142004
+mem_heap_B=79360000
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=169
+#-----------
+time=628560887
+mem_heap_B=80408576
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=170
+#-----------
+time=638025137
+mem_heap_B=81457152
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=171
+#-----------
+time=647672363
+mem_heap_B=82505728
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=172
+#-----------
+time=656998395
+mem_heap_B=83554304
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=173
+#-----------
+time=666387875
+mem_heap_B=84602880
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=174
+#-----------
+time=675769103
+mem_heap_B=85651456
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=175
+#-----------
+time=685170055
+mem_heap_B=86700032
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=176
+#-----------
+time=694589616
+mem_heap_B=87748608
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=177
+#-----------
+time=703992118
+mem_heap_B=88797184
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=178
+#-----------
+time=713347554
+mem_heap_B=89845760
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=179
+#-----------
+time=722754955
+mem_heap_B=90894336
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=180
+#-----------
+time=732217680
+mem_heap_B=91942912
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=181
+#-----------
+time=741833660
+mem_heap_B=92991488
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=182
+#-----------
+time=751261498
+mem_heap_B=94040064
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=183
+#-----------
+time=760685365
+mem_heap_B=95088640
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=184
+#-----------
+time=771282570
+mem_heap_B=96137216
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=185
+#-----------
+time=781997661
+mem_heap_B=97185792
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=186
+#-----------
+time=792707171
+mem_heap_B=98234368
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=187
+#-----------
+time=803383699
+mem_heap_B=99282944
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=188
+#-----------
+time=814072016
+mem_heap_B=100331520
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=189
+#-----------
+time=824783527
+mem_heap_B=101380096
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=190
+#-----------
+time=835462150
+mem_heap_B=102428672
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=191
+#-----------
+time=846230110
+mem_heap_B=103477248
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=192
+#-----------
+time=856935324
+mem_heap_B=104525824
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=193
+#-----------
+time=867678712
+mem_heap_B=105574400
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=194
+#-----------
+time=878415181
+mem_heap_B=106622976
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=195
+#-----------
+time=889172875
+mem_heap_B=107671552
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=196
+#-----------
+time=900054794
+mem_heap_B=108720128
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=197
+#-----------
+time=909572608
+mem_heap_B=108720128
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=detailed
+n5: 108720128 (page allocation syscalls) mmap/mremap/brk, --alloc-fns, etc.
+ n1: 87044096 0x4950E52: __mmap64 (mmap64.c:58)
+  n2: 87044096 0x4950E52: mmap (mmap64.c:46)
+   n1: 87031808 0x48E7240: sysmalloc_mmap_fallback.constprop.0 (malloc.c:2510)
+    n1: 87031808 0x48E80BD: sysmalloc (malloc.c:2734)
+     n1: 87031808 0x48E95EC: _int_malloc (malloc.c:4539)
+      n1: 87031808 0x48EA2C1: malloc (malloc.c:3406)
+       n1: 87031808 0x112DFB: ai::search::Agent<P,<P as ai::problem::Problem>::Action>::function_on_tree (in /home/cicio/projects/ai/target/release/ai)
+        n1: 87031808 0x11145D: ai::main (in /home/cicio/projects/ai/target/release/ai)
+         n1: 87031808 0x111092: std::sys::backtrace::__rust_begin_short_backtrace (in /home/cicio/projects/ai/target/release/ai)
+          n1: 87031808 0x111088: std::rt::lang_start::{{closure}} (in /home/cicio/projects/ai/target/release/ai)
+           n1: 87031808 0x12EB9F: std::rt::lang_start_internal (in /home/cicio/projects/ai/target/release/ai)
+            n0: 87031808 0x1123B4: main (in /home/cicio/projects/ai/target/release/ai)
+   n0: 12288 in 2 places, all below massif's threshold (1.00%)
+ n1: 8392704 0x4954DB0: mremap (mremap.c:49)
+  n1: 8392704 0x48EAE13: mremap_chunk (malloc.c:3079)
+   n1: 8392704 0x48EAE13: realloc (malloc.c:3558)
+    n1: 8392704 0x10F08C: alloc::raw_vec::finish_grow (in /home/cicio/projects/ai/target/release/ai)
+     n1: 8392704 0x113813: alloc::raw_vec::RawVec<T,A>::grow_one (in /home/cicio/projects/ai/target/release/ai)
+      n1: 8392704 0x113BA3: alloc::collections::binary_heap::BinaryHeap<T,A>::push (in /home/cicio/projects/ai/target/release/ai)
+       n1: 8392704 0x112F87: ai::search::Agent<P,<P as ai::problem::Problem>::Action>::function_on_tree (in /home/cicio/projects/ai/target/release/ai)
+        n1: 8392704 0x11145D: ai::main (in /home/cicio/projects/ai/target/release/ai)
+         n1: 8392704 0x111092: std::sys::backtrace::__rust_begin_short_backtrace (in /home/cicio/projects/ai/target/release/ai)
+          n1: 8392704 0x111088: std::rt::lang_start::{{closure}} (in /home/cicio/projects/ai/target/release/ai)
+           n1: 8392704 0x12EB9F: std::rt::lang_start_internal (in /home/cicio/projects/ai/target/release/ai)
+            n0: 8392704 0x1123B4: main (in /home/cicio/projects/ai/target/release/ai)
+ n1: 8380416 0x4949997: brk (brk.c:37)
+  n1: 8380416 0x495211C: sbrk (sbrk.c:74)
+   n1: 8380416 0x48E7441: __glibc_morecore (morecore.c:29)
+    n1: 8380416 0x48E83B1: sysmalloc (malloc.c:2711)
+     n2: 8380416 0x48E95EC: _int_malloc (malloc.c:4539)
+      n2: 8245248 0x48EA2C1: malloc (malloc.c:3406)
+       n1: 4730880 0x112F54: ai::search::Agent<P,<P as ai::problem::Problem>::Action>::function_on_tree (in /home/cicio/projects/ai/target/release/ai)
+        n1: 4730880 0x11145D: ai::main (in /home/cicio/projects/ai/target/release/ai)
+         n1: 4730880 0x111092: std::sys::backtrace::__rust_begin_short_backtrace (in /home/cicio/projects/ai/target/release/ai)
+          n1: 4730880 0x111088: std::rt::lang_start::{{closure}} (in /home/cicio/projects/ai/target/release/ai)
+           n1: 4730880 0x12EB9F: std::rt::lang_start_internal (in /home/cicio/projects/ai/target/release/ai)
+            n0: 4730880 0x1123B4: main (in /home/cicio/projects/ai/target/release/ai)
+       n1: 3514368 0x112DFB: ai::search::Agent<P,<P as ai::problem::Problem>::Action>::function_on_tree (in /home/cicio/projects/ai/target/release/ai)
+        n1: 3514368 0x11145D: ai::main (in /home/cicio/projects/ai/target/release/ai)
+         n1: 3514368 0x111092: std::sys::backtrace::__rust_begin_short_backtrace (in /home/cicio/projects/ai/target/release/ai)
+          n1: 3514368 0x111088: std::rt::lang_start::{{closure}} (in /home/cicio/projects/ai/target/release/ai)
+           n1: 3514368 0x12EB9F: std::rt::lang_start_internal (in /home/cicio/projects/ai/target/release/ai)
+            n0: 3514368 0x1123B4: main (in /home/cicio/projects/ai/target/release/ai)
+      n0: 135168 in 1 place, below massif's threshold (1.00%)
+ n1: 4259840 0x40227A2: __mmap64 (mmap64.c:58)
+  n3: 4259840 0x40227A2: mmap (mmap64.c:46)
+   n1: 2211840 0x400710B: _dl_map_segment (dl-map-segments.h:29)
+    n1: 2211840 0x400710B: _dl_map_segments (dl-map-segments.h:101)
+     n1: 2211840 0x400710B: _dl_map_object_from_fd (dl-load.c:1265)
+      n2: 2211840 0x40086A0: _dl_map_object (dl-load.c:2182)
+       n1: 2191360 0x4003620: openaux (dl-deps.c:64)
+        n1: 2191360 0x4002378: _dl_catch_exception (dl-catch.c:241)
+         n1: 2191360 0x4003A77: _dl_map_object_deps (dl-deps.c:232)
+          n1: 2191360 0x401E9E2: dl_main (rtld.c:1928)
+           n1: 2191360 0x401B6DE: _dl_sysdep_start (dl-sysdep.c:141)
+            n1: 2191360 0x401CD85: _dl_start_final (rtld.c:496)
+             n1: 2191360 0x401CD85: _dl_start (rtld.c:581)
+              n0: 2191360 0x401BCC7: ??? (in /usr/lib/ld-linux-x86-64.so.2)
+       n0: 20480 in 1 place, below massif's threshold (1.00%)
+   n1: 1974272 0x4007269: _dl_map_segments (dl-map-segments.h:139)
+    n1: 1974272 0x4007269: _dl_map_object_from_fd (dl-load.c:1265)
+     n2: 1974272 0x40086A0: _dl_map_object (dl-load.c:2182)
+      n1: 1957888 0x4003620: openaux (dl-deps.c:64)
+       n1: 1957888 0x4002378: _dl_catch_exception (dl-catch.c:241)
+        n1: 1957888 0x4003A77: _dl_map_object_deps (dl-deps.c:232)
+         n1: 1957888 0x401E9E2: dl_main (rtld.c:1928)
+          n1: 1957888 0x401B6DE: _dl_sysdep_start (dl-sysdep.c:141)
+           n1: 1957888 0x401CD85: _dl_start_final (rtld.c:496)
+            n1: 1957888 0x401CD85: _dl_start (rtld.c:581)
+             n0: 1957888 0x401BCC7: ??? (in /usr/lib/ld-linux-x86-64.so.2)
+      n0: 16384 in 1 place, below massif's threshold (1.00%)
+   n0: 73728 in 3 places, all below massif's threshold (1.00%)
+ n0: 643072 in 2 places, all below massif's threshold (1.00%)
+#-----------
+snapshot=198
+#-----------
+time=909572608
+mem_heap_B=108716032
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=199
+#-----------
+time=909572608
+mem_heap_B=108720128
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=200
+#-----------
+time=909572608
+mem_heap_B=117108736
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=201
+#-----------
+time=910869075
+mem_heap_B=118157312
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=202
+#-----------
+time=920859351
+mem_heap_B=119205888
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=203
+#-----------
+time=930711568
+mem_heap_B=120254464
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=204
+#-----------
+time=940636613
+mem_heap_B=121303040
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=205
+#-----------
+time=950603988
+mem_heap_B=122351616
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=206
+#-----------
+time=960469970
+mem_heap_B=123400192
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=207
+#-----------
+time=970560019
+mem_heap_B=124448768
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=208
+#-----------
+time=980326858
+mem_heap_B=125497344
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=209
+#-----------
+time=990191759
+mem_heap_B=126545920
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=210
+#-----------
+time=1000117417
+mem_heap_B=127594496
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=211
+#-----------
+time=1010029120
+mem_heap_B=128643072
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=212
+#-----------
+time=1019863309
+mem_heap_B=129691648
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=213
+#-----------
+time=1029702967
+mem_heap_B=130740224
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=214
+#-----------
+time=1039746951
+mem_heap_B=131788800
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=215
+#-----------
+time=1049831930
+mem_heap_B=132837376
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=216
+#-----------
+time=1059658429
+mem_heap_B=133885952
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=217
+#-----------
+time=1069628788
+mem_heap_B=134934528
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=218
+#-----------
+time=1079516800
+mem_heap_B=135983104
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=219
+#-----------
+time=1089405748
+mem_heap_B=137031680
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=220
+#-----------
+time=1099214727
+mem_heap_B=138080256
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=221
+#-----------
+time=1108982799
+mem_heap_B=139128832
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=222
+#-----------
+time=1118788666
+mem_heap_B=140177408
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=223
+#-----------
+time=1128365693
+mem_heap_B=141225984
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=224
+#-----------
+time=1137964411
+mem_heap_B=142274560
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=225
+#-----------
+time=1147736635
+mem_heap_B=143323136
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=226
+#-----------
+time=1157455048
+mem_heap_B=144371712
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=227
+#-----------
+time=1167188148
+mem_heap_B=145420288
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=228
+#-----------
+time=1176907433
+mem_heap_B=146468864
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=229
+#-----------
+time=1186608947
+mem_heap_B=147517440
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=230
+#-----------
+time=1196288113
+mem_heap_B=148566016
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=231
+#-----------
+time=1206199514
+mem_heap_B=149614592
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=232
+#-----------
+time=1216960566
+mem_heap_B=150663168
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=233
+#-----------
+time=1227780686
+mem_heap_B=151711744
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=234
+#-----------
+time=1238632299
+mem_heap_B=152760320
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=235
+#-----------
+time=1249484879
+mem_heap_B=153808896
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=236
+#-----------
+time=1260354616
+mem_heap_B=154857472
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=237
+#-----------
+time=1271233591
+mem_heap_B=155906048
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=238
+#-----------
+time=1282082621
+mem_heap_B=156954624
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=239
+#-----------
+time=1292874665
+mem_heap_B=158003200
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=240
+#-----------
+time=1303710691
+mem_heap_B=159051776
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=241
+#-----------
+time=1314565406
+mem_heap_B=160100352
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=242
+#-----------
+time=1325372639
+mem_heap_B=161148928
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=243
+#-----------
+time=1336288971
+mem_heap_B=162197504
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=244
+#-----------
+time=1347178392
+mem_heap_B=163246080
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=245
+#-----------
+time=1358100290
+mem_heap_B=164294656
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=246
+#-----------
+time=1368947523
+mem_heap_B=165343232
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=247
+#-----------
+time=1379907987
+mem_heap_B=166391808
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=248
+#-----------
+time=1390807399
+mem_heap_B=167440384
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=249
+#-----------
+time=1401716213
+mem_heap_B=168488960
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=250
+#-----------
+time=1412531549
+mem_heap_B=169537536
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=251
+#-----------
+time=1423570813
+mem_heap_B=170586112
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=252
+#-----------
+time=1434442233
+mem_heap_B=171634688
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=253
+#-----------
+time=1445324817
+mem_heap_B=172683264
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=254
+#-----------
+time=1456278452
+mem_heap_B=173731840
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=255
+#-----------
+time=1834710825
+mem_heap_B=173731840
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=peak
+n5: 173731840 (page allocation syscalls) mmap/mremap/brk, --alloc-fns, etc.
+ n1: 143667200 0x4950E52: __mmap64 (mmap64.c:58)
+  n2: 143667200 0x4950E52: mmap (mmap64.c:46)
+   n1: 143654912 0x48E7240: sysmalloc_mmap_fallback.constprop.0 (malloc.c:2510)
+    n1: 143654912 0x48E80BD: sysmalloc (malloc.c:2734)
+     n1: 143654912 0x48E95EC: _int_malloc (malloc.c:4539)
+      n1: 143654912 0x48EA2C1: malloc (malloc.c:3406)
+       n1: 143654912 0x112DFB: ai::search::Agent<P,<P as ai::problem::Problem>::Action>::function_on_tree (in /home/cicio/projects/ai/target/release/ai)
+        n1: 143654912 0x11145D: ai::main (in /home/cicio/projects/ai/target/release/ai)
+         n1: 143654912 0x111092: std::sys::backtrace::__rust_begin_short_backtrace (in /home/cicio/projects/ai/target/release/ai)
+          n1: 143654912 0x111088: std::rt::lang_start::{{closure}} (in /home/cicio/projects/ai/target/release/ai)
+           n1: 143654912 0x12EB9F: std::rt::lang_start_internal (in /home/cicio/projects/ai/target/release/ai)
+            n0: 143654912 0x1123B4: main (in /home/cicio/projects/ai/target/release/ai)
+   n0: 12288 in 2 places, all below massif's threshold (1.00%)
+ n1: 16781312 0x4954DB0: mremap (mremap.c:49)
+  n1: 16781312 0x48EAE13: mremap_chunk (malloc.c:3079)
+   n1: 16781312 0x48EAE13: realloc (malloc.c:3558)
+    n1: 16781312 0x10F08C: alloc::raw_vec::finish_grow (in /home/cicio/projects/ai/target/release/ai)
+     n1: 16781312 0x113813: alloc::raw_vec::RawVec<T,A>::grow_one (in /home/cicio/projects/ai/target/release/ai)
+      n1: 16781312 0x113BA3: alloc::collections::binary_heap::BinaryHeap<T,A>::push (in /home/cicio/projects/ai/target/release/ai)
+       n1: 16781312 0x112F87: ai::search::Agent<P,<P as ai::problem::Problem>::Action>::function_on_tree (in /home/cicio/projects/ai/target/release/ai)
+        n1: 16781312 0x11145D: ai::main (in /home/cicio/projects/ai/target/release/ai)
+         n1: 16781312 0x111092: std::sys::backtrace::__rust_begin_short_backtrace (in /home/cicio/projects/ai/target/release/ai)
+          n1: 16781312 0x111088: std::rt::lang_start::{{closure}} (in /home/cicio/projects/ai/target/release/ai)
+           n1: 16781312 0x12EB9F: std::rt::lang_start_internal (in /home/cicio/projects/ai/target/release/ai)
+            n0: 16781312 0x1123B4: main (in /home/cicio/projects/ai/target/release/ai)
+ n1: 8380416 0x4949997: brk (brk.c:37)
+  n1: 8380416 0x495211C: sbrk (sbrk.c:74)
+   n1: 8380416 0x48E7441: __glibc_morecore (morecore.c:29)
+    n1: 8380416 0x48E83B1: sysmalloc (malloc.c:2711)
+     n2: 8380416 0x48E95EC: _int_malloc (malloc.c:4539)
+      n2: 8245248 0x48EA2C1: malloc (malloc.c:3406)
+       n1: 4730880 0x112F54: ai::search::Agent<P,<P as ai::problem::Problem>::Action>::function_on_tree (in /home/cicio/projects/ai/target/release/ai)
+        n1: 4730880 0x11145D: ai::main (in /home/cicio/projects/ai/target/release/ai)
+         n1: 4730880 0x111092: std::sys::backtrace::__rust_begin_short_backtrace (in /home/cicio/projects/ai/target/release/ai)
+          n1: 4730880 0x111088: std::rt::lang_start::{{closure}} (in /home/cicio/projects/ai/target/release/ai)
+           n1: 4730880 0x12EB9F: std::rt::lang_start_internal (in /home/cicio/projects/ai/target/release/ai)
+            n0: 4730880 0x1123B4: main (in /home/cicio/projects/ai/target/release/ai)
+       n1: 3514368 0x112DFB: ai::search::Agent<P,<P as ai::problem::Problem>::Action>::function_on_tree (in /home/cicio/projects/ai/target/release/ai)
+        n1: 3514368 0x11145D: ai::main (in /home/cicio/projects/ai/target/release/ai)
+         n1: 3514368 0x111092: std::sys::backtrace::__rust_begin_short_backtrace (in /home/cicio/projects/ai/target/release/ai)
+          n1: 3514368 0x111088: std::rt::lang_start::{{closure}} (in /home/cicio/projects/ai/target/release/ai)
+           n1: 3514368 0x12EB9F: std::rt::lang_start_internal (in /home/cicio/projects/ai/target/release/ai)
+            n0: 3514368 0x1123B4: main (in /home/cicio/projects/ai/target/release/ai)
+      n0: 135168 in 1 place, below massif's threshold (1.00%)
+ n1: 4259840 0x40227A2: __mmap64 (mmap64.c:58)
+  n3: 4259840 0x40227A2: mmap (mmap64.c:46)
+   n1: 2211840 0x400710B: _dl_map_segment (dl-map-segments.h:29)
+    n1: 2211840 0x400710B: _dl_map_segments (dl-map-segments.h:101)
+     n1: 2211840 0x400710B: _dl_map_object_from_fd (dl-load.c:1265)
+      n2: 2211840 0x40086A0: _dl_map_object (dl-load.c:2182)
+       n1: 2191360 0x4003620: openaux (dl-deps.c:64)
+        n1: 2191360 0x4002378: _dl_catch_exception (dl-catch.c:241)
+         n1: 2191360 0x4003A77: _dl_map_object_deps (dl-deps.c:232)
+          n1: 2191360 0x401E9E2: dl_main (rtld.c:1928)
+           n1: 2191360 0x401B6DE: _dl_sysdep_start (dl-sysdep.c:141)
+            n1: 2191360 0x401CD85: _dl_start_final (rtld.c:496)
+             n1: 2191360 0x401CD85: _dl_start (rtld.c:581)
+              n0: 2191360 0x401BCC7: ??? (in /usr/lib/ld-linux-x86-64.so.2)
+       n0: 20480 in 1 place, below massif's threshold (1.00%)
+   n1: 1974272 0x4007269: _dl_map_segments (dl-map-segments.h:139)
+    n1: 1974272 0x4007269: _dl_map_object_from_fd (dl-load.c:1265)
+     n2: 1974272 0x40086A0: _dl_map_object (dl-load.c:2182)
+      n1: 1957888 0x4003620: openaux (dl-deps.c:64)
+       n1: 1957888 0x4002378: _dl_catch_exception (dl-catch.c:241)
+        n1: 1957888 0x4003A77: _dl_map_object_deps (dl-deps.c:232)
+         n1: 1957888 0x401E9E2: dl_main (rtld.c:1928)
+          n1: 1957888 0x401B6DE: _dl_sysdep_start (dl-sysdep.c:141)
+           n1: 1957888 0x401CD85: _dl_start_final (rtld.c:496)
+            n1: 1957888 0x401CD85: _dl_start (rtld.c:581)
+             n0: 1957888 0x401BCC7: ??? (in /usr/lib/ld-linux-x86-64.so.2)
+      n0: 16384 in 1 place, below massif's threshold (1.00%)
+   n0: 73728 in 3 places, all below massif's threshold (1.00%)
+ n0: 643072 in 2 places, all below massif's threshold (1.00%)
+#-----------
+snapshot=256
+#-----------
+time=1834710825
+mem_heap_B=173727744
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=257
+#-----------
+time=2057772249
+mem_heap_B=157999104
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=258
+#-----------
+time=2090815013
+mem_heap_B=159182848
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty
+#-----------
+snapshot=259
+#-----------
+time=2123228732
+mem_heap_B=159178752
+mem_heap_extra_B=0
+mem_stacks_B=0
+heap_tree=empty

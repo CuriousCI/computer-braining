@@ -148,25 +148,26 @@ impl Utility<AStar<Cost>> for ProteinFolding {
 
         let mut h = 0;
 
-        // let mut grandpa = state.prev.as_ref().and_then(|a| a.prev.as_ref());
-        // let mut curr = Some(state);
-        //
-        // while let (Some(p), Some(c)) = (grandpa, curr) {
-        //     if let (Alphabet::H, Alphabet::H) = (&self[p.depth], &self[c.depth]) {
-        //         if p.pos.0.abs_diff(c.pos.0) + p.pos.1.abs_diff(c.pos.1) > 1 {
-        //             h += 1;
-        //         }
-        //     }
-        //
-        //     grandpa = p.prev.as_ref();
-        //     curr = c.prev.as_ref();
-        // }
+        let mut grandpa = state.prev.as_ref().and_then(|a| a.prev.as_ref());
+        let mut curr = Some(state);
+
+        while let (Some(p), Some(c)) = (grandpa, curr) {
+            if let (Alphabet::H, Alphabet::H) = (&self[p.depth], &self[c.depth]) {
+                if p.pos.0.abs_diff(c.pos.0) + p.pos.1.abs_diff(c.pos.1) > 1 {
+                    h += 1;
+                }
+            }
+
+            grandpa = p.prev.as_ref();
+            curr = c.prev.as_ref();
+        }
 
         // (self.len() - h) as i16;
 
         AStar {
             g: if state.depth == 0 { 3 } else { 2 } - contacts,
-            h: 0, // h: (self.len() - h) as i16,
+            // h: 0,
+            h: (self.len() - h) as i16,
         }
     }
 }

@@ -268,9 +268,12 @@ where
 
 // pub type GraphUniformCost<P, V> = PriorityFrontier<P, UniformCost<V>, V>;
 pub type TreeUniformCost<P, V> = TreePriorityFrontier<Rc<Node<P, UniformCost<V>>>, V>;
+pub type TreeUniformCostArena<'a, P, V> =
+    TreePriorityFrontier<&'a NodeArena<'a, P, UniformCost<V>>, V>;
 // pub type GreedyBestFirst<P> = PriorityFrontier<P, BestFirstPolicy>;
 // pub type GraphAStar<P, V> = PriorityFrontier<P, AStar<V>, V>;
 pub type TreeAStar<P, V> = TreePriorityFrontier<Rc<Node<P, AStar<V>>>, V>;
+pub type TreeAStarArena<'a, P, V> = TreePriorityFrontier<&'a NodeArena<'a, P, AStar<V>>, V>;
 
 // P::Value: Ord + Clone,
 // V: Policy<P::Value>,

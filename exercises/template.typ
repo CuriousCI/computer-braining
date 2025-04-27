@@ -5,13 +5,15 @@
   set math.equation(numbering: "(1)")
   set heading(numbering: "1.1")
   set raw(lang: "Rust")
+  set table(stroke: 0.25pt)
+  set list(marker: [--])
 
   show figure.caption: set align(center)
   show heading: set block(above: 1.4em, below: 1em)
-  show raw: set text(font:"CaskaydiaCove NFM", lang: "it", weight: "light", size: 9pt)
-  show sym.emptyset : sym.diameter 
+  show raw: set text(font: "CaskaydiaCove NFM", lang: "it", weight: "light", size: 9pt)
+  show sym.emptyset: sym.diameter
 
-  heading(numbering: none)[E.A.5.7 (Cards 2)]
+  heading(numbering: none, title)
   context counter(heading).step()
   doc
 }

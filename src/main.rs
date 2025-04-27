@@ -1,9 +1,10 @@
 use ai::{
     // frontiers::{AStar, AStarTree, MinCost, MinCostTree},
     // frontiers::{AStar, AStarTree, MinCost, MinCostTree},
-    frontiers::{TreeAStar, TreeUniformCost},
+    frontiers::{TreeAStar, TreeAStarArena, TreeUniformCost, TreeUniformCostArena},
     search::{AStar, Agent, UniformCost},
 };
+use bumpalo::Bump;
 use models::hp_2d_protein_folding::{
     Alphabet, AminoAcid, Conformation, Cost, Pos, ProteinFolding, Sequence,
 };
@@ -16,6 +17,11 @@ use std::{
 };
 pub mod models;
 use rand::prelude::*;
+
+use std::alloc::System;
+
+#[global_allocator]
+static GLOBAL: System = System;
 
 // Properties constraints GAIRS
 
@@ -66,7 +72,7 @@ fn main() {
     // let sequence = vec![H, H,P, H, P, P, H, H, H, P, P, P, P, H, H, P];
     // println!("{}", sequence.len());
     // let mut rng = rng();
-    // let mut sequence: Sequence = (0..28)
+    // let mut sequence: Sequence = (0..30)
     //     .filter_map(|_| [P, H].choose(&mut rng))
     //     .map(Clone::clone)
     //     .collect();
@@ -93,22 +99,34 @@ fn main() {
     // println!("{:?}", time.elapsed());
     // debug_conformation(&protein, &conformation);
 
+    let bump = Bump::new();
+
     let mut agent = Agent::new(protein.clone());
     let mut conformation = vec![(0, 0)];
     let time = Instant::now();
     // agent.function_on_tree::<TreeUniformCost<Cost>>(AminoAcid::default())
     while let Some(pos) =
-        agent.function_on_tree::<TreeUniformCost<_, Cost>, _>(AminoAcid::default())
+        // agent.function_on_tree::<TreeUniformCost<_, Cost>, _>(AminoAcid::default())
+        agent.function_on_tree_arena::<TreeUniformCostArena<'_, _, Cost>, _>(
+            AminoAcid::default(),
+            &bump,
+        )
     {
         conformation.push(pos);
     }
     println!("{:?}", time.elapsed());
     debug_conformation(&protein, &conformation);
 
+    let bump = Bump::new();
+    let protein = ProteinFolding::new(sequence.clone());
+
     let mut agent = Agent::new(protein.clone());
     let mut conformation = vec![(0, 0)];
     let time = Instant::now();
-    while let Some(pos) = agent.function_on_tree::<TreeAStar<_, Cost>, _>(AminoAcid::default()) {
+    // while let Some(pos) = agent.function_on_tree::<TreeAStar<_, Cost>, _>(AminoAcid::default()) {
+    while let Some(pos) =
+        agent.function_on_tree_arena::<TreeAStarArena<'_, _, Cost>, _>(AminoAcid::default(), &bump)
+    {
         conformation.push(pos);
     }
     println!("{:?}", time.elapsed());
