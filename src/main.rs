@@ -1,12 +1,11 @@
 use ai::{
-    // frontiers::{AStar, AStarTree, MinCost, MinCostTree},
-    // frontiers::{AStar, AStarTree, MinCost, MinCostTree},
+    clean,
     frontiers::{TreeAStar, TreeAStarArena, TreeUniformCost, TreeUniformCostArena},
     search::{AStar, Agent, UniformCost},
 };
 use bumpalo::Bump;
 use models::hp_2d_protein_folding::{
-    Alphabet, AminoAcid, Conformation, Cost, Pos, ProteinFolding, Sequence,
+    Alphabet, AminoAcid, Conformation, Contacts, MissedContacts, Pos, ProteinFolding, Sequence,
 };
 use rand::{Rng, rng};
 use rayon::prelude::*;
@@ -28,48 +27,14 @@ static GLOBAL: System = System;
 fn main() {
     use Alphabet::*;
 
-    // let cards = [1, 1, 2, 2, 3, 3, 4];
-    // let n = 7;
-    // for i in 1..=n {
-    //     println!("⟨{{P_1, V, P_2, X_{i}, X{}}}, ", i + 1);
-    //     for p1 in 1..=n {
-    //         for v in 1..=n {
-    //             for p2 in 1..=n {
-    //                 for l in 1..=n {
-    //                     for m in 1..=n {
-    //                         if (1 <= i && i < p1 - 1) || (v <= i && i < p2 - 1) {
-    //                             if l < m {
-    //                                 println!("({p1}, {v}, {p2}, {l}, {m}),");
-    //                             }
-    //                         } else if (p1 <= i && i < v - 1) || (p2 <= i && i < n - 1) {
-    //                             if l > m {
-    //                                 println!("({p1}, {v}, {p2}, {m}, {l}),");
-    //                                 // println!("(),")
-    //                             }
-    //                         }
-    //                     }
-    //                 }
-    //             }
-    //         }
-    //     }
-    //     println!("⟩");
-    // }
-
-    // for i in 1..=n {
-    //     for j in i + 1..=n {
-    //         for k in j + 1..=n {
-    //             println!("({i}, {j}, {k})")
-    //         }
-    //     }
-    // }
-
-    // let sequence = vec![H, H, P, P, H, H];
-    let sequence = vec![
-        H, H, P, H, P, P, H, H, H, P, P, P, P, H, H, P, H, P, H, P, P, H, P, H, P, H, H,
-    ];
+    // let sequence = vec![
+    //     H, H, P, H, P, P, H, H, H, P, P, P, P, H, H, P, H, P, H, P, P, H, P, H, P, H, H,
+    // ];
+    // frontiers::{AStar, AStarTree, MinCost, MinCostTree},
+    // frontiers::{AStar, AStarTree, MinCost, MinCostTree},
     // let sequence = vec![H, H, P, H, P, P, H, H, H, P, P, P, P, H, H, P, H, P, H, P];
     // let sequence = vec![H, P, P, P, P, P, P, P, P, P, P, P,P, P, P, P, P, P, P, H];
-    // let sequence = vec![H, H,P, H, P, P, H, H, H, P, P, P, P, H, H, P];
+    let sequence = vec![H, H, P, H, P, P, H, H, H, P, P, P, P, H, H, P];
     // println!("{}", sequence.len());
     // let mut rng = rng();
     // let mut sequence: Sequence = (0..30)
@@ -77,40 +42,28 @@ fn main() {
     //     .map(Clone::clone)
     //     .collect();
     // sequence.push(H);
-    let protein = ProteinFolding::new(sequence.clone());
 
-    // let mut agent = Agent::new(protein.clone());
-    // let mut conformation = vec![(0, 0)];
-    // let time = Instant::now();
-    // while let Some(pos) =
-    //     agent.function_on_tree::<_, GraphUniformCost<_, Cost>, _>(AminoAcid::default())
-    // {
-    //     conformation.push(pos);
-    // }
-    // println!("{:?}", time.elapsed());
-    // debug_conformation(&protein, &conformation);
-    //
-    // let mut agent = Agent::new(protein.clone());
-    // let mut conformation = vec![(0, 0)];
-    // let time = Instant::now();
-    // while let Some(pos) = agent.function::<_, GraphAStar<_, Cost>, _>(AminoAcid::default()) {
-    //     conformation.push(pos);
-    // }
-    // println!("{:?}", time.elapsed());
-    // debug_conformation(&protein, &conformation);
+    let arena = Bump::new();
+    let protein = ProteinFolding::new(sequence.clone());
+    let res = clean::search_on_tree_arena::<_, clean::TreePriorityFrontier<_, _>, Contacts>(
+        protein.clone(),
+        AminoAcid::default().into(),
+        &arena,
+    );
 
     let bump = Bump::new();
-
+    let protein = ProteinFolding::new(sequence.clone());
     let mut agent = Agent::new(protein.clone());
     let mut conformation = vec![(0, 0)];
     let time = Instant::now();
     // agent.function_on_tree::<TreeUniformCost<Cost>>(AminoAcid::default())
     while let Some(pos) =
         // agent.function_on_tree::<TreeUniformCost<_, Cost>, _>(AminoAcid::default())
-        agent.function_on_tree_arena::<TreeUniformCostArena<'_, _, Cost>, _>(
-            AminoAcid::default(),
-            &bump,
-        )
+        agent
+            .function_on_tree_arena::<TreeUniformCostArena<'_, _, Contacts>, _>(
+                AminoAcid::default(),
+                &bump,
+            )
     {
         conformation.push(pos);
     }
@@ -119,14 +72,33 @@ fn main() {
 
     let bump = Bump::new();
     let protein = ProteinFolding::new(sequence.clone());
+    let mut agent = Agent::new(protein.clone());
+    let mut conformation = vec![(0, 0)];
+    let time = Instant::now();
+    // agent.function_on_tree::<TreeUniformCost<Cost>>(AminoAcid::default())
+    while let Some(pos) =
+        // agent.function_on_tree::<TreeUniformCost<_, Cost>, _>(AminoAcid::default())
+        agent
+            .function_on_tree_arena::<TreeUniformCostArena<'_, _, MissedContacts>, _>(
+                AminoAcid::default(),
+                &bump,
+            )
+    {
+        conformation.push(pos);
+    }
+    println!("{:?}", time.elapsed());
+    debug_conformation(&protein, &conformation);
 
+    let bump = Bump::new();
+    let protein = ProteinFolding::new(sequence.clone());
     let mut agent = Agent::new(protein.clone());
     let mut conformation = vec![(0, 0)];
     let time = Instant::now();
     // while let Some(pos) = agent.function_on_tree::<TreeAStar<_, Cost>, _>(AminoAcid::default()) {
-    while let Some(pos) =
-        agent.function_on_tree_arena::<TreeAStarArena<'_, _, Cost>, _>(AminoAcid::default(), &bump)
-    {
+    while let Some(pos) = agent.function_on_tree_arena::<TreeAStarArena<'_, _, MissedContacts>, _>(
+        AminoAcid::default(),
+        &bump,
+    ) {
         conformation.push(pos);
     }
     println!("{:?}", time.elapsed());
@@ -164,6 +136,63 @@ fn debug_conformation(protein: &ProteinFolding, conformation: &Conformation) {
 
     println!("{:?}\n\n", protein.energy(conformation));
 }
+
+// let mut agent = Agent::new(protein.clone());
+// let mut conformation = vec![(0, 0)];
+// let time = Instant::now();
+// while let Some(pos) =
+//     agent.function_on_tree::<_, GraphUniformCost<_, Cost>, _>(AminoAcid::default())
+// {
+//     conformation.push(pos);
+// }
+// println!("{:?}", time.elapsed());
+// debug_conformation(&protein, &conformation);
+//
+// let mut agent = Agent::new(protein.clone());
+// let mut conformation = vec![(0, 0)];
+// let time = Instant::now();
+// while let Some(pos) = agent.function::<_, GraphAStar<_, Cost>, _>(AminoAcid::default()) {
+//     conformation.push(pos);
+// }
+// println!("{:?}", time.elapsed());
+// debug_conformation(&protein, &conformation);
+
+// let cards = [1, 1, 2, 2, 3, 3, 4];
+// let n = 7;
+// for i in 1..=n {
+//     println!("⟨{{P_1, V, P_2, X_{i}, X{}}}, ", i + 1);
+//     for p1 in 1..=n {
+//         for v in 1..=n {
+//             for p2 in 1..=n {
+//                 for l in 1..=n {
+//                     for m in 1..=n {
+//                         if (1 <= i && i < p1 - 1) || (v <= i && i < p2 - 1) {
+//                             if l < m {
+//                                 println!("({p1}, {v}, {p2}, {l}, {m}),");
+//                             }
+//                         } else if (p1 <= i && i < v - 1) || (p2 <= i && i < n - 1) {
+//                             if l > m {
+//                                 println!("({p1}, {v}, {p2}, {m}, {l}),");
+//                                 // println!("(),")
+//                             }
+//                         }
+//                     }
+//                 }
+//             }
+//         }
+//     }
+//     println!("⟩");
+// }
+
+// for i in 1..=n {
+//     for j in i + 1..=n {
+//         for k in j + 1..=n {
+//             println!("({i}, {j}, {k})")
+//         }
+//     }
+// }
+
+// let sequence = vec![H, H, P, P, H, H];
 
 // println!("{:?}", size_of::<ai::exploration::Node<Pos, u32>>());
 // println!("{:?}", size_of::<ai::exploration::Node2<Pos, u32>>());

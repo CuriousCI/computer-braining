@@ -30,8 +30,6 @@ pub type Pos = (i16, i16);
 
 pub type Conformation = Vec<Pos>;
 
-pub type Cost = i16;
-
 #[derive(Clone)]
 pub struct ProteinFolding(Sequence);
 
@@ -72,13 +70,15 @@ impl Deref for ProteinFolding {
     }
 }
 
-impl Utility<UniformCost<Cost>> for ProteinFolding {
+pub type MissedContacts = i16;
+
+impl Utility<UniformCost<MissedContacts>> for ProteinFolding {
     fn utility(
         &self,
         parent: &Self::State,
         state: &Self::State,
         action: &Self::Action,
-    ) -> UniformCost<Cost> {
+    ) -> UniformCost<MissedContacts> {
         if let Alphabet::P = self[state.depth] {
             return UniformCost { g: 0 };
         }
@@ -102,33 +102,13 @@ impl Utility<UniformCost<Cost>> for ProteinFolding {
     }
 }
 
-// #[derive(Default, Clone, Eq, Ord, PartialEq, PartialOrd)]
-// pub struct Cost(i16);
-// impl Add for Cost {
-//     type Output = Cost;
-//
-//     fn add(self, rhs: Self) -> Self::Output {
-//         Cost(self.0 + rhs.0)
-//     }
-// }
-
-// if contacts == 2 {
-//     break;
-// }
-// if (state.depth == 0 && contacts == 3) || (state.depth > 0 && contacts == 2) {
-//     break;
-// }
-
-// let contacts = 0;
-// (pos, if amino_acid.depth == 0 { 3 } else { 2 } - count);
-
-impl Utility<AStar<Cost>> for ProteinFolding {
+impl Utility<AStar<MissedContacts>> for ProteinFolding {
     fn utility(
         &self,
         parent: &Self::State,
         state: &Self::State,
         action: &Self::Action,
-    ) -> AStar<Cost> {
+    ) -> AStar<MissedContacts> {
         if let Alphabet::P = self[state.depth] {
             return AStar { g: 0, h: 0 };
         }
@@ -171,6 +151,212 @@ impl Utility<AStar<Cost>> for ProteinFolding {
         }
     }
 }
+
+#[derive(Default, Clone, PartialEq)]
+pub struct Contacts {
+    percentage: f32,
+    contacts: Reverse<u16>,
+}
+
+impl Contacts {
+    fn priority(&self) -> f32 {
+        self.percentage * self.contacts.0 as f32
+    }
+}
+
+impl Eq for Contacts {}
+
+impl Ord for Contacts {
+    fn cmp(&self, other: &Self) -> std::cmp::Ordering {
+        self.priority()
+            .partial_cmp(&other.priority())
+            .unwrap_or(std::cmp::Ordering::Equal)
+            .reverse()
+    }
+}
+
+impl PartialOrd for Contacts {
+    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+        Some(self.cmp(other))
+    }
+}
+
+// match self.percentage.partial_cmp(&other.percentage) {
+//     Some(core::cmp::Ordering::Equal) => {}
+//     ord => return ord,
+// }
+// self.contacts.partial_cmp(&other.contacts)
+// fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+//     self.priority()
+//         .partial_cmp(&other.priority())
+//         .map(|o| o.reverse())
+// }
+
+// match self.percentage.partial_cmp(&other.percentage) {
+//     Some(core::cmp::Ordering::Equal) => {}
+//     ord => return ord,
+// }
+// self.contacts.partial_cmp(&other.contacts)
+
+// depth: u16,
+
+impl std::ops::Add for Contacts {
+    type Output = Self;
+
+    fn add(self, rhs: Self) -> Self::Output {
+        Self {
+            contacts: Reverse(self.contacts.0 + rhs.contacts.0),
+            percentage: rhs.percentage,
+        }
+    }
+}
+
+// depth: rhs.depth,
+
+impl Utility<Contacts> for ProteinFolding {
+    fn utility(&self, _: &Self::State, state: &Self::State, action: &Self::Action) -> Contacts {
+        if let Alphabet::P = self[state.depth] {
+            return Contacts {
+                contacts: Reverse(0),
+                percentage: state.depth as f32 / self.len() as f32,
+            };
+        }
+
+        // depth: state.depth,
+
+        let mut contacts = 0;
+
+        let &(x, y) = action;
+        let mut prev = state.prev.as_ref();
+        while let Some(amino_acid) = prev {
+            if let Alphabet::H = self[amino_acid.depth] {
+                if amino_acid.pos.0.abs_diff(x) + amino_acid.pos.1.abs_diff(y) == 1 {
+                    contacts += 1;
+                }
+            }
+            prev = amino_acid.prev.as_ref();
+        }
+
+        Contacts {
+            contacts: Reverse(contacts),
+            percentage: state.depth as f32 / self.len() as f32,
+        }
+    }
+}
+
+// depth: state.depth,
+
+impl Utility<UniformCost<Contacts>> for ProteinFolding {
+    fn utility(
+        &self,
+        _: &Self::State,
+        state: &Self::State,
+        action: &Self::Action,
+    ) -> UniformCost<Contacts> {
+        if let Alphabet::P = self[state.depth] {
+            return UniformCost {
+                g: Contacts {
+                    contacts: Reverse(0),
+                    percentage: state.depth as f32 / self.len() as f32,
+                    // depth: state.depth,
+                },
+            };
+        }
+
+        let mut contacts = 0;
+
+        let &(x, y) = action;
+        let mut prev = state.prev.as_ref();
+        while let Some(amino_acid) = prev {
+            if let Alphabet::H = self[amino_acid.depth] {
+                if amino_acid.pos.0.abs_diff(x) + amino_acid.pos.1.abs_diff(y) == 1 {
+                    contacts += 1;
+                }
+            }
+            prev = amino_acid.prev.as_ref();
+        }
+
+        UniformCost {
+            g: Contacts {
+                contacts: Reverse(contacts),
+                percentage: state.depth as f32 / self.len() as f32,
+                // depth: state.depth,
+            },
+        }
+    }
+}
+
+// g: if state.depth == 0 { 3 } else { 2 } - contacts,
+
+// impl Utility<AStar<Contacts>> for ProteinFolding {
+//     fn utility(
+//         &self,
+//         parent: &Self::State,
+//         state: &Self::State,
+//         action: &Self::Action,
+//     ) -> AStar<Contacts> {
+//         if let Alphabet::P = self[state.depth] {
+//             return AStar { g: 0, h: 0 };
+//         }
+//
+//         let mut contacts = 0;
+//
+//         let &(x, y) = action;
+//         let mut prev = state.prev.as_ref();
+//         while let Some(amino_acid) = prev {
+//             if let Alphabet::H = self[amino_acid.depth] {
+//                 if amino_acid.pos.0.abs_diff(x) + amino_acid.pos.1.abs_diff(y) == 1 {
+//                     contacts += 1;
+//                 }
+//             }
+//             prev = amino_acid.prev.as_ref();
+//         }
+//
+//         let mut h = 0;
+//
+//         let mut grandpa = state.prev.as_ref().and_then(|a| a.prev.as_ref());
+//         let mut curr = Some(state);
+//
+//         while let (Some(p), Some(c)) = (grandpa, curr) {
+//             if let (Alphabet::H, Alphabet::H) = (&self[p.depth], &self[c.depth]) {
+//                 if p.pos.0.abs_diff(c.pos.0) + p.pos.1.abs_diff(c.pos.1) > 1 {
+//                     h += 1;
+//                 }
+//             }
+//
+//             grandpa = p.prev.as_ref();
+//             curr = c.prev.as_ref();
+//         }
+//
+//         // (self.len() - h) as i16;
+//
+//         AStar {
+//             g: if state.depth == 0 { 3 } else { 2 } - contacts,
+//             // h: 0,
+//             h: (self.len() - h) as i16,
+//         }
+//     }
+// }
+
+// #[derive(Default, Clone, Eq, Ord, PartialEq, PartialOrd)]
+// pub struct Cost(i16);
+// impl Add for Cost {
+//     type Output = Cost;
+//
+//     fn add(self, rhs: Self) -> Self::Output {
+//         Cost(self.0 + rhs.0)
+//     }
+// }
+
+// if contacts == 2 {
+//     break;
+// }
+// if (state.depth == 0 && contacts == 3) || (state.depth > 0 && contacts == 2) {
+//     break;
+// }
+
+// let contacts = 0;
+// (pos, if amino_acid.depth == 0 { 3 } else { 2 } - count);
 
 impl Problem for ProteinFolding {
     type State = Rc<AminoAcid>;
@@ -219,9 +405,9 @@ impl GoalBased for ProteinFolding {
 }
 
 impl Heuristic for ProteinFolding {
-    type Value = Cost;
+    type Value = MissedContacts;
 
-    fn heuristic(&self, amino_acid: &Self::State) -> Cost {
+    fn heuristic(&self, amino_acid: &Self::State) -> MissedContacts {
         // 3 non made contacts only for the first and final
         // amminoacid, otherwise an amminoacid in the middle can make
         // only two contacts

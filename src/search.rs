@@ -1,21 +1,14 @@
-use std::{
-    collections::{HashSet, VecDeque},
-    hash::Hash,
-    ops::{Add, Deref},
-    rc::Rc,
-};
+use std::{collections::VecDeque, ops::Add, rc::Rc};
 
 use crate::problem::{GoalBased, Problem, Utility};
-
-// pub trait Frontier<P: Problem, T>: Default {
-//     fn next(&mut self) -> Option<Rc<Node<P, T>>>;
-//     fn insert(&mut self, node: Rc<Node<P, T>>);
-//     fn update(&mut self, _node: Rc<Node<P, T>>) {}
-// }
 
 pub trait Frontier<T>: Default {
     fn pop(&mut self) -> Option<T>;
     fn insert(&mut self, t: T);
+    // la struttura deve solo implementare un hash-set per capire se uno stato è in frontiera? HashSet di riferimenti?
+    // No, perché dovrei clonare un po' di robe per avere questo (roba che in teoria faccio comunque?
+    // Nah, non mi serve per gli alberi ad esempio, posso fare un trait TreeFrontier, e che
+    // frontier deve avere TreeFrontier + altra roba
     fn replace(&mut self, _t: T) {}
 }
 
