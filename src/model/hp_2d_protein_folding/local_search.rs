@@ -4,87 +4,21 @@ use ai::framework::problem::{CrossOver, Heuristic, Mutable, Problem, TransitionM
 
 use super::{Alphabet, Pos, Sequence};
 
-pub struct LocalProteinFolding {
-    sequence: Sequence,
-    actions: Vec<Fold>,
-}
-
-impl LocalProteinFolding {
-    pub fn new(sequence: Sequence) -> Self {
-        let actions = (0..sequence.len() - 1)
-            .flat_map(|amino_acid| {
-                [
-                    Fold {
-                        amino_acid,
-                        turn: Turn::Left,
-                    },
-                    Fold {
-                        amino_acid,
-                        turn: Turn::Right,
-                    },
-                ]
-            })
-            .collect();
-
-        Self { sequence, actions }
-    }
-}
-
-impl std::ops::Deref for LocalProteinFolding {
-    type Target = Sequence;
-
-    fn deref(&self) -> &Self::Target {
-        &self.sequence
-    }
-}
-
-impl rand::distr::Distribution<Conformation> for LocalProteinFolding {
-    fn sample<R: rand::Rng + ?Sized>(&self, rng: &mut R) -> Conformation {
-        let directions = (0..self.len())
-            .map(|_| match rng.random_range(0..4) {
-                0 => Direction::North,
-                1 => Direction::East,
-                2 => Direction::South,
-                _ => Direction::West,
-            })
-            .collect();
-
-        Conformation { directions }
-    }
-}
-
-#[derive(Clone, Debug)]
-pub struct Conformation {
-    pub directions: Vec<Direction>,
-}
-
-impl Conformation {
-    pub fn positions(&self) -> Vec<Pos> {
-        let (mut x, mut y) = (0, 0);
-        let mut result = Vec::from([(x, y)]);
-
-        for amino_acid in 0..=self.directions.len() - 2 {
-            (x, y) = match self.directions[amino_acid] {
-                Direction::North => (x, y - 1),
-                Direction::East => (x + 1, y),
-                Direction::South => (x, y + 1),
-                Direction::West => (x - 1, y),
-            };
-            result.push((x, y));
-        }
-
-        result
-    }
-}
-
 #[derive(Clone)]
-pub enum Turn {
+pub enum Rotation {
     Left,
     Right,
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Copy, Debug)]
 pub enum Direction {
+    Forward,
+    Right,
+    Left,
+}
+
+// needed for current direction
+pub enum CardinalPoints {
     North,
     East,
     South,
@@ -93,19 +27,114 @@ pub enum Direction {
 
 #[derive(Clone)]
 pub struct Fold {
-    pub turn: Turn,
+    pub rotation: Rotation,
     pub amino_acid: usize,
 }
 
-impl Problem for LocalProteinFolding {
-    type State = Conformation;
+pub struct Local2dProteinFolding {
+    sequence: Sequence,
+    folds: Vec<Fold>,
 }
 
-impl TransitionModel for LocalProteinFolding {
+impl Local2dProteinFolding {
+    pub fn new(sequence: Sequence) -> Self {
+        Self {
+            folds: (0..sequence.len() - 1)
+                .flat_map(|amino_acid| {
+                    [
+                        Fold {
+                            amino_acid,
+                            rotation: Rotation::Left,
+                        },
+                        Fold {
+                            amino_acid,
+                            rotation: Rotation::Right,
+                        },
+                    ]
+                })
+                .collect(),
+            sequence,
+        }
+    }
+}
+
+impl std::ops::Deref for Local2dProteinFolding {
+    type Target = Sequence;
+
+    fn deref(&self) -> &Self::Target {
+        &self.sequence
+    }
+}
+
+impl rand::distr::Distribution<ProteinConformation> for Local2dProteinFolding {
+    fn sample<R: rand::Rng + ?Sized>(&self, rng: &mut R) -> ProteinConformation {
+        ProteinConformation {
+            directions: (0..self.len())
+                .map(|_| match rng.random_range(0..3) {
+                    0 => Direction::Forward,
+                    2 => Direction::Left,
+                    _ => Direction::Right,
+                })
+                .collect(),
+        }
+    }
+}
+
+// 2 => Direction::Backwards,
+
+#[derive(Clone, Debug)]
+pub struct ProteinConformation {
+    pub directions: Vec<Direction>,
+}
+
+impl ProteinConformation {
+    pub fn positions(&self) -> Vec<Pos> {
+        let (mut x, mut y) = (0, 0);
+        let mut result = Vec::from([(x, y)]);
+
+        let mut card = CardinalPoints::North;
+
+        use Direction as D;
+
+        // I punti cardinali fanno pensare a qualcosa di fisso
+        // sarebbe meglio dire forward, backward, left, right
+        // forward
+        // backward
+        // left
+        // right
+
+        // direction = match (direction, self.directions[0]) {
+        //     (D::Forward, d) => d,
+        //     (D::Backwards, D::Backwards) => D::Forward,
+        //     // (D::North, D::East) => D::East,
+        //     // (D::North, D::South) => D::South,
+        //     // (D::North, D::West) => D::West,
+        //     _ => D::Forward,
+        // };
+
+        for amino_acid in 0..=self.directions.len() - 2 {
+            (x, y) = match self.directions[amino_acid] {
+                Direction::Forward => (x, y - 1),
+                Direction::Right => (x + 1, y),
+                // Direction::Backwards => (x, y + 1),
+                Direction::Left => (x - 1, y),
+            };
+            result.push((x, y));
+        }
+
+        result
+    }
+}
+
+impl Problem for Local2dProteinFolding {
+    type State = ProteinConformation;
+}
+
+impl TransitionModel for Local2dProteinFolding {
     type Action = Fold;
 
     fn actions(&self, _: &Self::State) -> impl Iterator<Item = Self::Action> {
-        self.actions.clone().into_iter()
+        self.folds.clone().into_iter()
     }
 
     fn result(&self, state: &Self::State, action: &Self::Action) -> Self::State {
@@ -113,15 +142,15 @@ impl TransitionModel for LocalProteinFolding {
 
         for amino_acid in action.amino_acid + 1..self.len() {
             new_conformation.directions[amino_acid] =
-                match (&state.directions[amino_acid], &action.turn) {
-                    (Direction::North, Turn::Left) => Direction::West,
-                    (Direction::North, Turn::Right) => Direction::East,
-                    (Direction::South, Turn::Left) => Direction::East,
-                    (Direction::South, Turn::Right) => Direction::West,
-                    (Direction::East, Turn::Left) => Direction::North,
-                    (Direction::East, Turn::Right) => Direction::South,
-                    (Direction::West, Turn::Left) => Direction::South,
-                    (Direction::West, Turn::Right) => Direction::North,
+                match (&state.directions[amino_acid], &action.rotation) {
+                    (Direction::Forward, Rotation::Left) => Direction::Left,
+                    (Direction::Forward, Rotation::Right) => Direction::Right,
+                    (Direction::Backwards, Rotation::Left) => Direction::Right,
+                    (Direction::Backwards, Rotation::Right) => Direction::Left,
+                    (Direction::Right, Rotation::Left) => Direction::Forward,
+                    (Direction::Right, Rotation::Right) => Direction::Backwards,
+                    (Direction::Left, Rotation::Left) => Direction::Backwards,
+                    (Direction::Left, Rotation::Right) => Direction::Forward,
                 }
         }
 
@@ -172,7 +201,7 @@ impl PartialEq for Utility {
 //     }
 // }
 
-impl Heuristic for LocalProteinFolding {
+impl Heuristic for Local2dProteinFolding {
     type Value = Utility;
 
     fn heuristic(&self, state: &Self::State) -> Self::Value {
@@ -209,21 +238,21 @@ impl Heuristic for LocalProteinFolding {
     }
 }
 
-impl Mutable for LocalProteinFolding {
+impl Mutable for Local2dProteinFolding {
     fn mutate(&self, state: Self::State, rng: &mut impl rand::Rng) -> Self::State {
         let mut state = state;
         state.directions[rng.random_range(0..self.len())] = match rng.random_range(0..4) {
-            0 => Direction::North,
-            1 => Direction::East,
-            2 => Direction::South,
-            _ => Direction::West,
+            0 => Direction::Forward,
+            1 => Direction::Right,
+            2 => Direction::Backwards,
+            _ => Direction::Left,
         };
 
         state
     }
 }
 
-impl CrossOver for LocalProteinFolding {
+impl CrossOver for Local2dProteinFolding {
     fn cross_over(
         &self,
         l: &Self::State,
@@ -282,3 +311,29 @@ impl CrossOver for LocalProteinFolding {
 //     East,
 //     West,
 // }
+
+// let actions = (1..sequence.len() - 1)
+//     .flat_map(|amino_acid| {
+//         [
+//             Fold {
+//                 amino_acid,
+//                 turn: Turn::Left,
+//             },
+//             Fold {
+//                 amino_acid,
+//                 turn: Turn::Right,
+//             },
+//         ]
+//     })
+//     .collect();
+//
+// Self { sequence, actions }
+
+// let directions = (0..self.len())
+//     .map(|_| match rng.random_range(0..4) {
+//         0 => Direction::North,
+//         1 => Direction::East,
+//         2 => Direction::South,
+//         _ => Direction::West,
+//     })
+//     .collect();

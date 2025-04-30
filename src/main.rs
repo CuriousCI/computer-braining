@@ -10,7 +10,7 @@ use ai::framework::{
 use bumpalo::Bump;
 use model::hp_2d_protein_folding::{
     Sequence,
-    local_search::{self, LocalProteinFolding},
+    local_search::{self, Local2dProteinFolding},
     search::{AminoAcid, Conformation, Contacts, MissedContacts, ProteinFolding},
 };
 // use rand::{Rng, rng};
@@ -82,7 +82,7 @@ fn main() {
     //        |Reverse(u1), Reverse(u2)| u1.abs_diff(*u2) as f64,
 
     let time = Instant::now();
-    let protein = LocalProteinFolding::new(sequence.clone());
+    let protein = Local2dProteinFolding::new(sequence.clone());
     let mut rng = rand::rng();
     let result = genetic_algorithm(&protein, 100, 10000, &mut rng);
     println!("{:?}", time.elapsed());
@@ -90,7 +90,7 @@ fn main() {
     debug_conformation(&ProteinFolding::new(sequence.clone()), &result.positions());
 
     let time = Instant::now();
-    let protein = LocalProteinFolding::new(sequence.clone());
+    let protein = Local2dProteinFolding::new(sequence.clone());
     let mut rng = rand::rng();
     let result = local_beam(&protein, 10, 1000, &mut rng);
     println!("{:?}", time.elapsed());
@@ -103,7 +103,7 @@ fn main() {
 
     let time = Instant::now();
     let mut best = None;
-    let protein = LocalProteinFolding::new(sequence.clone());
+    let protein = Local2dProteinFolding::new(sequence.clone());
     let mut rng = rand::rng();
     for _ in 0..=100 {
         let result = simulated_annealing(
@@ -131,7 +131,7 @@ fn main() {
     let time = Instant::now();
     let mut rng = rand::rng();
     let mut best = None;
-    let protein = LocalProteinFolding::new(sequence.clone());
+    let protein = Local2dProteinFolding::new(sequence.clone());
     for _ in 0..=10000 {
         let result = steepest_ascent(&protein, protein.sample(&mut rng));
         if best.clone().is_none_or(|best| {
@@ -150,7 +150,7 @@ fn main() {
 
     let time = Instant::now();
     let mut best = None;
-    let protein = LocalProteinFolding::new(sequence.clone());
+    let protein = Local2dProteinFolding::new(sequence.clone());
     let mut rng = rand::rng();
     for _ in 0..=10000 {
         let result = hill_climping(&protein, &mut rng, 100);
