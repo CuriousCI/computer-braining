@@ -1,32 +1,11 @@
 use std::{cmp::Reverse, ops::Deref, rc::Rc};
 
-use ai::{
+use super::{Alphabet, Pos, Sequence};
+
+use ai::framework::{
     problem::{GoalBased, Heuristic, Problem, Utility},
     search::{AStar, UniformCost},
 };
-
-#[derive(Clone, Debug)]
-pub enum Alphabet {
-    H,
-    P,
-}
-
-pub enum Move {
-    Left,
-    Right,
-    Up,
-}
-
-pub enum Direction {
-    North,
-    South,
-    East,
-    West,
-}
-
-pub type Sequence = Vec<Alphabet>;
-
-pub type Pos = (i16, i16);
 
 pub type Conformation = Vec<Pos>;
 
@@ -152,34 +131,35 @@ impl Utility<AStar<MissedContacts>> for ProteinFolding {
     }
 }
 
-#[derive(Default, Clone, PartialEq)]
+#[derive(Default, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct Contacts {
-    percentage: f32,
+    depth: usize,
+    // percentage: f32,
     contacts: Reverse<u16>,
 }
 
-impl Contacts {
-    fn priority(&self) -> f32 {
-        self.percentage * self.contacts.0 as f32
-    }
-}
-
-impl Eq for Contacts {}
-
-impl Ord for Contacts {
-    fn cmp(&self, other: &Self) -> std::cmp::Ordering {
-        self.priority()
-            .partial_cmp(&other.priority())
-            .unwrap_or(std::cmp::Ordering::Equal)
-            .reverse()
-    }
-}
-
-impl PartialOrd for Contacts {
-    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
-        Some(self.cmp(other))
-    }
-}
+// impl Contacts {
+//     fn priority(&self) -> f32 {
+//         self.percentage * self.contacts.0 as f32
+//     }
+// }
+//
+// impl Eq for Contacts {}
+//
+// impl Ord for Contacts {
+//     fn cmp(&self, other: &Self) -> std::cmp::Ordering {
+//         self.priority()
+//             .partial_cmp(&other.priority())
+//             .unwrap_or(std::cmp::Ordering::Equal)
+//             .reverse()
+//     }
+// }
+//
+// impl PartialOrd for Contacts {
+//     fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+//         Some(self.cmp(other))
+//     }
+// }
 
 // match self.percentage.partial_cmp(&other.percentage) {
 //     Some(core::cmp::Ordering::Equal) => {}
@@ -206,7 +186,8 @@ impl std::ops::Add for Contacts {
     fn add(self, rhs: Self) -> Self::Output {
         Self {
             contacts: Reverse(self.contacts.0 + rhs.contacts.0),
-            percentage: rhs.percentage,
+            depth: rhs.depth,
+            // percentage: rhs.percentage,
         }
     }
 }
@@ -218,7 +199,8 @@ impl Utility<Contacts> for ProteinFolding {
         if let Alphabet::P = self[state.depth] {
             return Contacts {
                 contacts: Reverse(0),
-                percentage: state.depth as f32 / self.len() as f32,
+                depth: state.depth,
+                // percentage: state.depth as f32 / self.len() as f32,
             };
         }
 
@@ -239,7 +221,7 @@ impl Utility<Contacts> for ProteinFolding {
 
         Contacts {
             contacts: Reverse(contacts),
-            percentage: state.depth as f32 / self.len() as f32,
+            depth: state.depth, // percentage: state.depth as f32 / self.len() as f32,
         }
     }
 }
@@ -257,8 +239,8 @@ impl Utility<UniformCost<Contacts>> for ProteinFolding {
             return UniformCost {
                 g: Contacts {
                     contacts: Reverse(0),
-                    percentage: state.depth as f32 / self.len() as f32,
-                    // depth: state.depth,
+                    depth: state.depth, // percentage: state.depth as f32 / self.len() as f32,
+                                        // depth: state.depth,
                 },
             };
         }
@@ -279,8 +261,8 @@ impl Utility<UniformCost<Contacts>> for ProteinFolding {
         UniformCost {
             g: Contacts {
                 contacts: Reverse(contacts),
-                percentage: state.depth as f32 / self.len() as f32,
-                // depth: state.depth,
+                // percentage: state.depth as f32 / self.len() as f32,
+                depth: state.depth,
             },
         }
     }

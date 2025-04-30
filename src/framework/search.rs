@@ -1,6 +1,6 @@
 use std::{collections::VecDeque, ops::Add, rc::Rc};
 
-use crate::problem::{GoalBased, Problem, Utility};
+use crate::framework::problem::{GoalBased, Problem, Utility};
 
 pub trait Frontier<T>: Default {
     fn pop(&mut self) -> Option<T>;

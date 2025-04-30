@@ -1,20 +1,26 @@
-use ai::{
+use ai::framework::{
     clean,
     frontiers::{TreeAStar, TreeAStarArena, TreeUniformCost, TreeUniformCostArena},
+    local_search::{hill_climping, simulated_annealing, steepest_ascent},
+    problem::{Heuristic, Problem},
     search::{AStar, Agent, UniformCost},
 };
 use bumpalo::Bump;
-use models::hp_2d_protein_folding::{
-    Alphabet, AminoAcid, Conformation, Contacts, MissedContacts, Pos, ProteinFolding, Sequence,
+use model::hp_2d_protein_folding::{
+    Sequence,
+    local_search::{self, LocalProteinFolding},
+    search::{AminoAcid, Conformation, Contacts, MissedContacts, ProteinFolding},
 };
-use rand::{Rng, rng};
+// use rand::{Rng, rng};
 use rayon::prelude::*;
 use std::{
-    collections::HashMap,
-    rc::Rc,
-    time::{Duration, Instant},
+    // collections::HashMap,
+    // rc::Rc,
+    collections::BTreeSet,
+    time::Instant,
 };
-pub mod models;
+
+pub mod model;
 use rand::prelude::*;
 
 use std::alloc::System;
@@ -25,51 +31,160 @@ static GLOBAL: System = System;
 // Properties constraints GAIRS
 
 fn main() {
-    use Alphabet::*;
+    use model::hp_2d_protein_folding::Alphabet::*;
 
     // let sequence = vec![
-    //     H, H, P, H, P, P, H, H, H, P, P, P, P, H, H, P, H, P, H, P, P, H, P, H, P, H, H,
+    //     H, H, P, H, P, P, H, H, H, P, P, P, P, H, H, P, H, P, H, P, P, H, P, H, P, H, H, P, H, P,
+    //     P, H,
     // ];
+    let sequence = vec![
+        H, H, P, H, P, P, H, H, H, P, P, P, P, H, H, P, H, P, H, P, P, H, P, H, P, H, H,
+    ];
+
     // frontiers::{AStar, AStarTree, MinCost, MinCostTree},
     // frontiers::{AStar, AStarTree, MinCost, MinCostTree},
     // let sequence = vec![H, H, P, H, P, P, H, H, H, P, P, P, P, H, H, P, H, P, H, P];
     // let sequence = vec![H, P, P, P, P, P, P, P, P, P, P, P,P, P, P, P, P, P, P, H];
-    let sequence = vec![H, H, P, H, P, P, H, H, H, P, P, P, P, H, H, P];
+    // let sequence = vec![H, H, P, H, P, P, H, H, H, P, P, P, P, H, H, P];
     // println!("{}", sequence.len());
-    // let mut rng = rng();
-    // let mut sequence: Sequence = (0..30)
+    // let mut rng = rand::rng();
+    // let mut sequence: Sequence = (0..10)
     //     .filter_map(|_| [P, H].choose(&mut rng))
     //     .map(Clone::clone)
     //     .collect();
     // sequence.push(H);
 
-    let arena = Bump::new();
-    let protein = ProteinFolding::new(sequence.clone());
-    let res = clean::search_on_tree_arena::<_, clean::TreePriorityFrontier<_, _>, Contacts>(
-        protein.clone(),
-        AminoAcid::default().into(),
-        &arena,
-    );
+    // let protein = LocalProteinFolding::new(sequence.clone());
+    // // let initial_state = Conformation::
+    // let mut rng = rand::rng();
+    // let time = Instant::now();
+    // let result = steepest_ascent(&protein, protein.sample(&mut rng));
+    // println!("{:?}", time.elapsed());
+    // debug_conformation(&ProteinFolding::new(sequence.clone()), &result.positions());
 
-    let bump = Bump::new();
-    let protein = ProteinFolding::new(sequence.clone());
-    let mut agent = Agent::new(protein.clone());
-    let mut conformation = vec![(0, 0)];
+    // let protein = LocalProteinFolding::new(sequence.clone());
+    // // let initial_state = Conformation::
+    // let mut rng = rand::rng();
+    // let time = Instant::now();
+    // let result = hill_climping(&protein, &mut rng, 100);
+    // println!("{:?}", time.elapsed());
+    // println!("{:?}", result);
+    // if let Some(result) = result {
+    //     println!("{:?}", protein.heuristic(&result));
+    //     debug_conformation(&ProteinFolding::new(sequence.clone()), &result.positions());
+    // }
+
+    //        &n_queens,
+    //        &mut rand::rng(),
+    //        |t| -0.0001 * (t as f64) + 20f64,
+    //        |Reverse(u1), Reverse(u2)| u1.abs_diff(*u2) as f64,
+
     let time = Instant::now();
-    // agent.function_on_tree::<TreeUniformCost<Cost>>(AminoAcid::default())
-    while let Some(pos) =
-        // agent.function_on_tree::<TreeUniformCost<_, Cost>, _>(AminoAcid::default())
-        agent
-            .function_on_tree_arena::<TreeUniformCostArena<'_, _, Contacts>, _>(
-                AminoAcid::default(),
-                &bump,
-            )
-    {
-        conformation.push(pos);
+    let mut best = None;
+    let protein = LocalProteinFolding::new(sequence.clone());
+    let mut rng = rand::rng();
+    for _ in 0..=100 {
+        let result = simulated_annealing(
+            &protein,
+            &mut rng,
+            |t| -0.01 * (t as f64) + 20f64,
+            |x, y| x.cost().abs_diff(y.cost()) as f64,
+        );
+        if let Some(result) = result {
+            if best.clone().is_none_or(|best| {
+                protein
+                    .heuristic(&result)
+                    .is_better(protein.heuristic(&best))
+            }) {
+                best = Some(result);
+            }
+        }
     }
     println!("{:?}", time.elapsed());
-    debug_conformation(&protein, &conformation);
+    if let Some(result) = best {
+        println!("best result: {:?}", protein.heuristic(&result));
+        debug_conformation(&ProteinFolding::new(sequence.clone()), &result.positions());
+    }
 
+    let time = Instant::now();
+    let mut rng = rand::rng();
+    let mut best = None;
+    let protein = LocalProteinFolding::new(sequence.clone());
+    for _ in 0..=10000 {
+        let result = steepest_ascent(&protein, protein.sample(&mut rng));
+        if best.clone().is_none_or(|best| {
+            protein
+                .heuristic(&result)
+                .is_better(protein.heuristic(&best))
+        }) {
+            best = Some(result);
+        }
+    }
+    println!("{:?}", time.elapsed());
+    if let Some(result) = best {
+        println!("best result: {:?}", protein.heuristic(&result));
+        debug_conformation(&ProteinFolding::new(sequence.clone()), &result.positions());
+    }
+
+    let time = Instant::now();
+    let mut best = None;
+    let protein = LocalProteinFolding::new(sequence.clone());
+    let mut rng = rand::rng();
+    for _ in 0..=10000 {
+        let result = hill_climping(&protein, &mut rng, 100);
+        if let Some(result) = result {
+            if best.clone().is_none_or(|best| {
+                protein
+                    .heuristic(&result)
+                    .is_better(protein.heuristic(&best))
+            }) {
+                best = Some(result);
+            }
+        }
+    }
+    println!("{:?}", time.elapsed());
+    if let Some(result) = best {
+        println!("best result: {:?}", protein.heuristic(&result));
+        debug_conformation(&ProteinFolding::new(sequence.clone()), &result.positions());
+    }
+
+    // let mut set = BTreeSet::new();
+    // for pos in result.positions() {
+    //     set.insert(pos);
+    // }
+    // let overlaps = (result.positions().len() - set.len()) as i32;
+    // println!("overlaps: {overlaps}");
+
+    // let protein = ProteinFolding::new(sequence.clone());
+    // let arena = Bump::new();
+    // let time = Instant::now();
+    // let conformation = clean::search_on_tree_arena::<_, clean::TreePriorityFrontier<_, _>, Contacts>(
+    //     protein.clone(),
+    //     AminoAcid::default().into(),
+    //     &arena,
+    // );
+    // println!("{:?}", time.elapsed());
+    // debug_conformation(&protein, &conformation.unwrap().into_iter().collect());
+    //
+    // let bump = Bump::new();
+    // let protein = ProteinFolding::new(sequence.clone());
+    // let mut agent = Agent::new(protein.clone());
+    // let mut conformation = vec![(0, 0)];
+    // let time = Instant::now();
+    // // agent.function_on_tree::<TreeUniformCost<Cost>>(AminoAcid::default())
+    // while let Some(pos) =
+    //     // agent.function_on_tree::<TreeUniformCost<_, Cost>, _>(AminoAcid::default())
+    //     agent
+    //         .function_on_tree_arena::<TreeUniformCostArena<'_, _, Contacts>, _>(
+    //             AminoAcid::default(),
+    //             &bump,
+    //         )
+    // {
+    //     conformation.push(pos);
+    // }
+    // println!("{:?}", time.elapsed());
+    // debug_conformation(&protein, &conformation);
+    //
     let bump = Bump::new();
     let protein = ProteinFolding::new(sequence.clone());
     let mut agent = Agent::new(protein.clone());
@@ -88,21 +203,21 @@ fn main() {
     }
     println!("{:?}", time.elapsed());
     debug_conformation(&protein, &conformation);
-
-    let bump = Bump::new();
-    let protein = ProteinFolding::new(sequence.clone());
-    let mut agent = Agent::new(protein.clone());
-    let mut conformation = vec![(0, 0)];
-    let time = Instant::now();
-    // while let Some(pos) = agent.function_on_tree::<TreeAStar<_, Cost>, _>(AminoAcid::default()) {
-    while let Some(pos) = agent.function_on_tree_arena::<TreeAStarArena<'_, _, MissedContacts>, _>(
-        AminoAcid::default(),
-        &bump,
-    ) {
-        conformation.push(pos);
-    }
-    println!("{:?}", time.elapsed());
-    debug_conformation(&protein, &conformation);
+    //
+    // let bump = Bump::new();
+    // let protein = ProteinFolding::new(sequence.clone());
+    // let mut agent = Agent::new(protein.clone());
+    // let mut conformation = vec![(0, 0)];
+    // let time = Instant::now();
+    // // while let Some(pos) = agent.function_on_tree::<TreeAStar<_, Cost>, _>(AminoAcid::default()) {
+    // while let Some(pos) = agent.function_on_tree_arena::<TreeAStarArena<'_, _, MissedContacts>, _>(
+    //     AminoAcid::default(),
+    //     &bump,
+    // ) {
+    //     conformation.push(pos);
+    // }
+    // println!("{:?}", time.elapsed());
+    // debug_conformation(&protein, &conformation);
 }
 
 fn debug_conformation(protein: &ProteinFolding, conformation: &Conformation) {
