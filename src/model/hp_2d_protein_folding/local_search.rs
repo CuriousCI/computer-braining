@@ -1,6 +1,6 @@
 use std::collections::BTreeSet;
 
-use ai::framework::problem::{Heuristic, Problem};
+use ai::framework::problem::{CrossOver, Heuristic, Mutable, Problem, TransitionModel};
 
 use super::{Alphabet, Pos, Sequence};
 
@@ -77,9 +77,6 @@ impl Conformation {
     }
 }
 
-// println!("({x}, {y})");
-// println!("{:?}", result);
-
 #[derive(Clone)]
 pub enum Turn {
     Left,
@@ -102,6 +99,9 @@ pub struct Fold {
 
 impl Problem for LocalProteinFolding {
     type State = Conformation;
+}
+
+impl TransitionModel for LocalProteinFolding {
     type Action = Fold;
 
     fn actions(&self, _: &Self::State) -> impl Iterator<Item = Self::Action> {
@@ -206,6 +206,38 @@ impl Heuristic for LocalProteinFolding {
 
         Utility { contacts, overlaps }
         // contacts - overlaps * 2
+    }
+}
+
+impl Mutable for LocalProteinFolding {
+    fn mutate(&self, state: Self::State, rng: &mut impl rand::Rng) -> Self::State {
+        let mut state = state;
+        state.directions[rng.random_range(0..self.len())] = match rng.random_range(0..4) {
+            0 => Direction::North,
+            1 => Direction::East,
+            2 => Direction::South,
+            _ => Direction::West,
+        };
+
+        state
+    }
+}
+
+impl CrossOver for LocalProteinFolding {
+    fn cross_over(
+        &self,
+        l: &Self::State,
+        r: &Self::State,
+        rng: &mut impl rand::Rng,
+    ) -> Self::State {
+        let cross_over_point = rng.random_range(0..self.len());
+        let mut child = l.clone();
+
+        for amino_acid in cross_over_point..self.len() {
+            child.directions[amino_acid] = r.directions[amino_acid].clone();
+        }
+
+        child
     }
 }
 

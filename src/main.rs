@@ -1,7 +1,9 @@
 use ai::framework::{
     clean,
     frontiers::{TreeAStar, TreeAStarArena, TreeUniformCost, TreeUniformCostArena},
-    local_search::{hill_climping, simulated_annealing, steepest_ascent},
+    local_search::{
+        genetic_algorithm, hill_climping, local_beam, simulated_annealing, steepest_ascent,
+    },
     problem::{Heuristic, Problem},
     search::{AStar, Agent, UniformCost},
 };
@@ -78,6 +80,26 @@ fn main() {
     //        &mut rand::rng(),
     //        |t| -0.0001 * (t as f64) + 20f64,
     //        |Reverse(u1), Reverse(u2)| u1.abs_diff(*u2) as f64,
+
+    let time = Instant::now();
+    let protein = LocalProteinFolding::new(sequence.clone());
+    let mut rng = rand::rng();
+    let result = genetic_algorithm(&protein, 100, 10000, &mut rng);
+    println!("{:?}", time.elapsed());
+    println!("best result: {:?}", protein.heuristic(&result));
+    debug_conformation(&ProteinFolding::new(sequence.clone()), &result.positions());
+
+    let time = Instant::now();
+    let protein = LocalProteinFolding::new(sequence.clone());
+    let mut rng = rand::rng();
+    let result = local_beam(&protein, 10, 1000, &mut rng);
+    println!("{:?}", time.elapsed());
+    println!("best result: {:?}", protein.heuristic(&result));
+    debug_conformation(&ProteinFolding::new(sequence.clone()), &result.positions());
+
+    // &mut rng,
+    // |t| -0.01 * (t as f64) + 20f64,
+    // |x, y| x.cost().abs_diff(y.cost()) as f64,
 
     let time = Instant::now();
     let mut best = None;

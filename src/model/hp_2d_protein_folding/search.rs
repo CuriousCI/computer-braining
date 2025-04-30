@@ -3,7 +3,7 @@ use std::{cmp::Reverse, ops::Deref, rc::Rc};
 use super::{Alphabet, Pos, Sequence};
 
 use ai::framework::{
-    problem::{GoalBased, Heuristic, Problem, Utility},
+    problem::{GoalBased, Heuristic, Problem, TransitionModel, Utility},
     search::{AStar, UniformCost},
 };
 
@@ -342,6 +342,9 @@ impl Utility<UniformCost<Contacts>> for ProteinFolding {
 
 impl Problem for ProteinFolding {
     type State = Rc<AminoAcid>;
+}
+
+impl TransitionModel for ProteinFolding {
     type Action = Pos;
 
     fn actions(&self, state: &Self::State) -> impl Iterator<Item = Self::Action> {

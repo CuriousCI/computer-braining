@@ -79,14 +79,14 @@ impl<T: std::ops::Add<Output = T> + Clone> Priority<T> for AStar<T> {
 // ok, ora la domanda è: la frontiera può fare a meno del problema? Si e no... il nodo ha bisogno delle azioni e dello stato
 // vorrei non dover propagare tutta questa roba
 // in generale non posso disaccoppiare la frontiera dal problema (se devo gestire patate, patate gestitsco)
-pub struct Node<P: Problem, T> {
+pub struct Node<P: TransitionModel, T> {
     parent: Option<(Rc<Self>, P::Action)>,
     pub state: P::State,
     pub f: T,
 }
 
 // e se anziche un problem prendessi un Utility<T>, e a quel punto ho anche la T?, nah
-impl<P: Problem, T: Priority<V>, V> Priority<V> for Rc<Node<P, T>> {
+impl<P: TransitionModel, T: Priority<V>, V> Priority<V> for Rc<Node<P, T>> {
     fn priority(&self) -> V {
         self.f.priority()
     }
@@ -97,7 +97,7 @@ pub struct Agent<P, A> {
     plan: Option<VecDeque<A>>,
 }
 
-impl<P: Problem> Agent<P, P::Action> {
+impl<P: TransitionModel> Agent<P, P::Action> {
     pub fn new(problem: P) -> Self {
         Self {
             plan: None,
@@ -196,7 +196,7 @@ impl<P: Problem> Agent<P, P::Action> {
 
 impl<P> Agent<P, P::Action>
 where
-    P: Problem + GoalBased,
+    P: TransitionModel + GoalBased,
     P::Action: Clone,
 {
     pub fn function_on_tree<F, T>(
@@ -288,13 +288,13 @@ where
     }
 }
 
-pub struct NodeArena<'a, P: Problem, T> {
+pub struct NodeArena<'a, P: TransitionModel, T> {
     parent: Option<(&'a Self, P::Action)>,
     pub state: P::State,
     pub f: T,
 }
 
-impl<P: Problem, T: Priority<V>, V> Priority<V> for &NodeArena<'_, P, T> {
+impl<P: TransitionModel, T: Priority<V>, V> Priority<V> for &NodeArena<'_, P, T> {
     fn priority(&self) -> V {
         self.f.priority()
     }
@@ -302,9 +302,11 @@ impl<P: Problem, T: Priority<V>, V> Priority<V> for &NodeArena<'_, P, T> {
 
 use bumpalo::Bump;
 
+use super::problem::TransitionModel;
+
 impl<P> Agent<P, P::Action>
 where
-    P: Problem + GoalBased,
+    P: TransitionModel + GoalBased,
     P::Action: Clone,
 {
     pub fn function_on_tree_arena<'a, F, T>(

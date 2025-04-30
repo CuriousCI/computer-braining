@@ -184,11 +184,13 @@ impl<T: Priority<V>, V: Ord> Frontier<T> for TreePriorityFrontier<T, V> {
 
 use priority_queue::PriorityQueue;
 
-struct HashNode<P: Problem, T>(Rc<Node<P, T>>);
+use super::problem::TransitionModel;
 
-impl<P: Problem, T> Eq for HashNode<P, T> where P::State: Eq {}
+struct HashNode<P: TransitionModel, T>(Rc<Node<P, T>>);
 
-impl<P: Problem, T> PartialEq for HashNode<P, T>
+impl<P: TransitionModel, T> Eq for HashNode<P, T> where P::State: Eq {}
+
+impl<P: TransitionModel, T> PartialEq for HashNode<P, T>
 where
     P::State: PartialEq,
 {
@@ -197,7 +199,7 @@ where
     }
 }
 
-impl<P: Problem, T> Hash for HashNode<P, T>
+impl<P: TransitionModel, T> Hash for HashNode<P, T>
 where
     P::State: Hash,
 {
@@ -207,8 +209,7 @@ where
 }
 
 // pub struct PriorityFrontier<P: Problem, T, V> {
-//     priority_queue: PriorityQueue<HashNode<P, T>, Reverse<V>>,
-//     _marker: std::marker::PhantomData<V>,
+//     priority_queue: PriorityQueue<HashNode<P, T>, Reverse<V>>, _marker: std::marker::PhantomData<V>,
 // }
 
 // where

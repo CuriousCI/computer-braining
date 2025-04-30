@@ -1,6 +1,6 @@
 #import "template.typ": *
 
-#show: doc => conf([E.A.6.2 (Risoluzione 2)], doc)
+#show: doc => conf([E.A.6.3 (DPLL)], doc)
 
 == CNF
 
@@ -26,19 +26,13 @@ $
   (not A or not B or not C or D) and (not A or B or D) and (not A or B or not C or D) \
 $
 
-== Risoluzione
+== DPLL
 
-- clausole = \
-  ${(not A or not B or not C or D), (not A or B or D), (not A or B or not C or D)}$
-  - $(not A or not B or not C or D) and (not A or B or D) tack.r.double (not A or not C or D)$
-  - $(not A or not B or not C or D) and (not A or B or not C or D) tack.r.double (not A or not C or D)$
-- clausole = \
-  ${ (not A or not B or not C or D), (not A or B or D), (not A or B or not C or D),
-      (not A or not C or D) }$
-  - non ci sono modi di generare altre clausole, quindi c'è un modello della formula
+- $phi.alt = (not A or not B or not C or D) and (not A or B or D) and (not A or B or not C or D)$
 
-- Un assegnamento valido è ${not A, B, not C, D}$
+- $phi.alt | not A = ()$
 
 \
 
 Il risultato è ragionevole, considerando che nella formula iniziale basta assegnare $A = F$, la prima implicazione diventa vera, e il resto della formula è in $or$
+
