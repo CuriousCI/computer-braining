@@ -1,7 +1,14 @@
-use super::problem::{CrossOver, Heuristic, Mutable, Problem, TransitionModel};
-use rand::prelude::*;
-use rand::{Rng, distr::Distribution, seq::IteratorRandom};
-use rayon::prelude::*;
+use super::problem::{CrossOver, Heuristic, Mutable, TransitionModel};
+use rand::{
+    Rng,
+    distr::{
+        Distribution,
+        uniform::SampleUniform,
+        weighted::{Weight, WeightedIndex},
+    },
+    prelude::*,
+    seq::IteratorRandom,
+};
 
 // 1. steepest ascent/descent with restarts
 // 2. first-choice hill climbing with restarts
@@ -109,18 +116,6 @@ where
     None
 }
 
-// Due to floating-point ISSUES, it's better to use an epsilon here
-
-// let action = match problem.result(&state).choose(rng) {
-//     Some(action) => action,
-//     None => return Some(state),
-// };
-// either the new state is better, or pick it with a certain probability
-
-// Same as above, but
-// - parallelization helps a lot with bigger instances
-// - it requires a stricter contract on the problems (with Send + Sync)
-
 pub fn local_beam<P>(problem: &P, k: usize, threshold: usize, rng: &mut impl Rng) -> P::State
 where
     P: TransitionModel + Heuristic + Distribution<P::State>,
@@ -149,52 +144,35 @@ where
 pub fn genetic_algorithm<P>(problem: &P, k: usize, threshold: usize, rng: &mut impl Rng) -> P::State
 where
     P: Mutable + CrossOver + Heuristic + Distribution<P::State>,
-    P::Value: Ord,
+    P::Value: Ord + Weight + SampleUniform,
     P::State: Clone,
 {
     let mut population = Vec::from_iter((0..k).map(|_| problem.sample(rng)));
+    let mut index =
+        WeightedIndex::new(population.iter().map(|state| problem.heuristic(state))).unwrap();
 
     for _ in 0..threshold {
         let mut successors = vec![];
 
         while successors.len() < k {
+            // let l = population.iter().choose(rng).unwrap();
+            // let r = population.iter().choose(rng).unwrap();
             let l = population.iter().choose(rng).unwrap();
             let r = population.iter().choose(rng).unwrap();
 
-            let child = problem.cross_over(l, r, rng);
-            let child = problem.mutate(child, rng);
+            let mut child = problem.cross_over(l, r, rng);
+            problem.mutate(&mut child, rng);
 
             successors.push(child);
         }
 
         population = successors;
+        population.sort_unstable_by_key(|state| problem.heuristic(state));
     }
 
     population.sort_unstable_by_key(|state| problem.heuristic(state));
     population[0].clone()
 }
-
-// biocombinatori
-// processo biologico grafico
-//
-
-//function genetic_algorithm(problema, k, pmut): stato ottimo locale
-//2 pop_corr ← insieme di k stati random di problema;
-//3 while true do
-//4 if pop_corr contiene soluzioni suff. buone or tempo scaduto then
-//5 return la migliore soluzione in pop_corr;
-//6 successori ← insieme vuoto;
-//7 while |successori| < k do
-//8 gen1 ← stato random di pop_corr, favorendo i migliori;
-//9 gen2 ← stato random di pop_corr, favorendo i migliori;
-//10 xover ← intero random tra 1 ed S;
-//11 substr1 ← sottostringa di gen1 fino a xover − 1;
-//12 substr2 ← sottostringa di gen2 da xover in poi;
-//13 figlio ← concatena substr1 e substr2;
-//14 con probabilità pmut, effettua una modifica random del valore di
-//un gene random di figlio;
-//15 aggiungi figlio a successori;
-//16 pop_corr ← successori;
 
 // P: Sync + ParallelLocal + Heuristic + Distribution<P::State>,
 // pub fn parallel_steepest_ascent<P>(problem: &P, rng: &mut impl Rng) -> Option<P::State>

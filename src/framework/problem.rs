@@ -25,7 +25,7 @@ pub trait Heuristic: Problem {
 }
 
 pub trait Mutable: Problem {
-    fn mutate(&self, state: Self::State, rng: &mut impl rand::Rng) -> Self::State;
+    fn mutate(&self, state: &mut Self::State, rng: &mut impl rand::Rng);
 }
 
 pub trait CrossOver: Problem {
