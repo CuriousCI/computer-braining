@@ -140,9 +140,34 @@ $
 
 - c'è esattamente una regina per colonna
 
+// colonna1
 $
-  & (Q_(1, 1) or Q_(2, 1) or Q_(3, 1) or Q_(4, 1)) and \
-  & (Q_(1, 2) or Q_(2, 2) or Q_(3, 2) or Q_(4, 2)) and \
-  & (Q_(1, 3) or Q_(2, 3) or Q_(3, 3) or Q_(4, 3)) and \
-  & (Q_(1, 4) or Q_(2, 4) or Q_(3, 4) or Q_(4, 4)) \
+  &( \
+    & quad (Q_(1, 1) and not Q_(2, 1) and not Q_(3, 1) and not Q_(4, 1)) or \
+    & quad (not Q_(1, 1) and Q_(2, 1) and not Q_(3, 1) and not Q_(4, 1)) or \
+    & quad (not Q_(1, 1) and not Q_(2, 1) and Q_(3, 1) and not Q_(4, 1)) or \
+    & quad (not Q_(1, 1) and not Q_(2, 1) and not Q_(3, 1) and Q_(4, 1)) \
+    & ) and ( \
+    & quad (Q_(1, 2) and not Q_(2, 2) and not Q_(3, 2) and not Q_(4, 2)) or \
+    & quad (not Q_(1, 2) and Q_(2, 2) and not Q_(3, 2) and not Q_(4, 2)) or \
+    & quad (not Q_(1, 2) and not Q_(2, 2) and Q_(3, 2) and not Q_(4, 2)) or \
+    & quad (not Q_(1, 2) and not Q_(2, 2) and not Q_(3, 2) and Q_(4, 2)) \
+    & ) and ( \
+    & quad (Q_(1, 3) and not Q_(2, 3) and not Q_(3, 3) and not Q_(4, 3)) or \
+    & quad (not Q_(1, 3) and Q_(2, 3) and not Q_(3, 3) and not Q_(4, 3)) or \
+    & quad (not Q_(1, 3) and not Q_(2, 3) and Q_(3, 3) and not Q_(4, 3)) or \
+    & quad (not Q_(1, 3) and not Q_(2, 3) and not Q_(3, 3) and Q_(4, 3)) \
+    & ) and ( \
+    & quad (Q_(1, 4) and not Q_(2, 4) and not Q_(3, 4) and not Q_(4, 4)) or \
+    & quad (not Q_(1, 4) and Q_(2, 4) and not Q_(3, 4) and not Q_(4, 4)) or \
+    & quad (not Q_(1, 4) and not Q_(2, 4) and Q_(3, 4) and not Q_(4, 4)) or \
+    & quad (not Q_(1, 4) and not Q_(2, 4) and not Q_(3, 4) and Q_(4, 4)) \
+    & )
 $
+
+// $
+//   & (Q_(1, 1) and Q_(2, 1) and Q_(3, 1) and Q_(4, 1)) and \
+//   & (Q_(1, 2) and Q_(2, 2) and Q_(3, 2) and Q_(4, 2)) and \
+//   & (Q_(1, 3) and Q_(2, 3) and Q_(3, 3) and Q_(4, 3)) and \
+//   & (Q_(1, 4) and Q_(2, 4) and Q_(3, 4) and Q_(4, 4)) \
+// $
