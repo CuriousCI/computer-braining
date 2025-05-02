@@ -144,12 +144,16 @@ where
 pub fn genetic_algorithm<P>(problem: &P, k: usize, threshold: usize, rng: &mut impl Rng) -> P::State
 where
     P: Mutable + CrossOver + Heuristic + Distribution<P::State>,
-    P::Value: Ord + Weight + SampleUniform,
+    P::Value: Ord + Into<f32>,
     P::State: Clone,
 {
     let mut population = Vec::from_iter((0..k).map(|_| problem.sample(rng)));
-    let mut index =
-        WeightedIndex::new(population.iter().map(|state| problem.heuristic(state))).unwrap();
+    let mut index: WeightedIndex<f32> = WeightedIndex::new(
+        population
+            .iter()
+            .map(|state| problem.heuristic(state).into()),
+    )
+    .unwrap();
 
     for _ in 0..threshold {
         let mut successors = vec![];
@@ -157,8 +161,8 @@ where
         while successors.len() < k {
             // let l = population.iter().choose(rng).unwrap();
             // let r = population.iter().choose(rng).unwrap();
-            let l = population.iter().choose(rng).unwrap();
-            let r = population.iter().choose(rng).unwrap();
+            let l = &population[index.sample(rng)];
+            let r = &population[index.sample(rng)];
 
             let mut child = problem.cross_over(l, r, rng);
             problem.mutate(&mut child, rng);
@@ -167,7 +171,13 @@ where
         }
 
         population = successors;
-        population.sort_unstable_by_key(|state| problem.heuristic(state));
+        // population.sort_unstable_by_key(|state| problem.heuristic(state));
+        index = WeightedIndex::new(
+            population
+                .iter()
+                .map(|state| problem.heuristic(state).into()),
+        )
+        .unwrap();
     }
 
     population.sort_unstable_by_key(|state| problem.heuristic(state));

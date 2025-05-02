@@ -81,6 +81,7 @@ fn main() {
     //        |t| -0.0001 * (t as f64) + 20f64,
     //        |Reverse(u1), Reverse(u2)| u1.abs_diff(*u2) as f64,
 
+    println!("Genetic algorithm");
     let time = Instant::now();
     let protein = Local2dProteinFolding::new(sequence.clone());
     let mut rng = rand::rng();
@@ -89,6 +90,7 @@ fn main() {
     println!("best result: {:?}", protein.heuristic(&result));
     debug_conformation(&ProteinFolding::new(sequence.clone()), &result.positions());
 
+    println!("Local beam");
     let time = Instant::now();
     let protein = Local2dProteinFolding::new(sequence.clone());
     let mut rng = rand::rng();
@@ -101,6 +103,7 @@ fn main() {
     // |t| -0.01 * (t as f64) + 20f64,
     // |x, y| x.cost().abs_diff(y.cost()) as f64,
 
+    println!("Simulated annealing");
     let time = Instant::now();
     let mut best = None;
     let protein = Local2dProteinFolding::new(sequence.clone());
@@ -128,6 +131,7 @@ fn main() {
         debug_conformation(&ProteinFolding::new(sequence.clone()), &result.positions());
     }
 
+    println!("Steepest ascent");
     let time = Instant::now();
     let mut rng = rand::rng();
     let mut best = None;
@@ -148,6 +152,8 @@ fn main() {
         debug_conformation(&ProteinFolding::new(sequence.clone()), &result.positions());
     }
 
+    // hill climbing, genetico su quella popolazione, magari riesco a crescere
+    println!("Hill climbing");
     let time = Instant::now();
     let mut best = None;
     let protein = Local2dProteinFolding::new(sequence.clone());

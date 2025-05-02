@@ -161,7 +161,7 @@ impl Utility {
     }
 
     pub fn cost(&self) -> i32 {
-        self.contacts - self.overlaps * 2
+        self.contacts - self.overlaps
     }
 }
 
@@ -183,11 +183,18 @@ impl PartialEq for Utility {
     }
 }
 
+impl From<Utility> for f32 {
+    fn from(value: Utility) -> Self {
+        value.cost() as f32
+    }
+}
+
 impl Heuristic for Local2dProteinFolding {
     type Value = Utility;
 
     fn heuristic(&self, state: &Self::State) -> Self::Value {
         let mut contacts = 0;
+        let mut overlaps = 0;
 
         let conf = state.positions();
         for (i, &(u_x, u_y)) in conf.iter().enumerate() {
@@ -197,13 +204,14 @@ impl Heuristic for Local2dProteinFolding {
                         contacts += 1;
                     }
                 }
+
+                if i != j && u_x == v_x && u_y == v_y {
+                    overlaps += 1;
+                }
             }
         }
 
-        Utility {
-            contacts,
-            overlaps: 0,
-        }
+        Utility { contacts, overlaps }
     }
 }
 
