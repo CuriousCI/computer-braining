@@ -1,7 +1,9 @@
-// #import "logic.typ": *
 #import "template.typ": *
 
 #show: doc => conf([E.A.6.4 ($n$-Queens)], doc)
+
+#show math.equation.where(block: true): set block(breakable: true)
+#set math.equation(numbering: none)
 
 == Modellazione
 
@@ -14,160 +16,162 @@ Dato $n >= 1$ siano
 
 === Vincoli
 
-- c'è almeno una regina per colonna
-
 $
-  and.big_(c in cal(N))(or.big_(r in cal(N)) Q_(r, c))
-$
-
-- c'è esattamente una regina per colonna
-
-$
-  forall j in cal(N) and.big_(c in cal(N))((and.big_(r in cal(N) and c != j) not Q_(r, c)) and Q_(j, c))
+  & phi.alt = quad phi.alt_"almeno_una_regina_per_colonna" and \
+  & quad phi.alt_"no_due_regine_stessa_colonna" and \
+  & quad phi.alt_"no_due_regine_stessa_riga" and \
+  & quad phi.alt_"no_due_regine_stessa_diagonale" \
 $
 
-- c'è esattamente una regina per riga
+\
 
 $
-  forall j in cal(N) and.big_(r in cal(N))((and.big_(c in cal(N) and c != j) not Q_(r, c)) and Q_(r, j))
+  phi_"almeno_una_regina_per_colonna" & = and.big_(c in cal(N)) ( or.big_(r in cal(N)) Q_(r, c) ) \
+  phi_"no_due_regine_stessa_colonna" & = and.big_(c in cal(N) \ i in cal(N) \ j in cal(N) \ i < j) Q_(i, c) -> not Q_(j, c) \
+  phi_"no_due_regine_stessa_riga" & = and.big_(r in cal(N) \ i in cal(N) \ j in cal(N) \ i < j) Q_(r, i) -> not Q_(r, j) \
+  phi_"no_due_regine_stessa_diagonale" & = and.big_(r in cal(N) \ c in cal(N) \ r' in cal(N) \ c' in cal(N) \ |r - r'| = |c - c'| and \ (r != r' or c != c')) Q_(r, c) -> not Q_(r', c')
 $
-
-- c'è esattamente una regina per diagonale $"NW" -> "SE"$
-
-nella i-esima diagonale devo selezionare
-
-// prendiamo la diagonale 0
-
-//   1 2 3 4
-// 1
-// 2
-// 3
-// 4
-
-// // d = 4
-// 4 1
-// --
-// // d = 3
-// 3 1
-// 4 2
-// --
-// // d = 2
-// 2 1
-// 3 2
-// 4 3
-// --
-// // d = 1
-// 1 1
-// 2 2
-// 3 3
-// 4 4
-// --
-// 1 2
-// 2 3
-// 3 4
-// --
-// 1 3
-// 2 4
-// --
-// 1 4
-
-// In realtà è questo quello che voglio! Devo dire
-// $not Q_(d, d')$ tranne per quel unico pazzo scelerato j != d'
-//
-
-// NON basta d'
-$
-  forall d in cal(N), d' in {1, ..., n - d + 1}
-$
-
-- c'è esattamente una regina per diagonale $"NE" -> "SW"$
-
-// - non ci sono due regine sulla stessa riga
-//   - per ogni riga $r in {1, ..., n}$
-//     - per ogni colonna $c in {1, ..., n}$
-// $
-//   not Q_(r, 1) and ... and not Q_(r, c - 1) and Q_(r, c) and not Q_(r, c + 1) and ... and not Q_(r, n)
-// $
-
-// - non ci sono due regine sulla stessa colonna
-//   - per ogni riga $r in {1, ..., n}$
-//     - per ogni colonna $c in {1, ..., n}$
-// $
-//   not Q_(1, c) and ... and not Q_(r - 1, c) and Q_(r, c) and not Q_(r + 1, c) and ... and not Q_(n, c)
-// $
-// - non ci sono due regine sulla stessa diagonale
-
-
-// Paramentri
-// - $n >= 1$ il numero di regine
-// - per ogni colonna $c in {1, ..., n}$
-// $
-//   Q_(1, c) or Q_(2, c) or Q_(3, c) or ... or Q_(n, c)
-// $
-//
-
-
-// per ogni riga
-// - per ogni colonna nella riga
-//      tirare fuori questa mega formula
-// $
-//   & (Q_(1, 1) and not Q_(1, 2) and not Q_(1, 3) and ... and not Q_(1, n)) or \
-//   & (not Q_(1, 1) and Q_(1, 2) and not Q_(1, 3) and ... and not Q_(1, n)) or \
-//   & (not Q_(1, 1) and not Q_(1, 2) and Q_(1, 3) and ... and not Q_(1, n)) or \
-// $
-
 
 #pagebreak()
 
 == Istanza $n = 4$
 
-$
-  & Q = { \
+=== Variabili
+
+Dato $n = 4$ si ha
+
+- $& Q = { \
     & quad Q_(1, 1), Q_(1, 2), Q_(1, 3), Q_(1, 4), \
     & quad Q_(2, 1), Q_(2, 2), Q_(2, 3), Q_(2, 4), \
     & quad Q_(3, 1), Q_(3, 2), Q_(3, 3), Q_(3, 4), \
     & quad Q_(4, 1), Q_(4, 2), Q_(4, 3), Q_(4, 4) \
-    & }
-$
-- c'è almeno una regina per colonna
+    & }$
+
+=== Vincoli
 
 $
-  & (Q_(1, 1) or Q_(2, 1) or Q_(3, 1) or Q_(4, 1)) and \
-  & (Q_(1, 2) or Q_(2, 2) or Q_(3, 2) or Q_(4, 2)) and \
-  & (Q_(1, 3) or Q_(2, 3) or Q_(3, 3) or Q_(4, 3)) and \
-  & (Q_(1, 4) or Q_(2, 4) or Q_(3, 4) or Q_(4, 4)) \
+  & phi_"almeno_una_regina_per_colonna" = ( \
+    & quad (Q_(1, 1) or Q_(2, 1) or Q_(3, 1) or Q_(4, 1)) and \
+    & quad (Q_(1, 2) or Q_(2, 2) or Q_(3, 2) or Q_(4, 2)) and \
+    & quad (Q_(1, 3) or Q_(2, 3) or Q_(3, 3) or Q_(4, 3)) and \
+    & quad (Q_(1, 4) or Q_(2, 4) or Q_(3, 4) or Q_(4, 4)) \
+    & ) \
 $
-
-- c'è esattamente una regina per colonna
-
-// colonna1
 $
-  &( \
-    & quad (Q_(1, 1) and not Q_(2, 1) and not Q_(3, 1) and not Q_(4, 1)) or \
-    & quad (not Q_(1, 1) and Q_(2, 1) and not Q_(3, 1) and not Q_(4, 1)) or \
-    & quad (not Q_(1, 1) and not Q_(2, 1) and Q_(3, 1) and not Q_(4, 1)) or \
-    & quad (not Q_(1, 1) and not Q_(2, 1) and not Q_(3, 1) and Q_(4, 1)) \
-    & ) and ( \
-    & quad (Q_(1, 2) and not Q_(2, 2) and not Q_(3, 2) and not Q_(4, 2)) or \
-    & quad (not Q_(1, 2) and Q_(2, 2) and not Q_(3, 2) and not Q_(4, 2)) or \
-    & quad (not Q_(1, 2) and not Q_(2, 2) and Q_(3, 2) and not Q_(4, 2)) or \
-    & quad (not Q_(1, 2) and not Q_(2, 2) and not Q_(3, 2) and Q_(4, 2)) \
-    & ) and ( \
-    & quad (Q_(1, 3) and not Q_(2, 3) and not Q_(3, 3) and not Q_(4, 3)) or \
-    & quad (not Q_(1, 3) and Q_(2, 3) and not Q_(3, 3) and not Q_(4, 3)) or \
-    & quad (not Q_(1, 3) and not Q_(2, 3) and Q_(3, 3) and not Q_(4, 3)) or \
-    & quad (not Q_(1, 3) and not Q_(2, 3) and not Q_(3, 3) and Q_(4, 3)) \
-    & ) and ( \
-    & quad (Q_(1, 4) and not Q_(2, 4) and not Q_(3, 4) and not Q_(4, 4)) or \
-    & quad (not Q_(1, 4) and Q_(2, 4) and not Q_(3, 4) and not Q_(4, 4)) or \
-    & quad (not Q_(1, 4) and not Q_(2, 4) and Q_(3, 4) and not Q_(4, 4)) or \
-    & quad (not Q_(1, 4) and not Q_(2, 4) and not Q_(3, 4) and Q_(4, 4)) \
+  & phi_"no_due_regine_stessa_colonna" = ( \
+    & quad (Q_(1, 1) -> not Q_(2, 1)) and (Q_(1, 1) -> not Q_(3, 1)) and (Q_(1, 1) -> not Q_(4, 1)) and \
+    & quad (Q_(2, 1) -> not Q_(3, 1)) and (Q_(2, 1) -> not Q_(4, 1)) and \
+    & quad (Q_(3, 1) -> not Q_(4, 1)) and \
+    & quad (Q_(1, 2) -> not Q_(2, 2)) and (Q_(1, 2) -> not Q_(3, 2)) and (Q_(1, 2) -> not Q_(4, 2)) and \
+    & quad (Q_(2, 2) -> not Q_(3, 2)) and (Q_(2, 2) -> not Q_(4, 2)) and \
+    & quad (Q_(3, 2) -> not Q_(4, 2)) and \
+    & quad (Q_(1, 3) -> not Q_(2, 3)) and (Q_(1, 3) -> not Q_(3, 3)) and (Q_(1, 3) -> not Q_(4, 3)) and \
+    & quad (Q_(2, 3) -> not Q_(3, 3)) and (Q_(2, 3) -> not Q_(4, 3)) and \
+    & quad (Q_(3, 3) -> not Q_(4, 3)) and \
+    & quad (Q_(1, 4) -> not Q_(2, 4)) and (Q_(1, 4) -> not Q_(3, 4)) and (Q_(1, 4) -> not Q_(4, 4)) and \
+    & quad (Q_(2, 4) -> not Q_(3, 4)) and (Q_(2, 4) -> not Q_(4, 4)) and \
+    & quad (Q_(3, 4) -> not Q_(4, 4)) and \
     & )
 $
 
-// $
-//   & (Q_(1, 1) and Q_(2, 1) and Q_(3, 1) and Q_(4, 1)) and \
-//   & (Q_(1, 2) and Q_(2, 2) and Q_(3, 2) and Q_(4, 2)) and \
-//   & (Q_(1, 3) and Q_(2, 3) and Q_(3, 3) and Q_(4, 3)) and \
-//   & (Q_(1, 4) and Q_(2, 4) and Q_(3, 4) and Q_(4, 4)) \
-// $
+$
+  & phi_"no_due_regine_stessa_riga" = ( \
+    & quad (Q_(1, 1) -> not Q_(1, 2)) and (Q_(1, 1) -> not Q_(1, 3)) and (Q_(1, 1) -> not Q_(1, 4)) and \
+    & quad (Q_(1, 2) -> not Q_(1, 3)) and (Q_(1, 2) -> not Q_(1, 4)) and \
+    & quad (Q_(1, 3) -> not Q_(1, 4)) and \
+    & quad (Q_(2, 1) -> not Q_(2, 2)) and (Q_(2, 1) -> not Q_(2, 3)) and (Q_(2, 1) -> not Q_(2, 4)) and \
+    & quad (Q_(2, 2) -> not Q_(2, 3)) and (Q_(2, 2) -> not Q_(2, 4)) and \
+    & quad (Q_(2, 3) -> not Q_(2, 4)) and \
+    & quad (Q_(3, 1) -> not Q_(3, 2)) and (Q_(3, 1) -> not Q_(3, 3)) and (Q_(3, 1) -> not Q_(3, 4)) and \
+    & quad (Q_(3, 2) -> not Q_(3, 3)) and (Q_(3, 2) -> not Q_(3, 4)) and \
+    & quad (Q_(3, 3) -> not Q_(3, 4)) and \
+    & quad (Q_(4, 1) -> not Q_(4, 2)) and (Q_(4, 1) -> not Q_(4, 3)) and (Q_(4, 1) -> not Q_(4, 4)) and \
+    & quad (Q_(4, 2) -> not Q_(4, 3)) and (Q_(4, 2) -> not Q_(4, 4)) and \
+    & quad (Q_(4, 3) -> not Q_(4, 4)) and \
+    & )
+$
+
+$
+  & phi_"no_due_regine_stessa_diagonale" = ( \
+    & quad (Q_(1, 1) -> not Q_(2, 2)) and (Q_(1, 1) -> not Q_(3, 3)) and (Q_(1, 1) -> not Q_(4, 4)) and \
+    & quad (Q_(1, 2) -> not Q_(2, 1)) and (Q_(1, 2) -> not Q_(2, 3)) and (Q_(1, 2) -> not Q_(3, 4)) and \
+    & quad (Q_(1, 3) -> not Q_(2, 2)) and (Q_(1, 3) -> not Q_(2, 4)) and (Q_(1, 3) -> not Q_(3, 1)) and \
+    & quad (Q_(1, 4) -> not Q_(2, 3)) and (Q_(1, 4) -> not Q_(3, 2)) and (Q_(1, 4) -> not Q_(4, 1)) and \
+    & quad (Q_(2, 1) -> not Q_(1, 2)) and (Q_(2, 1) -> not Q_(3, 2)) and (Q_(2, 1) -> not Q_(4, 3)) and \
+    & quad (Q_(2, 2) -> not Q_(1, 1)) and (Q_(2, 2) -> not Q_(1, 3)) and (Q_(2, 2) -> not Q_(3, 1)) and \
+    & quad (Q_(2, 2) -> not Q_(3, 3)) and (Q_(2, 2) -> not Q_(4, 4)) and (Q_(2, 3) -> not Q_(1, 2)) and \
+    & quad (Q_(2, 3) -> not Q_(1, 4)) and (Q_(2, 3) -> not Q_(3, 2)) and (Q_(2, 3) -> not Q_(3, 4)) and \
+    & quad (Q_(2, 3) -> not Q_(4, 1)) and (Q_(2, 4) -> not Q_(1, 3)) and (Q_(2, 4) -> not Q_(3, 3)) and \
+    & quad (Q_(2, 4) -> not Q_(4, 2)) and (Q_(3, 1) -> not Q_(1, 3)) and (Q_(3, 1) -> not Q_(2, 2)) and \
+    & quad (Q_(3, 1) -> not Q_(4, 2)) and (Q_(3, 2) -> not Q_(1, 4)) and (Q_(3, 2) -> not Q_(2, 1)) and \
+    & quad (Q_(3, 2) -> not Q_(2, 3)) and (Q_(3, 2) -> not Q_(4, 1)) and (Q_(3, 2) -> not Q_(4, 3)) and \
+    & quad (Q_(3, 3) -> not Q_(1, 1)) and (Q_(3, 3) -> not Q_(2, 2)) and (Q_(3, 3) -> not Q_(2, 4)) and \
+    & quad (Q_(3, 3) -> not Q_(4, 2)) and (Q_(3, 3) -> not Q_(4, 4)) and (Q_(3, 4) -> not Q_(1, 2)) and \
+    & quad (Q_(3, 4) -> not Q_(2, 3)) and (Q_(3, 4) -> not Q_(4, 3)) and (Q_(4, 1) -> not Q_(1, 4)) and \
+    & quad (Q_(4, 1) -> not Q_(2, 3)) and (Q_(4, 1) -> not Q_(3, 2)) and (Q_(4, 2) -> not Q_(2, 4)) and \
+    & quad (Q_(4, 2) -> not Q_(3, 1)) and (Q_(4, 2) -> not Q_(3, 3)) and (Q_(4, 3) -> not Q_(2, 1)) and \
+    & quad (Q_(4, 3) -> not Q_(3, 2)) and (Q_(4, 3) -> not Q_(3, 4)) and (Q_(4, 4) -> not Q_(1, 1)) and \
+    & quad (Q_(4, 4) -> not Q_(2, 2)) and (Q_(4, 4) -> not Q_(3, 3)) \
+    & )
+$
+
+#pagebreak()
+
+== Encoder
+
+È scritto molto male e non usa a pieno la libreria, me ne rendo conto. Ho voluto solo testare un po' tutti i tool al volo.
+
+```java
+import it.uniroma1.di.tmancini.utils.*;
+import it.uniroma1.di.tmancini.teaching.ai.SATCodec.*;
+import java.util.*;
+
+public class Main {
+  public static void main(String args[])  {
+    int n = 4;
+    var N = new IntRange("coords", 1, n);
+    var NN = new RangeProduct("matrix", N, N);
+
+    var encoder = new SATEncoder("n-Queens", "n-Queens.cnf");
+    encoder.defineFamilyOfVariables("Q", NN);
+    for (int c = 1; c <= n; c++) {
+      for (int r = 1; r <= n; r++) {
+        encoder.addToClause("Q", r, c);
+      }
+      encoder.endClause();
+    }
+
+
+    for (int c = 1; c <= n; c++) {
+      for (int i = 1; i <= n; i++) {
+        for (int j = i + 1; j <= n; j++) {
+          encoder.addNegToClause("Q", i, c);
+          encoder.addNegToClause("Q", j, c);
+          encoder.endClause();
+          encoder.addNegToClause("Q", c, i);
+          encoder.addNegToClause("Q", c, j);
+          encoder.endClause();
+        }
+      }
+    }
+
+    for (int r1 = 1; r1 <= n; r1++) {
+      for (int c1 = 1; c1 <= n; c1++) {
+        for (int r2 = 1; r2 <= n; r2++) {
+          for (int c2 = 1; c2 <= n; c2++) {
+            if (r1 != r2 && c1 != c2) {
+              if (Math.abs(r1 - r2) == Math.abs(c1 - c2)) {
+                encoder.addNegToClause("Q", r1, c1);
+                encoder.addNegToClause("Q", r2, c2);
+                encoder.endClause();
+              }
+            }
+          }
+        }
+      }
+    }
+
+    encoder.end();
+  }
+}
+```
