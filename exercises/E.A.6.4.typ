@@ -17,7 +17,7 @@ Dato $n >= 1$ siano
 === Vincoli
 
 $
-  & phi.alt = quad phi.alt_"almeno_una_regina_per_colonna" and \
+  & phi.alt = phi.alt_"almeno_una_regina_per_colonna" and \
   & quad phi.alt_"no_due_regine_stessa_colonna" and \
   & quad phi.alt_"no_due_regine_stessa_riga" and \
   & quad phi.alt_"no_due_regine_stessa_diagonale" \
