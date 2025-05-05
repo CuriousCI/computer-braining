@@ -15,6 +15,7 @@ pub enum RelativeDirection {
     Right,
 }
 
+#[derive(Debug)]
 pub enum CardinalDirection {
     North,
     East,
@@ -87,25 +88,25 @@ impl ProteinConformation {
         let (mut x, mut y) = (0, 0);
         let mut result = Vec::from([(x, y)]);
 
-        let mut card = CardinalDirection::North;
+        let mut direction = CardinalDirection::North;
 
         use CardinalDirection as C;
         use RelativeDirection as R;
 
         for amino_acid in 0..=self.directions.len() - 2 {
-            card = match (card, self.directions[amino_acid]) {
-                (card, R::Forward) => card,
+            (x, y) = match direction {
+                C::North => (x, y - 1),
+                C::East => (x + 1, y),
+                C::South => (x, y + 1),
+                C::West => (x - 1, y),
+            };
+
+            direction = match (direction, self.directions[amino_acid]) {
+                (direction, R::Forward) => direction,
                 (C::East, R::Left) | (C::West, R::Right) => C::North,
                 (C::North, R::Right) | (C::South, R::Left) => C::East,
                 (C::East, R::Right) | (C::West, R::Left) => C::South,
                 (C::North, R::Left) | (C::South, R::Right) => C::West,
-            };
-
-            (x, y) = match card {
-                C::North => (x, y - 1),
-                C::East => (x + 1, y),
-                C::South => (x, y - 1),
-                C::West => (x - 1, y),
             };
 
             result.push((x, y));

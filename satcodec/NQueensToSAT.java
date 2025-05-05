@@ -2,7 +2,7 @@ import it.uniroma1.di.tmancini.utils.*;
 import it.uniroma1.di.tmancini.teaching.ai.SATCodec.*;
 import java.util.*;
 
-public class NQueens {
+public class NQueensToSAT {
     public static void main(String args[])  {
         int n = 4;
         var N = new IntRange("coords", 1, n);

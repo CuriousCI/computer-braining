@@ -10,7 +10,7 @@ use ai::framework::{
 use bumpalo::Bump;
 use model::hp_2d_protein_folding::{
     Sequence,
-    local_search::{self, Local2dProteinFolding},
+    local_search::{self, Local2dProteinFolding, ProteinConformation, RelativeDirection},
     search::{AminoAcid, Conformation, Contacts, MissedContacts, ProteinFolding},
 };
 // use rand::{Rng, rng};
@@ -34,6 +34,19 @@ static GLOBAL: System = System;
 
 fn main() {
     use model::hp_2d_protein_folding::Alphabet::*;
+    // let sequence = vec![H, H, H, H, H, H];
+    // use RelativeDirection::*;
+    //
+    // let p = Local2dProteinFolding::new(sequence.clone());
+    // let c = ProteinConformation {
+    //     directions: vec![Right, Right, Right, Right, Right, Right],
+    // };
+    //
+    // println!("{:?}", p.heuristic(&c));
+    // println!("{:?}", c.positions());
+    // debug_conformation(&ProteinFolding::new(sequence), &c.positions());
+    //
+    // return;
 
     // let sequence = vec![
     //     H, H, P, H, P, P, H, H, H, P, P, P, P, H, H, P, H, P, H, P, P, H, P, H, P, H, H, P, H, P,
@@ -81,14 +94,14 @@ fn main() {
     //        |t| -0.0001 * (t as f64) + 20f64,
     //        |Reverse(u1), Reverse(u2)| u1.abs_diff(*u2) as f64,
 
-    println!("Genetic algorithm");
-    let time = Instant::now();
-    let protein = Local2dProteinFolding::new(sequence.clone());
-    let mut rng = rand::rng();
-    let result = genetic_algorithm(&protein, 100, 10000, &mut rng);
-    println!("{:?}", time.elapsed());
-    println!("best result: {:?}", protein.heuristic(&result));
-    debug_conformation(&ProteinFolding::new(sequence.clone()), &result.positions());
+    // println!("Genetic algorithm");
+    // let time = Instant::now();
+    // let protein = Local2dProteinFolding::new(sequence.clone());
+    // let mut rng = rand::rng();
+    // let result = genetic_algorithm(&protein, 100, 10000, &mut rng);
+    // println!("{:?}", time.elapsed());
+    // println!("best result: {:?}", protein.heuristic(&result));
+    // debug_conformation(&ProteinFolding::new(sequence.clone()), &result.positions());
 
     println!("Local beam");
     let time = Instant::now();
