@@ -1,8 +1,9 @@
 #let indentation = 2em
+#let purple = rgb("b16286")
 #let yellow = rgb("#d79921")
 #let green = rgb("#98971a")
 #let blue = rgb("#458588")
-#let red = rgb("#b16286")
+#let red = rgb("#cc241d")
 
 #let conf(title, doc) = {
   set terms(hanging-indent: indentation, separator: [#linebreak()])
@@ -31,8 +32,8 @@
 #let indent(body) = block(inset: (x: indentation), spacing: 0pt, [#body])
 
 #let highlight(body) = {
-  show emph: it => text(blue, it)
-  show strong: it => text(green, it.body)
+  show emph: it => text(purple, it)
+  show strong: it => text(blue, it.body)
   show sym.space.nobreak: h(indentation)
   show regex("[\w_]+\("): set text(red)
   show regex("\("): set text(black)
