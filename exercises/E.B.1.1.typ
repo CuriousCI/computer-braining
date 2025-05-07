@@ -5,7 +5,7 @@
 
 \
 
-#align(center, image("studenti-ansiosi.png", width: 60%))
+#align(center, image("studenti-ansiosi.png", width: 63%))
 
 \
 
@@ -13,8 +13,8 @@
 
 - #highlight[
     $cal(P)$ = { \
-    ~ *Studente*\/1, *Ansioso*\/1, *Esame*\/1, *Programma*\/1, \
-    ~ _esame_superato_/2, _esame_programma_/2, \
+    ~ *Persona*\/1, *Studente*\/1, *PersonaAnsiosa*\/1, *Esame*\/1, \
+    ~ *Programma*\/1, _esame_superato_/2, _esame_programma_/2, \
     ~ _programma_studiato_/2 \
     }
   ]
@@ -24,11 +24,10 @@
 
 \
 #highlight[
-  // $phi.alt$ = \
-  ($forall$ $alpha$ *Studente*($alpha$) $->$ $not$ *Esame*($alpha$) $and$ $not$ *Programma*($alpha$)) $and$ \
-  // ($forall$ $alpha$ *Studente*($alpha$) $->$ $not$ *Programma*($alpha$)) $and$ \
+  $phi.alt$ = ($forall$ $alpha$ *Persona*($alpha$) $->$ $not$ *Esame*($alpha$) $and$ $not$ *Programma*($alpha$)) $and$ \
   ($forall$ $alpha$ *Esame*($alpha$) $->$ $not$ *Programma*($alpha$)) $and$ \
-  ($forall$ $alpha$ *Ansioso*($alpha$) $->$ *Studente*($alpha$)) $and$ \
+  ($forall$ $alpha$ *PersonaAnsiosa*($alpha$) $->$ *Persona*($alpha$)) $and$ \
+  ($forall$ $alpha$ *Studente*($alpha$) $->$ *Persona*($alpha$)) $and$ \
   ($forall$ $alpha$, $beta$ _esame_superato_($alpha$, $beta$) $->$ *Esame*($alpha$) $and$ *Studente*($beta$)) $and$ \
   ($forall$ $alpha$, $beta$ _esame_programma_($alpha$, $beta$) $->$ *Esame*($alpha$) $and$ *Programma*($beta$)) $and$ \
   ($forall$ $alpha$, $beta$ _programma_studiato_($alpha$, $beta$) $->$ *Programma*($alpha$) $and$ *Studente*($beta$)) $and$ \
@@ -40,17 +39,48 @@
   ~~ _esame_programma_(e, p2) \
   ) $and$ \
   ( \
-  ~ $forall$ s, e \
-  ~~ _esame_superato_(s, e) $->$ \
-  ~~~ $not$ *Ansioso*(s) $or$ \
-  ~~~ $exists$ p _esame_programma_(e, p) $and$ _programma_studiato_(p, s) \
+  ~ $forall$ studente, esame \
+  ~~ _esame_superato_(studente, esame) $->$ \
+  ~~~ $not$ *PersonaAnsiosa*(studente) $and$ \
+  ~~~ $exists$ programma \
+  ~~~~ _esame_programma_(esame, programma) $and$ \
+  ~~~~ _programma_studiato_(programma, studente) \
   )
 ]
 
-- $D = {s, e, p, }$
-- $M$ = {...}
-- $I$ = {...}
+#pagebreak()
 
+Sia $D = {alpha, beta, gamma}$ il dominio di interpretazione e sia $M$ un'interpretazione t.c.
+#highlight[
+  - $M$(*Persona*) = ${alpha}$
+  - $M$(*Studente*) = ${alpha}$
+  - $M$(*PersonaAnsiosa*) = ${}$
+  - $M$(*Esame*) = ${beta}$
+  - $M$(*Programma*) = ${gamma}$
+  - $M$(_esame_superato_) = ${(beta, alpha)}$
+  - $M$(_esame_programma_) = ${(beta, gamma)}$
+  - $M$(_programma_studiato_) = ${(gamma, alpha)}$
+]
+
+Si ha che $M tack.r.double phi.alt$ ($alpha$ è uno studente che ha superato l'esame $beta$, non è ansioso, e ne ha studiato il programma $gamma$)
+
+\
+Sia $I$ un'interpretazione t.c.
+#highlight[
+  - $I$(*Persona*) = ${alpha}$
+  - $I$(*Studente*) = ${alpha}$
+  - $I$(*PersonaAnsiosa*) = ${alpha}$
+  - $I$(*Esame*) = ${beta}$
+  - $I$(*Programma*) = ${gamma}$
+  - $I$(_esame_superato_) = ${(beta, alpha)}$
+  - $I$(_esame_programma_) = ${(beta, gamma)}$
+  - $I$(_programma_studiato_) = ${}$
+]
+
+Si ha che $I tack.r.double.not phi.alt$ perché $alpha$ è uno studente che ha superato l'esame $beta$, ma è ansioso e non ne ha studiato il programma $gamma$
+
+// $phi.alt$ = \
+// ($forall$ $alpha$ *Studente*($alpha$) $->$ $not$ *Programma*($alpha$)) $and$ \
 
 // \
 // \
