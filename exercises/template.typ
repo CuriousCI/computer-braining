@@ -17,3 +17,17 @@
   context counter(heading).step()
   doc
 }
+
+#let minizinc(body) = [
+  #show raw.where(block: true): block.with(
+    inset: 1em,
+    width: 100%,
+    fill: luma(254),
+    stroke: (left: 5pt + luma(245), rest: 1pt + luma(245)),
+  )
+
+  #show regex("constraint"): set text(red)
+  #show regex("array|var"): set text(red)
+
+  #body
+]
