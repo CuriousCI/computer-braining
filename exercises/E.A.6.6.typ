@@ -17,17 +17,15 @@ Dato un grafo non diretto $G = (V, E)$ siano
 \
 
 $
-  & phi.alt = phi.alt_"almeno_un_colore_per_arco" and \
-  & quad phi.alt_"al_più_un_colore_per_arco" and \
-  & quad phi.alt_"triangoli"
+  phi.alt = phi.alt_"almeno_un_colore_per_arco" and phi.alt_"al_più_un_colore_per_arco" and phi.alt_"triangoli"
 $
 
 \
 
 $
   phi.alt_"almeno_un_colore_per_arco" & = and.big_({u, v} in E) (or.big_(c in cal(C)) X_(u, v)^c) \
-  phi.alt_"al_più_un_colore_per_arco" & = and.big_({u, v} in E \ c_1 in cal(C) \ c_2 in cal(C) \ c_1 < c_2) (X_(u, v)^(c_1) -> not X_(u, v)^(c_2)) \
-  phi.alt_"triangoli" & = and.big_(t in V \ u in V \ v in V \ {t, u} in E \ {u, v} in E \ {v, t} in E \ c in cal(C)) (X_(t, u)^c and X_(u, v)^c -> not X_(v, t)^c)
+  phi.alt_"al_più_un_colore_per_arco" & = and.big_({u, v} in E \ c_1, c_2 in cal(C) \ c_1 < c_2) (X_(u, v)^(c_1) -> not X_(u, v)^(c_2)) \
+  phi.alt_"triangoli" & = and.big_(u, v, w in V \ {u, v}, {v, w}, {w, u} in E \ c in cal(C) \ u < v < w) (X_(w, u)^c and X_(u, v)^c -> not X_(v, w)^c)
 $
 
 #pagebreak()

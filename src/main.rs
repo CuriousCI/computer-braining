@@ -34,6 +34,7 @@ static GLOBAL: System = System;
 
 fn main() {
     use model::hp_2d_protein_folding::Alphabet::*;
+
     // let sequence = vec![H, H, H, H, H, H];
     // use RelativeDirection::*;
     //

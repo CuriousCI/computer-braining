@@ -17,18 +17,18 @@ Dato $n >= 1$ siano
 
 === Vincoli
 
+// at least one clauses
+// at most one clauses
 $
-  & phi.alt = phi.alt_"ogni_numero_in_almeno_un'urna" and \
-  & quad phi.alt_"ogni_numero_in_al_più_un'urna" and \
-  & quad phi.alt_"aritmetica"
+  phi.alt = phi.alt_"totalità" and phi.alt_"funzione" and phi.alt_"aritmetica"
 $
 
 \
 
 $
-  phi.alt_"ogni_numero_in_almeno_un'urna" & = and.big_(i in cal(N)) (or.big_(u in cal(U)) X_i^u) \
-  phi.alt_"ogni_numero_in_al_più_un'urna" & = and.big_(i in cal(N) \ u in cal(U) \ t in cal(U) \ u < t) X_i^u -> not X_i^t \
-  phi.alt_"aritmetica" & = and.big_(u in cal(U) \ i in cal(N) \ j in cal(N) \ i < j and \ i + j <= n ) (X_i^u and X_j^u) -> not X_(i + j)^u
+  phi.alt_"totalità" & = and.big_(i in cal(N)) (or.big_(u in cal(U)) X_i^u) \
+  phi.alt_"funzione" & = and.big_(i in cal(N) \ u_1, u_2 in cal(U) \ u_1 < u_2) X_i^(u_1) -> not X_i^(u_2) \
+  phi.alt_"aritmetica" & = and.big_(u in cal(U) \ i, j in cal(N) \ i < j and \ i + j <= n ) (X_i^u and X_j^u) -> not X_(i + j)^u
 $
 
 In particolare
@@ -53,7 +53,7 @@ Dato $n = 5$ si ha
 === Vincoli
 
 $
-  & phi.alt_"ogni_numero_in_almeno_un'urna" = ( \
+  & phi.alt_"totalità" = ( \
     & quad (X_1^1 or X_1^2 or X_1^3) and \
     & quad (X_2^1 or X_2^2 or X_2^3) and \
     & quad (X_3^1 or X_3^2 or X_3^3) and \
@@ -63,7 +63,7 @@ $
 $
 
 $
-  & phi.alt_"ogni_numero_in_al_più_un'urna" = ( \
+  & phi.alt_"funzione" = ( \
     & quad (X_1^1 -> not X_1^2) and (X_1^1 -> not X_1^3) and (X_1^2 -> not X_1^3) and \
     & quad (X_2^1 -> not X_2^2) and (X_2^1 -> not X_2^3) and (X_2^2 -> not X_2^3) and \
     & quad (X_3^1 -> not X_3^2) and (X_3^1 -> not X_3^3) and (X_3^2 -> not X_3^3) and \
@@ -112,10 +112,10 @@ public class SchursToSAT {
 
     // Ogni numero in al più un'urna
     for (var i : numbers.values()) {
-      for (var u : urns.values()) {
-        for (int t = u + 1; t <= 3; t++) {
-          encoder.addNegToClause("X", i, u);
-          encoder.addNegToClause("X", i, t);
+      for (var u1 : urns.values()) {
+        for (int u2 = u1 + 1; u2 <= 3; u2++) {
+          encoder.addNegToClause("X", i, u1);
+          encoder.addNegToClause("X", i, u2);
           encoder.endClause();
         }
       }
