@@ -1,4 +1,4 @@
-#let indentation = 2em
+#let indentation = 1.2em
 #let purple = rgb("b16286")
 #let yellow = rgb("#d79921")
 #let green = rgb("#98971a")

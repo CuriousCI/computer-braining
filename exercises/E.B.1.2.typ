@@ -18,18 +18,82 @@
 
 == Inferenza A
 
-- Ci sono studenti ansiosi
-  - #highlight[
-      $exists$ X *Studente*(X) $and$ *Ansioso*(X)
+
+- #highlight[
+    KB = { \
+    ~ $forall$ X $forall$ C \
+    ~~ *Studente*(X) $and$ *Corso*(C) $and$ (*Ansioso*(X) $or$ $not$ _HaStudiato_(X, C)) \
+    ~~~ $->$ $not$ _Supera_(X, C), \
+    ~ $exists$ X *Studente*(X) $and$ *Ansioso*(X), \
+    ~ $exists$ X $exists$ C *Studente*(X) $and$ *Corso*(C) $and$ _HaStudiato_(X, C) \
+    }
+
+  ]
+- $cal(F) = { S_1\/0, S_2\/0, C_1\/0 }$
+
+\
+
+#align(center)[
+  #box(width: 150%)[
+    #highlight[
+      \
+      ~ *Studente*(X) $and$ *Corso*(C) $and$ (*Ansioso*(X) $or$ $not$ _HaStudiato_(X, C)) $->$ $not$ _Supera_(X, C) = \
+      \
+      ~ $not$ *Studente*(X) $or$ $not$ *Corso*(C) $or$ $not$ (*Ansioso*(X) $or$ $not$ _HaStudiato_(X, C)) $or$ $not$ _Supera_(X, C) = \
+      \
+      ~ $not$ *Studente*(X) $or$ $not$ *Corso*(C) $or$ $not$ _Supera_(X, C) $or$ ($not$ *Ansioso*(X) $and$ _HaStudiato_(X, C)) = \
+      \
+      ~ $not$ *Studente*(X) $or$ $not$ *Corso*(C) $or$ \ (($not$ *Ansioso*(X) $or$ $not$ _Supera_(X, C)) $and$ (_HaStudiato_(X, C) $or$ $not$ _Supera_(X, C))) = \
+      \
+      ~ $not$ *Studente*(X) $or$ \ (($not$ *Ansioso*(X) $or$ $not$ _Supera_(X, C)$or$ $not$ *Corso*(C)) $and$ \ (_HaStudiato_(X, C) $or$ $not$ _Supera_(X, C))$or$ $not$ *Corso*(C)) = \
+      \
+      ~ ($not$ *Ansioso*(X) $or$ $not$ _Supera_(X, C)$or$ $not$ *Corso*(C) $or$ $not$ *Studente*(X)) $and$ \ (_HaStudiato_(X, C) $or$ $not$ _Supera_(X, C))$or$ $not$ *Corso*(C) $or$ $not$ *Studente*(X) \
     ]
-- Ci sono studenti che hanno studiato
-  - #highlight[
-      $exists$ X $exists$ C *Studente*(X) $and$ *Corso*(C) $and$ _HaStudiato_(X, C)
-    ]
-- SI PUÒ INFERIRE: nessuno studente supererà alcun esame?
-  - #highlight[
-      $not$ $exists$ X, C *Studente*(X) $and$ *Corso*(C) $and$ _Supera_(X, C)
-    ]
+  ]
+]
+
+#pagebreak()
+
+- #highlight[
+    KB#sub[CNF] = { \
+    ~ $not$ *Ansioso*(X) $or$ $not$ _Supera_(X, C)$or$ $not$ *Corso*(C) $or$ $not$ *Studente*(X)), \
+    ~ _HaStudiato_(X, C) $or$ $not$ _Supera_(X, C) $or$ $not$ *Corso*(C) $or$ $not$ *Studente*(X), \
+    // ~ $forall$ X $forall$ C \
+    // ~ $exists$ X *Studente*(X) $and$ *Ansioso*(X), \
+    ~ *Studente*($S_1$), \
+    ~ *Ansioso*($S_1$), \
+    ~ *Studente*($S_2$), \
+    ~ *Corso*($C_1$), \
+    ~ _HaStudiato_($S_2$, $C_1$) \
+    // ~ $exists$ X $exists$ C *Studente*(X) $and$ *Corso*(C) $and$ _HaStudiato_(X, C) \
+    }
+  ]
+
+
+- #highlight[
+    KB#sub[CNF] $tack.r.double$ $not$ ($exists$ X $exists$ C *Studente*(X) $and$ *Corso*(C) $and$ _Supera_(X, C)) ?
+  ]
+
+// $
+//   & "KB" = { \
+//     & quad
+//     & }
+// $
+// - Ci sono studenti ansiosi
+//   - #highlight[
+//       $exists$ X *Studente*(X) $and$ *Ansioso*(X)
+//     ]
+// - Ci sono studenti che hanno studiato
+//   - #highlight[
+//       $exists$ X $exists$ C *Studente*(X) $and$ *Corso*(C) $and$ _HaStudiato_(X, C)
+//     ]
+// - SI PUÒ INFERIRE: nessuno studente supererà alcun esame?
+//   - #highlight[
+//       $not$ ($exists$ X $exists$ C *Studente*(X) $and$ *Corso*(C) $and$ _Supera_(X, C))
+//     ]
+// $"KB" tack.r.double "query"$
+// - devo definire KB
+// - devo definire query, e vedere se la cosa sussiste
 
 == Inferenza B
 - Non tutti gli studenti sono ansiosi
@@ -40,7 +104,7 @@
   - #highlight[
       $forall$ X *Studente*(X) $->$ $exists$ C (*Corso*(C) $and$ _HaStudiato_(X, C))
     ]
-- SI PUÒ INFERIRE: sia corretto inferire che tutti gli studenti supereranno almeno un esame?
+- SI PUÒ INFERIRE: che tutti gli studenti supereranno almeno un esame?
   - #highlight[
       $forall$ X *Studente*(X) $->$ $exists$ C (*Corso*(C) $and$ _Supera_(X, C))
     ]

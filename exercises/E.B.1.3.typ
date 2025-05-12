@@ -1,7 +1,7 @@
 #import "logic.typ": *
 #import "template.typ": *
 
-#show: doc => conf([E.B.1.1 (FOL: Studenti ansiosi, modelling)], doc)
+#show: doc => conf([E.B.1.3 (FOL: Aldo, modelling)], doc)
 
 \
 
@@ -10,13 +10,6 @@
 \
 
 #set math.equation(numbering: none)
-
-// Aldo simbolo di funzione
-// Persona
-// Cane, CaneDaCaccia,
-// Gatto, Topo
-// HaIlSonnoLeggero(persona)
-// AbbaiaDiNotte
 
 - #highlight[
     $cal(P)$ = { \
@@ -86,25 +79,3 @@ Sia $I$ un'interpretazione t.c.
 
 Si ha che $I tack.r.double.not phi.alt$ perché $alpha$ è uno studente che ha superato l'esame $beta$, ma è ansioso e non ne ha studiato il programma $gamma$
 
-// $phi.alt$ = \
-// ($forall$ $alpha$ *Studente*($alpha$) $->$ $not$ *Programma*($alpha$)) $and$ \
-
-// \
-// \
-// \
-// ($forall$ $alpha$ $beta$ _esame_programma_($alpha$, $beta$) $->$ *Programma*($alpha$) $and$ *Studente*($beta$)) $and$ \
-// \
-//
-// $
-//   & forall s, e, p \
-//   & quad ( \
-//     & quad quad "Studente"(s) and \
-//     & quad quad "Esame"(e) and \
-//     & quad quad "programma"(e, p) and \
-//     & quad quad ("Ansioso"(s) or not "studiato"(s, p) ) \
-//     & quad ) -> \
-//   & quad quad not "superato"(s, e)
-// $
-
-
-// - $cal(D) = {alpha, beta, gamma, eta}$
