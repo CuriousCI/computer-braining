@@ -11,13 +11,6 @@
 
 #set math.equation(numbering: none)
 
-// Aldo simbolo di funzione
-// Persona
-// Cane, CaneDaCaccia,
-// Gatto, Topo
-// HaIlSonnoLeggero(persona)
-// AbbaiaDiNotte
-
 - #highlight[
     $cal(P)$ = { \
     ~ *Persona*\/1, *Studente*\/1, *PersonaAnsiosa*\/1, *Esame*\/1, \

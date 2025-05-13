@@ -3,6 +3,13 @@
 
 #show: doc => conf([E.B.1.3 (FOL: Aldo, modelling)], doc)
 
+// Aldo simbolo di funzione
+// Persona
+// Cane, CaneDaCaccia,
+// Gatto, Topo
+// HaIlSonnoLeggero(persona)
+// AbbaiaDiNotte
+
 \
 
 #align(center, image("studenti-ansiosi.png", width: 63%))
