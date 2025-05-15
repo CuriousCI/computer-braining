@@ -1,4 +1,6 @@
-use ai::framework::problem::{CrossOver, Heuristic, Mutable, Problem, TransitionModel};
+use computer_braining::framework::problem::{
+    CrossOver, Heuristic, Mutable, Problem, TransitionModel,
+};
 
 use super::{Alphabet, Pos, Sequence};
 

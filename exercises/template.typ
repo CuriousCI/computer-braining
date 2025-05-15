@@ -8,6 +8,7 @@
   set table(stroke: 0.25pt)
   set list(marker: [--])
 
+  show math.equation.where(block: true): set block(breakable: true)
   show figure.caption: set align(center)
   show heading: set block(above: 1.4em, below: 1em)
   show raw: set text(font: "CaskaydiaCove NFM", lang: "it", weight: "light", size: 9pt)

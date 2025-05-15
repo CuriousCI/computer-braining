@@ -2,7 +2,7 @@ use std::{cmp::Reverse, ops::Deref, rc::Rc};
 
 use super::{Alphabet, Pos, Sequence};
 
-use ai::framework::{
+use computer_braining::framework::{
     problem::{GoalBased, Heuristic, Problem, TransitionModel, Utility},
     search::{AStar, UniformCost},
 };

@@ -1,5 +1,5 @@
 [package]
-name = "ai"
+name = "computer-braining"
 version = "0.1.0"
 edition = "2024"
 
@@ -9,3 +9,5 @@ rand = "0.9.0"
 rayon = "1.10.0"
 bitvec = "1.0.1"
 bumpalo = "3.17.0"
+serde = { version = "1.0.219", features = ["derive"] }
+serde_json = "1.0.140"
