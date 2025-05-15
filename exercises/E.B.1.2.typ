@@ -54,10 +54,11 @@
 
 #pagebreak()
 
-- #highlight[
+#box(width: 150%)[
+  #highlight[
     KB#sub[CNF] = { \
-    ~ $not$ *Ansioso*(X) $or$ $not$ _Supera_(X, C)$or$ $not$ *Corso*(C) $or$ $not$ *Studente*(X)), \
-    ~ _HaStudiato_(X, C) $or$ $not$ _Supera_(X, C) $or$ $not$ *Corso*(C) $or$ $not$ *Studente*(X), \
+    // ~ $not$ *Ansioso*(X) $or$ $not$ _Supera_(X, C)$or$ $not$ *Corso*(C) $or$ $not$ *Studente*(X)), \
+    // ~ (_HaStudiato_(X, C) $or$ $not$ _Supera_(X, C) $or$ $not$ *Corso*(C) $or$ $not$ *Studente*(X), \
     // ~ $forall$ X $forall$ C \
     // ~ $exists$ X *Studente*(X) $and$ *Ansioso*(X), \
     ~ *Studente*($S_1$), \
@@ -65,9 +66,12 @@
     ~ *Studente*($S_2$), \
     ~ *Corso*($C_1$), \
     ~ _HaStudiato_($S_2$, $C_1$) \
+    ~ $not$ *Ansioso*(X) $or$ $not$ _Supera_(X, C) $or$ $not$ *Corso*(C) $or$ $not$ *Studente*(X)) \
+    ~ _HaStudiato_(X, C) $or$ $not$ _Supera_(X, C) $or$ $not$ *Corso*(C) $or$ $not$ *Studente*(X) \
     // ~ $exists$ X $exists$ C *Studente*(X) $and$ *Corso*(C) $and$ _HaStudiato_(X, C) \
     }
   ]
+]
 
 
 - #highlight[
