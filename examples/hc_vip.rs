@@ -9,10 +9,10 @@ struct X(usize, usize, usize);
 fn main() {
     use Literal::Neg;
 
-    let card_addresses = 5;
+    let addresses_cardinality = 5;
 
-    let addresses = 1..=card_addresses;
-    let steps = 1..=card_addresses;
+    let addresses = 1..=addresses_cardinality;
+    let steps = 1..=addresses_cardinality;
     let vips = BTreeSet::from([2]);
 
     #[rustfmt::skip]
@@ -21,24 +21,24 @@ fn main() {
         (1, 2), (1, 3), (2, 4), (2, 5), (3, 1), (3, 5), (4, 1), (4, 5), (5, 2), (5, 3)
     ];
 
-    let mut encoder: Encoder<X> = Encoder::new();
+    let mut encoder = Encoder::new();
 
     // Almeno un arco per passo
-    for p in steps.clone() {
+    for t in steps.clone() {
+        let mut c = encoder.clause_builder();
         for &(i, j) in buses.iter() {
-            let mut c = encoder.clause_builder();
-            c.add(X(p, i, j));
-            encoder = c.end()
+            c.add(X(t, i, j));
         }
+        encoder = c.end()
     }
 
     // Al più un arco per passo
-    for p in steps.clone() {
+    for t in steps.clone() {
         for (index, &(i1, j1)) in buses.iter().enumerate() {
-            for &(i2, j2) in buses.iter().skip(index + 1) {
+            for &(i2, j2) in buses.iter().skip(index + 2) {
                 let mut c = encoder.clause_builder();
-                c.add(Neg(X(p, i1, j1)));
-                c.add(X(p, i2, j2));
+                c.add(Neg(X(t, i1, j1)));
+                c.add(Neg(X(t, i2, j2)));
                 encoder = c.end();
             }
         }
@@ -47,10 +47,10 @@ fn main() {
     // Almeno un arco per indirizzo
     for j in addresses.clone() {
         let mut c = encoder.clause_builder();
-        for p in steps.clone() {
-            for i in addresses.clone() {
-                if buses.contains(&(i, j)) {
-                    c.add(X(p, i, j));
+        for t in steps.clone() {
+            for &(i, k) in buses.iter() {
+                if k == j {
+                    c.add(X(t, i, j));
                 }
             }
         }
@@ -58,15 +58,17 @@ fn main() {
     }
 
     // Al più un arco per indirizzo
-    for p in steps.clone() {
-        for j in addresses.clone() {
-            for i1 in addresses.clone() {
-                for i2 in i1 + 1..=*addresses.end() {
-                    if buses.contains(&(i1, j)) && buses.contains(&(i2, j)) {
-                        let mut c = encoder.clause_builder();
-                        c.add(Neg(X(p, i1, j)));
-                        c.add(Neg(X(p, i2, j)));
-                        encoder = c.end();
+    for t1 in steps.clone() {
+        for t2 in t1 + 1..=*steps.end() {
+            for j in addresses.clone() {
+                for i1 in addresses.clone() {
+                    for i2 in i1 + 1..=*addresses.end() {
+                        if buses.contains(&(i1, j)) && buses.contains(&(i2, j)) {
+                            let mut c = encoder.clause_builder();
+                            c.add(Neg(X(t1, i1, j)));
+                            c.add(Neg(X(t2, i2, j)));
+                            encoder = c.end();
+                        }
                     }
                 }
             }
@@ -76,10 +78,10 @@ fn main() {
     // Clienti VIP nella prima metà
     for &v in vips.iter() {
         let mut c = encoder.clause_builder();
-        for p in 1..=steps.end().div_ceil(2) {
+        for t in 1..=steps.end().div_ceil(2) {
             for i in addresses.clone() {
                 if buses.contains(&(i, v)) {
-                    c.add(X(p, i, v));
+                    c.add(X(t, i, v));
                 }
             }
         }
@@ -105,13 +107,13 @@ fn main() {
     encoder = c.end();
 
     // Percorso valido
-    for p in *steps.start()..=*steps.end() - 1 {
+    for t in *steps.start()..=*steps.end() - 1 {
         for &(i, j) in buses.iter() {
             let mut c = encoder.clause_builder();
-            c.add(Neg(X(p, i, j)));
+            c.add(Neg(X(t, i, j)));
             for k in addresses.clone() {
                 if buses.contains(&(j, k)) {
-                    c.add(X(p + 1, j, k))
+                    c.add(X(t + 1, j, k))
                 }
             }
             encoder = c.end();

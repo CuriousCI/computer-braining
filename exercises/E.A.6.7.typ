@@ -15,13 +15,14 @@ Dati i parametri $I, V, G = (I, "bus")$ t.c.
 
 Si definiscono le seguenti variabili:
 
-- $P = |I|$ è il numero di #bus da prendere in un percorso che parte da #casa, visita tutti gli indirizzi esattamente una volta e ritorna a #casa
+- $T = |I|$ è il numero di #bus da prendere in un percorso che parte da #casa, visita tutti gli indirizzi esattamente una volta e ritorna a #casa
   - servono $|I| - 1$ #bus per visitare tutti gli indirizzi esattamente una volta più $1$ #bus per tornare a casa a fine giornata
-- $cal(P) = {1, ..., P}$
-- $cal(I) = {1, ..., |I|}$ l'insieme di identificatori per cui esiste una funzione $id$ biettiva t.c. $id : cal(I) -> I$ e $id(1) = #casa$
+- $cal(T) = {1, ..., T}$
+- $cal(I) = {1, ..., |I|}$ l'insieme di identificatori per cui esiste una funzione $id$ biettiva t.c.
+  $ id : cal(I) -> I " e " id(1) = #casa $
 - $cal(V) = { i | i in cal(I) and exists v space v in V and id(i) = v}$
-- $X = { X_(i, j)^p | (i, j) in #bus and p in cal(P)}$ l'insieme di variabili dove
-  - $X_(i, j)^p$ è vera se l'arco $(i, j) in #bus$ è stato percorso al $p$-esimo passo
+- $X = { X_(i, j)^t | (i, j) in #bus and t in cal(T)}$ l'insieme di variabili dove
+  - $X_(i, j)^t$ è vera se l'arco $(i, j) in #bus$ è stato percorso al $t$-esimo passo
 
 \
 
@@ -40,28 +41,27 @@ $
 
 $
   phi.alt_"almeno_un_arco_per_passo" & =
-  and.big_(p in cal(P))
-  or.big_(i, j in cal(I) \ (i, j) in #bus)
-  X_(i, j)^p
+  and.big_(t in cal(T))
+  or.big_((i, j) in #bus)
+  X_(i, j)^t
   \
   phi.alt_"al_più_un_arco_per_passo" & =
-  and.big_(p in cal(P))
-  or.big_( i_1, j_2, i_2, j_2 in cal(I) \ (i_1, j_1), (i_2, j_2) in #bus \ (i_1, j_1) < (i_2, j_2))
-  X_(i_1, j_1)^p -> not X_(i_2, j_2)^p
+  and.big_(t in cal(T) \ (i_1, j_1), (i_2, j_2) in #bus \ (i_1, j_1) < (i_2, j_2))
+  X_(i_1, j_1)^t -> not X_(i_2, j_2)^t
   \
   phi.alt_"almeno_un_arco_per_indirizzo" & =
   and.big_(j in cal(I))
-  or.big_(i in cal(I) \ p in cal(P) \ (i, j) in #bus)
-  X_(i, j)^p
+  or.big_(t in cal(T) \ (i, j) in #bus)
+  X_(i, j)^t
   \
   phi.alt_"al_più_un_arco_per_indirizzo" & =
-  and.big_(i_1, i_2, j in cal(I) \ p in cal(P) \ (i_1, j), (i_2, j) in #bus \ i_1 < i_2 )
-  X_(i_1, j)^p -> not X_(i_2, j)^p
+  and.big_(t_1, t_2 in cal(T) \ (i_1, j), (i_2, j) in #bus \ t_1 <= t_2 \ i_1 < i_2 )
+  X_(i_1, j)^(t_1) -> not X_(i_2, j)^(t_2)
   \
   phi.alt_"clienti_VIP_nella_prima_metà" & =
   and.big_(v in cal(V) )
-  or.big_(i in cal(I) \ p in cal(P) \ p <= ceil(P / 2) \ (i, v) in #bus )
-  X_(i, v)^p
+  or.big_(t in cal(T) \ t <= ceil(T / 2) \ (i, v) in #bus )
+  X_(i, v)^t
   \
   phi.alt_"partenza_da_casa" & =
   or.big_(i in cal(I) \\ {1} \ (1, i) in #bus)
@@ -69,97 +69,232 @@ $
   \
   phi.alt_"arrivo_a_casa" & =
   or.big_(i in cal(I) \\ {1} \ (i, 1) in #bus)
-  X_(i, 1)^P
+  X_(i, 1)^T
   \
   phi.alt_"percorso_valido" & =
-  and.big_(i, j in cal(I) \ p in cal(P) \\ {P} \ (i, j) in #bus)
-  X_(i, j)^p ->
-  or.big_(k in cal(I) \ (j, k) in #bus)
-  X_(j, k)^(p + 1)
+  and.big_(t in cal(T) \\ {T} \ (i, j) in #bus)
+  X_(i, j)^t ->
+  or.big_((j, k) in #bus)
+  X_(j, k)^(t + 1)
 $
 
 
+#pagebreak()
+
 == Istanziazione
-
-il bro deve visitare una serire di clienti
-- parte da casa sua
-- li visita tutti
-- torna a casa sua
-
-- usa l'autobus
-- l'ordine non conta
-- ha solo biglietti per corsa semplice
-  - quindi può raggiungere il cliente successivo usando un solo autobus
-
-- trovare un itinerario tale che
-  1. parte di casa la mattina
-  2. torna a casa a fine giornata
-  3. Raggiungere il cliente successivo (o casa sua, a fine giornata) dalla sua postazione corrente utilizzando un unico autobus;
-  4. Visita un sottoinsieme $V$ dei clienti nella prima metà del percorso
-
-- ho un mega elenco di tutte le linee autobus della città
-  - ricavo tutte le coppie (A, B) t.c. esiste un unico autobus che collega A, B
-
-
-pazzerello, quindi:
-- mi devo visistare questo bel grafo diretto
-- devo visitare ogni indirizzo al più una volta
-- non solo, gli indirizzi in V li devo visitare nella prima metà...
-
-un bel parto, ok, ma forse ci siamo
-- forse dovrei creare una variabile per ogni arco di "bus"
-- in più devo tenere in considerazione il tempo
-- quindi avrei tipo una variabile per ogni arco per ogni istante di tempo
-- e supponiamo che il tempo massimo sia $T = |I| + 1$
-  - non lo supponiamo, è così, ci deve mettere esattamente questo tempo
-    - non ci può mettere di meno, perché vorrebbe dire che non ha visitato tutti
-    - non ci può mettere di più, perché vorrebbe dire che ha fatto doppio giro
-    - così è facile anche scrivere vincoli del tipo i clienti $V$ stanno nella prima metà $T / 2$
-    - posso forzare che la casa iniziale sia a true? No, devo forzare che l'arco iniziale sia per forza con la casa a sinistra, tipo $X_(1, v)^1$ è true per ogni v (che poi sarebbe $i in cal(I)$, non v)
-
-1. in un dato istante di tempo un solo arco è preso
-2. in un dato istante di tempo al più un arco è preso
-3. devo aver visitato tutti i nodi a fine giornata (hm...)
-  - vabbeh, l'idea sarebbe "esiste almeno un arco attivo che porta in quel nodo" per ogni nodo, e non importa quando
-  - in più rafforzo dicendo che se questo arco esiste, per i clienti vip deve essere nella prima metà
-  - ah, non visito un arco più di una volta (questo va a due a due)
-4. mi manca altro?
 
 === Variabili
 
+// Dati i parametri $I, V, G = (I, "bus")$ t.c.
+// - $#casa in I$
+// - $V subset.eq I \/ {#casa}$
+// - $#bus subset.eq I times I$
+// - $|V| <= (|I|) / 2$
+//
+// Si definiscono le seguenti variabili:
+//
+// - $T = |I|$ è il numero di #bus da prendere in un percorso che parte da #casa, visita tutti gli indirizzi esattamente una volta e ritorna a #casa
+//   - servono $|I| - 1$ #bus per visitare tutti gli indirizzi esattamente una volta più $1$ #bus per tornare a casa a fine giornata
+// - $cal(T) = {1, ..., T}$
+// - $cal(I) = {1, ..., |I|}$ l'insieme di identificatori per cui esiste una funzione $id$ biettiva t.c.
+//   $ id : cal(I) -> I " e " id(1) = #casa $
+// - $cal(V) = { i | i in cal(I) and exists v space v in V and id(i) = v}$
+// - $X = { X_(i, j)^t | (i, j) in #bus and t in cal(T)}$ l'insieme di variabili dove
+//   - $X_(i, j)^t$ è vera se l'arco $(i, j) in #bus$ è stato percorso al $t$-esimo passo
+
+#let E = (
+  (1, 2),
+  (1, 3),
+  (2, 4),
+  (2, 5),
+  (3, 1),
+  (3, 5),
+  (4, 1),
+  (4, 5),
+  (5, 2),
+  (5, 3),
+)
+
+- $I = {#casa, i_1, i_2, i_3, i_4, i_5}$
+- $V = {i_1}$
+- $bus = {(casa, i_1), (casa, i_2), (i_1, i_3), (i_1, i_4), (i_2, casa), (i_3, casa), (i_3, i_4), (i_4, i_1), (i_4, i_2)}$
+
+- $cal(T) = {1, 2, 3, 4, 5}$
+- $cal(I) = {1, 2, 3, 4, 5}$
+- $cal(V) = {2}$
+- $& X = { \
+    #let x = 0;
+    #for t in range(1, 6) {
+      for (i, j) in E {
+        if x == 0 { $& quad$ }
+        $X_(#i, #j)^#t$
+        x += 1
+        if x == 5 {
+          x = 0
+          linebreak()
+        }
+      }
+    }
+    \
+    & }$
+
 === Vincoli
 
-== Codifica SATCodec
+La codifica che ho generato ha 293 clausole anche per un problema così piccolo... non vale la pena elencarle tutte, metto
+un vincolo d'esempio.
+
+$
+  & phi.alt_"al_più_un_arco_per_passo" = { \
+    #let x = 0;
+    #for t in range(1, 6) {
+      for (i1, j1) in E {
+        for (i2, j2) in E {
+          if (i1, j1) < (i2, j2) {
+            if x == 0 { $& quad$ }
+            $(X_(#i1, #j1)^#t -> not X_(#i2, #j2)^#t) and$
+            x += 1
+            if x == 5 {
+              linebreak()
+              x = 0
+            }
+          }
+        }
+      }
+    }
+    & }
+$
+
+#pagebreak()
+
+== Codifica SATCodec (a questo giro in `Rust`)
+
+```rust
+use std::collections::BTreeSet;
+
+use computer_braining::framework::sat_codec::*;
+use serde::Serialize;
+
+#[derive(PartialEq, Eq, PartialOrd, Ord, Hash, Debug, Serialize)]
+struct X(usize, usize, usize);
+
+fn main() {
+    use Literal::Neg;
+
+    let addresses_cardinality = 5;
+
+    let addresses = 1..=addresses_cardinality;
+    let steps = 1..=addresses_cardinality;
+    let vips = BTreeSet::from([2]);
+
+    #[rustfmt::skip]
+    // Already sorted
+    let buses: Vec<(usize, usize)> = vec![
+        (1, 2), (1, 3), (2, 4), (2, 5), (3, 1), (3, 5), (4, 1), (4, 5), (5, 2), (5, 3)
+    ];
+
+    let mut encoder = Encoder::new();
+
+    // Almeno un arco per passo
+    for t in steps.clone() {
+        let mut c = encoder.clause_builder();
+        for &(i, j) in buses.iter() {
+            c.add(X(t, i, j));
+        }
+        encoder = c.end()
+    }
+
+    // Al più un arco per passo
+    for t in steps.clone() {
+        for (index, &(i1, j1)) in buses.iter().enumerate() {
+            for &(i2, j2) in buses.iter().skip(index + 2) {
+                let mut c = encoder.clause_builder();
+                c.add(Neg(X(t, i1, j1)));
+                c.add(Neg(X(t, i2, j2)));
+                encoder = c.end();
+            }
+        }
+    }
+
+    // Almeno un arco per indirizzo
+    for j in addresses.clone() {
+        let mut c = encoder.clause_builder();
+        for t in steps.clone() {
+            for &(i, k) in buses.iter() {
+                if k == j {
+                    c.add(X(t, i, j));
+                }
+            }
+        }
+        encoder = c.end();
+    }
+
+    // Al più un arco per indirizzo
+    for t1 in steps.clone() {
+        for t2 in t1 + 1..=*steps.end() {
+            for j in addresses.clone() {
+                for i1 in addresses.clone() {
+                    for i2 in i1 + 1..=*addresses.end() {
+                        if buses.contains(&(i1, j)) && buses.contains(&(i2, j)) {
+                            let mut c = encoder.clause_builder();
+                            c.add(Neg(X(t1, i1, j)));
+                            c.add(Neg(X(t2, i2, j)));
+                            encoder = c.end();
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // Clienti VIP nella prima metà
+    for &v in vips.iter() {
+        let mut c = encoder.clause_builder();
+        for t in 1..=steps.end().div_ceil(2) {
+            for i in addresses.clone() {
+                if buses.contains(&(i, v)) {
+                    c.add(X(t, i, v));
+                }
+            }
+        }
+        encoder = c.end();
+    }
+
+    // Partenza da casa
+    let mut c = encoder.clause_builder();
+    for i in 2..=*addresses.end() {
+        if buses.contains(&(1, i)) {
+            c.add(X(1, 1, i));
+        }
+    }
+    encoder = c.end();
+
+    // Arrivo a casa
+    let mut c = encoder.clause_builder();
+    for i in 2..=*addresses.end() {
+        if buses.contains(&(i, 1)) {
+            c.add(X(*steps.end(), i, 1));
+        }
+    }
+    encoder = c.end();
+
+    // Percorso valido
+    for t in *steps.start()..=*steps.end() - 1 {
+        for &(i, j) in buses.iter() {
+            let mut c = encoder.clause_builder();
+            c.add(Neg(X(t, i, j)));
+            for k in addresses.clone() {
+                if buses.contains(&(j, k)) {
+                    c.add(X(t + 1, j, k))
+                }
+            }
+            encoder = c.end();
+        }
+    }
+
+    encoder.end();
+}
+```
 
 === ...
 
-=== ...
-
-
-// TODO:
-// - levare i cappi dai #bus prima di generare l'istanza, tanto sono inutili nella soluzione
-// - levare
-
-// c -> c1 -> c2 -> c3 -> c
-// - $cal(V) subset.eq cal(I)$ t.c. esiste un $v$ tale che $v_i in cal(v)$ è l'identificatore
-// $I$ t.c. $id(1) = "casa"$
-// TODO: non posso ripercorrere lo stesso arco più volte
-// \
-// TODO: non mi piace tanto "passo", ma non è che "istante" sia meglio, stiamo parlando di una lunghezza, non di una durata
-// i_1 < i_2 or \
-// (i_1 = i_2 and j_1 < j_2)
-
-// and.big_(j in I \ j != #casa)
-// or.big_(i in I \ l in cal(L) \ (i, j) in #bus)
-// and.big_(j, i_1, i_2 in I \ l in cal(L) \ (i_1, j), (i_2, j) in #bus \ )
-// or.big_(i in cal(I) \ l in cal(L) \ l < L / 2 \ (i, v) in "bus")
-// or.big_(i in cal(I) \ i != 1 \ (1, i) in "bus")
-// or.big_(i in cal(I) \ i != 1 \ (i, 1) in "bus") X_(i, 1)^L
-
-// - $"bus" subset.eq I times I$
-// - $G = (I, "bus")$ è un grafo diretto
-//
-// $f : cal(I) -> I$
-//
-// Dato $I$ l'insieme di indirizzi da raggiungere, e $V subset.eq I - {"casa"}$ sia
-// - $cal(I) = {1, ..., |I|}$ dove $i in cal(I)$ identifica l'$i$-esimo indirizzo ($1$ è la casa di partenza e arrivo)
+Devo ancora implementare il decodificatore. La decodifica l'ho fatta a mano a questo giro, e negli esempi che ho provato funziona perfettamente.

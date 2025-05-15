@@ -1,2 +1,2 @@
-# artificial-intelligence
-AI course @ Sapienza
+# Computer Braining 
+IA course @ Sapienza
