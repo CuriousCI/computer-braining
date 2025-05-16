@@ -12,7 +12,7 @@
 #show math.equation.where(block: true): set block(breakable: true)
 #set math.equation(numbering: none)
 
-- #highlight[
+- #fol[
     $cal(P)$ = { \
     ~ *Persona*\/1, *HaIlSonnoLeggero*\/1, *Animale*\/1, \
     ~ *Cane*\/1, *Gatto*\/1, *Topo*\/1, *CaneDaCaccia*\/1, \
@@ -24,7 +24,7 @@
 - $cal(F) = {"Aldo"\/0}$
 
 \
-#highlight[
+#fol[
   $phi.alt$ = \
   ~ $forall$ o *Persona*(o) $->$ $not$ *Animale*(o) $and$ \
   ~ $forall$ o *HaIlSonnoLeggero*(o) $->$ *Persona*(o) $and$ \
@@ -53,7 +53,7 @@
 
 Sia $D = {a, c, g, t}$ il dominio di interpretazione e sia $M$ un'interpretazione t.c.
 
-#highlight[
+#fol[
   - $M$(Aldo) = $a$
   - $M$(*Persona*) = ${a}$
   - $M$(*HaIlSonnoLeggero*) = ${a}$
@@ -67,12 +67,12 @@ Sia $D = {a, c, g, t}$ il dominio di interpretazione e sia $M$ un'interpretazion
   - $M$(_ha_in_casa_) = ${(a, g)}$
 ]
 
-Si ha che $M tack.r.double phi.alt$ perché il simbolo di costante $"Aldo"$ ha come valore l'oggetto $a$ che è una persona. Inoltre, $"Aldo"$ ha un gatto $g$. Oltrettutto $c$ è un #highlight[*CaneDaCaccia*, *AbbaiaDiNotte* ed è un *Animale*], e t è un #highlight[*Topo* e un *Animale*].
+Si ha che $M tack.r.double phi.alt$ perché il simbolo di costante $"Aldo"$ ha come valore l'oggetto $a$ che è una persona. Inoltre, $"Aldo"$ ha un gatto $g$. Oltrettutto $c$ è un #fol[*CaneDaCaccia*, *AbbaiaDiNotte* ed è un *Animale*], e t è un #fol[*Topo* e un *Animale*].
 
 \
 Sia $I$ un'interpretazione t.c.
 
-#highlight[
+#fol[
   - $I$(Aldo) = $a$
   - $I$(*Persona*) = ${a}$
   - $I$(*HaIlSonnoLeggero*) = ${a}$
@@ -86,4 +86,4 @@ Sia $I$ un'interpretazione t.c.
   - $I$(_ha_in_casa_) = ${(a, g), (a, t)}$
 ]
 
-Si ha che $I tack.r.double.not phi.alt$ Aldo #highlight[_possiede_] sia un gatto $g$ sia un topo $t$.
+Si ha che $I tack.r.double.not phi.alt$ Aldo #fol[_possiede_] sia un gatto $g$ sia un topo $t$.

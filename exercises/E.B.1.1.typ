@@ -11,7 +11,7 @@
 
 #set math.equation(numbering: none)
 
-- #highlight[
+- #fol[
     $cal(P)$ = { \
     ~ *Persona*\/1, *Studente*\/1, *PersonaAnsiosa*\/1, *Esame*\/1, \
     ~ *Programma*\/1, _esame_superato_/2, _esame_programma_/2, \
@@ -23,7 +23,7 @@
 - $cal(F) = {}$
 
 \
-#highlight[
+#fol[
   $phi.alt$ = ($forall$ $alpha$ *Persona*($alpha$) $->$ $not$ *Esame*($alpha$) $and$ $not$ *Programma*($alpha$)) $and$ \
   ($forall$ $alpha$ *Esame*($alpha$) $->$ $not$ *Programma*($alpha$)) $and$ \
   ($forall$ $alpha$ *PersonaAnsiosa*($alpha$) $->$ *Persona*($alpha$)) $and$ \
@@ -51,7 +51,7 @@
 #pagebreak()
 
 Sia $D = {alpha, beta, gamma}$ il dominio di interpretazione e sia $M$ un'interpretazione t.c.
-#highlight[
+#fol[
   - $M$(*Persona*) = ${alpha}$
   - $M$(*Studente*) = ${alpha}$
   - $M$(*PersonaAnsiosa*) = ${}$
@@ -66,7 +66,7 @@ Si ha che $M tack.r.double phi.alt$ ($alpha$ è uno studente che ha superato l'e
 
 \
 Sia $I$ un'interpretazione t.c.
-#highlight[
+#fol[
   - $I$(*Persona*) = ${alpha}$
   - $I$(*Studente*) = ${alpha}$
   - $I$(*PersonaAnsiosa*) = ${alpha}$
