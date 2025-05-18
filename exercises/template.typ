@@ -1,7 +1,8 @@
 #let conf(title, doc) = {
   set text(font: "New Computer Modern", lang: "it", weight: "light", size: 11pt)
   set page(margin: 1.75in)
-  set par(leading: 0.55em, spacing: 0.85em, first-line-indent: 1.8em, justify: true)
+  // set par(leading: 0.55em, spacing: 0.85em, first-line-indent: 1.8em, justify: true)
+  set par(leading: 0.55em, spacing: 0.85em, justify: true)
   set math.equation(numbering: "(1)")
   set heading(numbering: "1.1")
   set raw(lang: "Rust")
