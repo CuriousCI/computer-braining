@@ -25,7 +25,7 @@
   show regex("\bforall\b"): $forall$
   show regex("\bexists\b"): $exists$
   show regex("\band\b"): $and$
-  show regex("\bnot\b"): $not$
+  show regex("\bnot\b"): $not#h(-4pt)$
   show regex("\bor\b"): $or$
   show regex("\bin\b"): $in$
   show regex("<->"): $<->$

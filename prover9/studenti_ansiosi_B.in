@@ -1,0 +1,9 @@
+formulas(sos).
+    (exists x Studente(x) & -Ansioso(x)).
+    (all x Studente(x) -> (exists c Corso(c) & HaStudiato(x, c))).
+    (all x all c ((Studente(x) & Corso(c) & (Ansioso(x) | -HaStudiato(x, c))) -> -Supera(x, c))). 
+end_of_list.
+
+formulas(goals).
+    (all x (exists c Studente(x) -> (Corso(c) & Supera(x, c)))).
+end_of_list.
