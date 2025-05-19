@@ -1,0 +1,10 @@
+formulas(sos).
+    (all x (CaneDaCaccia(x) -> AbbaiaDiNotte(x))).
+    (all x (all y (Gatto(y) & Possiede(x,y) -> -HaIlTopoInCasa(x)))).
+    (all x (all y (HaSonnoLeggero(x) & Possiede(x,y) -> -AbbaiaDiNotte(y)))).
+    (exists y (Possiede(aldo,y) & (Gatto(y) | CaneDaCaccia(y)))).
+end_of_list.
+
+formulas(goals).
+    (HaSonnoLeggero(aldo) -> -HaIlTopoInCasa(aldo)).
+end_of_list.

@@ -10,34 +10,39 @@ Dati i parametri $G = (V, E)$ siano
 - $X = { X_v^c | v in V and c in cal(C) }$ l'insieme di variabili dove
   - $X_v^c$ è vera se il nodo $v$ ha colore $c$
 
-\
+Il problema presenta 4 vincoli
 
 $
-  phi.alt = & phi.alt_"almeno_un_colore" and \
-  & phi.alt_"al_più_un_colore" and \
-  & phi.alt_"nodi_adiacenti_colore_diverso" and \
-  & phi.alt_"cappi"
+  phi.alt = phi.alt_1 and phi.alt_2 and phi.alt_3 and phi.alt_4
 $
 
-\
+(ALO) Ogni nodo ha almeno un colore
 
 $
-  phi.alt_"almeno_un_colore" & =
-  and.big_(v in V)
-  or.big_(c in cal(C)) x_v^c
-  \
-  phi.alt_"al_più_un_colore" & =
+  phi.alt_1 = and.big_(v in V) or.big_(c in cal(C)) x_v^c
+$
+
+(AMO) Ogni nodo ha al più un colore
+
+$
+  phi.alt_2 & =
   and.big_(v in V \ c_1, c_2 in cal(C) \ c_1 < c_2)
   X_v^c_1 -> not X_v^c_2
-  \
-  phi.alt_"nodi_adiacenti_colore_diverso" & =
-  and.big_((u, v) in E \ c in cal(C) \ u < v) X_u^c -> not X_v^c
-  \
-  phi.alt_"cappi" & =
-  and.big_((v, v) in E) X_v^R
 $
 
-#pagebreak()
+
+1. Non esistono nodi collegati da un arco colorati con lo stesso colore.
+
+
+$
+  phi.alt_3 = and.big_((u, v) in E \ c in cal(C) \ u < v) X_u^c -> not X_v^c
+$
+
+2. Ogni nodo $v in V$ che ha un cappio (un arco da $v$ a $v$) è colorato con il colore $R$.
+
+$
+  phi.alt_4 = and.big_((v, v) in E) X_v^R
+$
 
 == Istanziazione
 
@@ -70,40 +75,39 @@ $
 
 === Variabili
 
-- $V = {
-    #for v in V {
-      v
-      [, ]
-    }
-  }$
+$V = {
+  #for (index, v) in V.enumerate() {
+    $#v$
+    if index + 1 < V.len() { $,$ }
+  }
+}$
 
-- $& E = { \
-    #let i = 0;
-    #for (u, v) in E {
-      if i == 0 { $& quad$ }
-      [(#u, #v), (#v, #u), ]
-      i += 1
-      if i == 5 {
-        linebreak()
-        i = 0
-      }
-    }
-    & }$
 
-- $&X = { \
-    #let i = 0
-    #for v in V {
-      for c in C {
-        if i == 0 { $& quad$ }
-        $X_#v^#c,$
-        i += 1
-        if i == 9 {
-          i = 0
-          linebreak()
-        }
-      }
-    } \
-    & }$
+$& E = { \
+  #for (index, (u, v)) in E.enumerate() {
+    if calc.rem-euclid(index, 5) == 0 { $& quad$ }
+    $(#u, #v)$
+    if u != v { $, (#v, #u),$ }
+    if calc.rem-euclid(index, 5) == 4 { linebreak() }
+  }
+  & }$
+
+$&X = { \
+  #let index = 0
+  #for v in V {
+    for c in C {
+      if index == 0 { $& quad$ }
+      $X_#v^#c,$
+      index += 1
+      if calc.rem-euclid(index, 9) == 8 { linebreak() }
+    }
+  } \
+  & }$
+
+// #let index = 0;
+// index += 1
+// index = 0
+
 
 === Vincoli
 
@@ -165,6 +169,36 @@ $
 $
   &phi.alt_"cappi" = X_J^R
 $
+
+
+// phi.alt = & phi.alt and \
+// & phi.alt and \
+// & phi.alt and \
+// & phi.alt
+// Siano $phi.alt_i, i in {1, ..., 4}$ i vincoli dell'insieme
+// phi.alt = phi.alt_1 and phi.alt_2 and phi.alt_3 and phi.alt_4
+// phi.alt = & phi.alt_"almeno_un_colore_per_nodo" and \
+// & phi.alt_"al_più_un_colore_per_nodo" and \
+// & phi.alt_"nodi_adiacenti_colore_diverso" and \
+// & phi.alt_"cappi_colore_rosso"
+
+// $
+//   phi.alt_"almeno_un_colore" & =
+//   and.big_(v in V)
+//   or.big_(c in cal(C)) x_v^c
+//   \
+//   phi.alt_"al_più_un_colore" & =
+//   and.big_(v in V \ c_1, c_2 in cal(C) \ c_1 < c_2)
+//   X_v^c_1 -> not X_v^c_2
+//   \
+//   phi.alt_"nodi_adiacenti_colore_diverso" & =
+//   and.big_((u, v) in E \ c in cal(C) \ u < v) X_u^c -> not X_v^c
+//   \
+//   phi.alt_"cappi" & =
+//   and.big_((v, v) in E) X_v^R
+// $
+
+// #pagebreak()
 
 // Almeno un colore
 // for v in nodes.iter() {

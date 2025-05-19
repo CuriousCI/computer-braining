@@ -34,18 +34,25 @@
   #body
 ]
 
+// Questions:
+// - PDDL operazioni d'appoggio
+// - video su teoria delle decisioni
+// - abbiamo trovato 3 errori diversi
+// - video su un professore che parla di AI e lavoro
+// - CSP meetings M (numero di incontri) indipendente da T e S
+
 // - [ ] E.A.4.1 - Algoritmi a miglioramento iterativo, N-Queens
 // - [ ] E.A.4.2 - Algoritmi a miglioramento iterativo, HP 2D-Protein Folding
 // - [ ] E.A.5.9 - CSP, Meetings
-// - [~] E.A.6.7 - SAT, HC-VIP
+// - [x] E.A.6.7 - SAT, HC-VIP
 // - [~] E.A.6.8 - SAT, Graph colouring with red self-loops
 // - [ ] E.A.6.9 - SAT, Cards
 // - [ ] E.B.1.5 - FOL, Club delle Alpi, modelling e inferenza
-// - [~] E.B.2.1 - PDDL, Torri di Hanoi, modelling
+// - [x] E.B.2.1 - PDDL, Torri di Hanoi, modelling
 // - [ ] E.B.2.2 - PDDL, Domino, modelling
 // - [ ] E.B.3.2.2.1 - BN, I Rossi, Modelling - IA
-// - [ ] E.B.1.4 - FOL, Aldo, inferenza
-// - [ ] E.B.1.2 - FOL, Studenti ansiosi, inferenza
+// - [x] E.B.1.4 - FOL, Aldo, inferenza
+// - [~] E.B.1.2 - FOL, Studenti ansiosi, inferenza
 // - [ ] E.A.3.3 - Esplorazione di spazi degli stati, HP 2D-Protein Folding
 // - [ ] E.A.6.7 - SAT, HC-VIP - Soluzione
 
@@ -80,8 +87,8 @@
 // - [~] E.B.2.1 - PDDL, Torri di Hanoi, modelling
 // - [ ] E.B.2.2 - PDDL, Domino, modelling
 // - [ ] E.B.3.2.2.1 - BN, I Rossi, Modelling - IA
-// - [ ] E.B.1.4 - FOL, Aldo, inferenza
-// - [ ] E.B.1.2 - FOL, Studenti ansiosi, inferenza
+// - [~] E.B.1.4 - FOL, Aldo, inferenza
+// - [~] E.B.1.2 - FOL, Studenti ansiosi, inferenza
 // - [x] - E.A.5.4 - CSP, Generalised Arc-Consistency
 // - [x] - E.A.5.5 - CSP, Backtracking e Propagazione di Vincoli
 // - [ ] E.A.3.3 - Esplorazione di spazi degli stati, HP 2D-Protein Folding
