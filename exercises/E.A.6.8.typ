@@ -34,9 +34,7 @@ $
   X_v^c_1 -> not X_v^c_2
 $
 
-
 1. Non esistono nodi collegati da un arco colorati con lo stesso colore.
-
 
 $
   phi.alt_3 = and.big_((u, v) in E \ c in cal(C) \ u < v) X_u^c -> not X_v^c
@@ -85,7 +83,6 @@ $V = {
     if index + 1 < V.len() { $,$ }
   }
 }$
-
 
 $& E = { \
   #for (index, (u, v)) in E.enumerate() {
@@ -234,7 +231,7 @@ $
 == Codifica
 
 ```rust
-use computer_braining::framework::sat_codec::*;
+use computer_braining::framework::encoder::*;
 use serde::Serialize;
 
 #[derive(Clone, Copy, Hash, PartialEq, Eq, PartialOrd, Ord, Serialize, Debug)]
@@ -269,25 +266,18 @@ fn main() {
 
     let colors = [R, B, C];
 
-    let mut encoder = Encoder::new();
+    let mut encoder = EncoderSAT::new();
 
     // ALO
     for v in nodes {
-        let mut c = encoder.clause_builder();
-        for color in colors {
-            c.add(X(v, color));
-        }
-        encoder = c.end();
+        encoder.add(colors.into_iter().map(|color| X(v, color).into()).collect());
     }
 
     // AMO
     for v in nodes {
         for (i_1, &color_1) in colors.iter().enumerate() {
             for &color_2 in colors.iter().skip(i_1 + 1) {
-                let mut c = encoder.clause_builder();
-                c.add(Neg(X(v, color_1)));
-                c.add(Neg(X(v, color_2)));
-                encoder = c.end();
+                encoder.add(vec![Neg(X(v, color_1)), Neg(X(v, color_2))]);
             }
         }
     }
@@ -295,15 +285,10 @@ fn main() {
     // 1. + 2.
     for (u, v) in edges {
         if u == v {
-            let mut c = encoder.clause_builder();
-            c.add(X(v, R));
-            encoder = c.end();
+            encoder.add(vec![X(v, R).into()])
         } else {
             for color in colors {
-                let mut c = encoder.clause_builder();
-                c.add(Neg(X(u, color)));
-                c.add(Neg(X(v, color)));
-                encoder = c.end();
+                encoder.add(vec![Neg(X(u, color)), Neg(X(v, color))]);
             }
         }
     }
