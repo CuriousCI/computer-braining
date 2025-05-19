@@ -34,8 +34,8 @@ fn main() {
 
     let mut encoder = Encoder::new();
 
-    // Almeno un colore
-    for v in nodes.iter() {
+    // ALO
+    for v in nodes {
         let mut c = encoder.clause_builder();
         for color in colors {
             c.add(X(v, color));
@@ -43,8 +43,8 @@ fn main() {
         encoder = c.end();
     }
 
-    // Al più un colore
-    for v in nodes.iter() {
+    // AMO
+    for v in nodes {
         for (i_1, &color_1) in colors.iter().enumerate() {
             for &color_2 in colors.iter().skip(i_1 + 1) {
                 let mut c = encoder.clause_builder();
@@ -55,8 +55,8 @@ fn main() {
         }
     }
 
-    // Nodi adiacenti colore diverso + Cappi
-    for (u, v) in edges.iter() {
+    // 1. + 2.
+    for (u, v) in edges {
         if u == v {
             let mut c = encoder.clause_builder();
             c.add(X(v, R));
