@@ -122,3 +122,4 @@
 //
 //     encoder.end();
 // }
+fn main() {}

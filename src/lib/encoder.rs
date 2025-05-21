@@ -49,7 +49,7 @@ impl<T> Default for EncoderSAT<T> {
 
 // TODO: return a printable string
 impl<T: std::fmt::Debug + Clone + Serialize> EncoderSAT<T> {
-    pub fn end(self) {
+    pub fn end(self) -> String {
         let variables_number = self.map.len();
 
         let mut variables = vec![None; variables_number];
@@ -57,8 +57,16 @@ impl<T: std::fmt::Debug + Clone + Serialize> EncoderSAT<T> {
             variables[v - 1] = Some(k);
         }
 
-        println!("c {:?}", serde_json::to_string(&variables).unwrap());
-        println!("p cnf {variables_number} {}", self.clauses.len());
+        let mut encoding = String::new();
+
+        encoding.push_str(&format!(
+            "c {:?}\n",
+            serde_json::to_string(&variables).unwrap()
+        ));
+        encoding.push_str(&format!(
+            "p cnf {variables_number} {}\n",
+            self.clauses.len()
+        ));
 
         for clause in self.clauses {
             let mut clause: String = clause
@@ -69,8 +77,10 @@ impl<T: std::fmt::Debug + Clone + Serialize> EncoderSAT<T> {
                 })
                 .collect();
             clause.push('0');
-            println!("{clause}")
+            encoding.push_str(&format!("{clause}\n"));
         }
+
+        encoding
     }
 }
 

@@ -5,7 +5,7 @@ use std::{
     rc::Rc,
 };
 
-use crate::framework::{problem::Problem, search::*};
+use crate::{problem::Problem, search::*};
 
 pub struct BFS<T>(VecDeque<T>);
 
@@ -63,7 +63,7 @@ impl<T> Frontier<T> for DFS<T> {
 //     }
 // }
 
-use crate::framework::search::Priority;
+use crate::search::Priority;
 
 struct Pair<T, V>(T, Reverse<V>);
 

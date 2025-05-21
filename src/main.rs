@@ -1,5 +1,5 @@
 use bumpalo::Bump;
-use computer_braining::framework::{
+use computer_braining::{
     clean,
     frontiers::{TreeAStar, TreeAStarArena, TreeUniformCost, TreeUniformCostArena},
     local_search::{

@@ -5,7 +5,7 @@ use std::{
 
 use bumpalo::Bump;
 
-use crate::framework::problem::{GoalBased, Problem, Utility};
+use crate::problem::{GoalBased, Problem, Utility};
 
 pub trait Frontier<T>: Default {
     fn pop(&mut self) -> Option<T>;

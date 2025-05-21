@@ -11,3 +11,7 @@ bitvec = "1.0.1"
 bumpalo = "3.17.0"
 serde = { version = "1.0.219", features = ["derive"] }
 serde_json = "1.0.140"
+
+# name="computer-braining2"
+[lib]
+path="src/lib/mod.rs"
