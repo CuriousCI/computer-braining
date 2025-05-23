@@ -61,12 +61,62 @@ where
         .collect()
 }
 
+fn results(encoding: String, solver: &str) -> String {
+    let home = std::env::var("HOME").expect("$HOME variable not found");
+
+    let mut file = std::fs::OpenOptions::new()
+        .write(true)
+        .truncate(true) // This actually clears the file
+        .create(true)
+        .open(format!(
+            "{home}/projects/docker-ai-tools/data/SAT/encoding.cnf"
+        ))
+        .unwrap();
+
+    file.write_all(encoding.as_bytes()).unwrap();
+
+    String::from_utf8(
+        std::process::Command::new("./run.sh")
+            .args([solver, "data/SAT/encoding.cnf"])
+            .current_dir(format!("{home}/projects/docker-ai-tools/"))
+            .output()
+            .unwrap()
+            .stdout,
+    )
+    .unwrap()
+}
+
 fn main() {
+    #[rustfmt::skip]
+    let buses = vec![
+        (1, 2), (1, 3), (2, 4),(2, 5), (3, 1), (3, 5), (4, 1), (4, 5), (5, 2), (5, 3)
+    ];
+    let vips = vec![2, 4];
+    let (enc, vars) = hc_vip::encode_instance(4, &buses, &vips);
+    let res = results(enc, "picosat");
+    println!("{res}");
+
+    let indices: Vec<usize> = res
+        .replace('v', " ")
+        .split_whitespace()
+        .filter_map(|number| number.parse::<i32>().ok())
+        .filter_map(|i| (i >= 1).then_some(i as usize))
+        .collect();
+    // let indices = [8, 16, 24, 32, 40, 48, 56, 64];
+
+    for i in indices {
+        println!("{:?}", vars[i - 1])
+    }
+
+    return;
+
     let mut file = std::fs::OpenOptions::new()
         .append(true)
         .create(true)
         .open("SAT.csv")
         .unwrap();
+
+    cards::encode_instance(2, 4);
 
     for _ in 1..100 {
         let results = benchmark(10000, "graph_colouring_red_self_loops", |size| {
@@ -82,7 +132,7 @@ fn main() {
                 .collect();
 
             println!("size - {size}\n");
-            graph_colouring_red_self_loops::encode_instance(&vertices, &edges)
+            graph_colouring_red_self_loops::encode_instance(&vertices, &edges).0
         });
 
         writeln!(&mut file, "{results}").unwrap();

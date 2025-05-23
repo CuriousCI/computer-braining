@@ -1,6 +1,8 @@
 # Computer Braining 
 IA course @ Sapienza
 
+- spurious correlations
+
 - video su un professore che parla di AI e lavoro
 - CSP meetings M (numero di incontri) indipendente da T e S
 

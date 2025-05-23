@@ -8,14 +8,14 @@
 
 Dati i parametri $G = (V, E)$ siano
 - $cal(C) = {R, B, C}$
-- $X = { X_v^c | v in V and c in cal(C) }$ l'insieme di variabili dove
+- $"LP" = { X_v^c | v in V and c in cal(C) }$ l'insieme di lettere proposizionali t.c.
   - $X_v^c$ è vera se il nodo $v$ ha colore $c$
 
 Il problema presenta 4 vincoli
 
 #math.equation(block: true, numbering: none)[
   $
-    phi.alt = phi.alt_1 and phi.alt_2 and phi.alt_3 and phi.alt_4
+    phi.alt = phi.alt_"ALO_col" and phi.alt_"AMO_col" and phi.alt_"col" and phi.alt_"loop"
   $
 ]
 
@@ -23,13 +23,13 @@ Il problema presenta 4 vincoli
 (ALO) Ogni nodo ha almeno un colore.
 
 $
-  phi.alt_1 = and.big_(v in V) or.big_(c in cal(C)) x_v^c
+  phi.alt_"ALO_col" = and.big_(v in V) or.big_(c in cal(C)) x_v^c
 $
 
 (AMO) Ogni nodo ha al più un colore.
 
 $
-  phi.alt_2 & =
+  phi.alt_"AMO_col" & =
   and.big_(v in V \ c_1, c_2 in cal(C) \ c_1 < c_2)
   X_v^c_1 -> not X_v^c_2
 $
@@ -37,14 +37,16 @@ $
 1. Non esistono nodi collegati da un arco colorati con lo stesso colore.
 
 $
-  phi.alt_3 = and.big_((u, v) in E \ c in cal(C) \ u < v) X_u^c -> not X_v^c
+  phi.alt_"col" = and.big_((u, v) in E \ c in cal(C) \ u < v) X_u^c -> not X_v^c
 $
 
 2. Ogni nodo $v in V$ che ha un cappio (un arco da $v$ a $v$) è colorato con il colore $R$.
 
 $
-  phi.alt_4 = and.big_((v, v) in E) X_v^R
+  phi.alt_"loop" = and.big_((v, v) in E) X_v^R
 $
+
+#pagebreak()
 
 == Istanziazione
 
@@ -93,32 +95,32 @@ $& E = { \
   }
   & }$
 
-#math.equation(block: true, numbering: none)[
-  $
-    &X = { \
-      #let index = 0
-      #for v in V {
-        for c in C {
-          if calc.rem(index, 9) == 0 { $& quad$ }
-          $X_#v^#c$
-          if v != "S" or c != "C" { $,$ }
-          if calc.rem(index, 9) == 8 { linebreak() }
-          index += 1
-        }
-      } \
-      & }
-  $
-]
+#set math.equation(numbering: none)
+
+$
+  &"LP" = { \
+    #let index = 0
+    #for v in V {
+      for c in C {
+        if calc.rem(index, 9) == 0 { $& quad$ }
+        $X_#v^#c$
+        if v != "S" or c != "C" { $,$ }
+        if calc.rem(index, 9) == 8 { linebreak() }
+        index += 1
+      }
+    } \
+    & }
+$
 
 === Vincoli
 
 (ALO) Ogni nodo ha almeno un colore.
 
 $
-  & phi.alt_1 = \
+  & phi.alt_"ALO_col" = \
   #let index = 0;
   #for v in V {
-    if calc.rem(index, 3) == 0 { $& quad$ }
+    if calc.rem(index, 4) == 0 { $& quad$ }
     $($
     for c in C {
       $X_#v^#c$
@@ -126,7 +128,7 @@ $
     }
     $)$
     if v != "S" { $and$ }
-    if calc.rem(index, 3) == 2 { linebreak() }
+    if calc.rem(index, 4) == 3 { linebreak() }
     index += 1
   } \
 $
@@ -134,16 +136,16 @@ $
 (AMO) Ogni nodo ha al più un colore.
 
 $
-  & phi.alt_2 = \
+  & phi.alt_"AMO_col" = \
   #let index = 0;
   #for v in V {
     for c1 in C {
       for c2 in C {
         if c1 < c2 {
-          if calc.rem(index, 3) == 0 { $& quad$ }
+          if calc.rem(index, 4) == 0 { $& quad$ }
           $(not X_#v^#c1 or not X_#v^c2)$
           if index < 32 { $and$ }
-          if calc.rem(index, 3) == 2 { linebreak() }
+          if calc.rem(index, 4) == 3 { linebreak() }
           index += 1
         }
       }
@@ -154,14 +156,14 @@ $
 1. Non esistono nodi collegati da un arco colorati con lo stesso colore.
 
 $
-  & phi.alt_3 = \
+  & phi.alt_"col" = \
   #let index = 0;
   #for (u, v) in E {
     for c in C {
-      if calc.rem(index, 3) == 0 { $& quad$ }
+      if calc.rem(index, 4) == 0 { $& quad$ }
       if u != v { $(not X_#u^#c or not X_#v^#c)$ }
       if index < 56 { $and$ }
-      if calc.rem(index, 3) == 2 { linebreak() }
+      if calc.rem(index, 4) == 3 { linebreak() }
       index += 1
     }
   } \
@@ -170,7 +172,7 @@ $
 2. Ogni nodo $v in V$ che ha un cappio (un arco da $v$ a $v$) è colorato con il colore $R$.
 
 $
-  &phi.alt_4 = X_J^R
+  &phi.alt_"loop" = X_J^R
 $
 
 
@@ -231,50 +233,35 @@ $
 == Codifica
 
 ```rust
-use computer_braining::framework::encoder::*;
+use crate::encoder::*;
 use serde::Serialize;
 
 #[derive(Clone, Copy, Hash, PartialEq, Eq, PartialOrd, Ord, Serialize, Debug)]
-enum Color {
+pub enum Color {
     R,
     B,
     C,
 }
 
-type Node = &'static str;
+#[derive(Clone, Copy, Hash, PartialEq, Eq, PartialOrd, Ord, Serialize, Debug)]
+pub struct X<T>(T, Color);
 
-#[derive(Hash, PartialEq, Eq, PartialOrd, Ord, Serialize, Debug)]
-struct X(Node, Color);
-
-fn main() {
-    use Color::*;
+pub fn encode_instance<T>(vertices: &[T], edges: &[(T, T)]) -> (String, Vec<X<T>>)
+where
+    T: std::cmp::Eq + std::hash::Hash + std::fmt::Debug + Serialize + Clone + Copy,
+{
     use Literal::Neg;
-
-    #[rustfmt::skip]
-    let nodes = [
-        "A", "B", "C", "D", "E", "G1", "G2", "H", "I", "J", "S"
-    ];
-
-    #[rustfmt::skip]
-    let edges = [
-        ("A", "E"), ("A", "H"), ("A", "I"), ("A", "S"),
-        ("B", "C"), ("B", "G2"), ("B", "I"), ("B", "J"),
-        ("B", "S"), ("C", "D"), ("C", "G2"), ("C", "S"),
-        ("D", "E"), ("D", "S"), ("E", "G1"), ("E", "H"),
-        ("G1", "H"), ("G2", "J"), ("H", "I"), ("J", "J")
-    ];
-
-    let colors = [R, B, C];
+    let colors = [Color::R, Color::B, Color::C];
 
     let mut encoder = EncoderSAT::new();
 
-    // ALO
-    for v in nodes {
+    // ALO_col
+    for &v in vertices {
         encoder.add(colors.into_iter().map(|color| X(v, color).into()).collect());
     }
 
-    // AMO
-    for v in nodes {
+    // AMO_col
+    for &v in vertices {
         for (i_1, &color_1) in colors.iter().enumerate() {
             for &color_2 in colors.iter().skip(i_1 + 1) {
                 encoder.add(vec![Neg(X(v, color_1)), Neg(X(v, color_2))]);
@@ -282,10 +269,10 @@ fn main() {
         }
     }
 
-    // 1. + 2.
-    for (u, v) in edges {
+    // col + loop
+    for &(u, v) in edges {
         if u == v {
-            encoder.add(vec![X(v, R).into()])
+            encoder.add(vec![X(v, Color::R).into()])
         } else {
             for color in colors {
                 encoder.add(vec![Neg(X(u, color)), Neg(X(v, color))]);
@@ -293,6 +280,6 @@ fn main() {
         }
     }
 
-    encoder.end();
+    encoder.end()
 }
 ```
