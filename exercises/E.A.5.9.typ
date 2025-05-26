@@ -11,10 +11,63 @@
 
 Dati i parametri $N, K, M, T, S$ siano
 - $cal(N) = {1, ..., N}$ l'insieme di $id$ dei manager
-- $cal(P) = cal(N)$ l'insieme di posizioni possibili per un manager
+- $R = min(floor(N / M), S)$ il numero massimo di sale utilizzabili in un turno
+- $cal(R) = {1, ..., R}$
+- $cal(K) = {1, ..., k}$
 - $cal(M) = {1, ..., M}$
-- $Delta = min(floor(N / M), S)$ il numero massimo di sale utilizzabili in un turno
 
+E sia $(X, D, C)$ l'istanza parametrica di CSP t.c.
+
+$
+  X = { X_(t, r, k) | t in cal(T) and r in cal(R) and k in cal(K) } union { Y_m | m in cal(M)}
+$
+
+- $X_(t, r, k)$ è l'id del manager in posizione $k$ nella stanza $r$ al turno $t$
+- $Y_m$ è la coppia $("turno", "stanza")$ usata per l'$m$-esimo meeting
+
+Con i rispettivi domini
+
+$
+  D = { D_(X_(t, r, k)) | D_(X_(t, r, k)) = cal(N) } union { D_(Y_m) = cal(T) times cal(R)}
+$
+
+Ed i vincoli
+
+$
+  C = C_("alldiff"\_X_t) union C_("alldiff"\_Y)
+  // C = C_"alldiff" union C_M union C_Delta union C_"ord"
+$
+
+(alldifferent) Ad un dato turno in ogni posizione c'è un manager diverso
+
+$
+  C_("alldiff"\_X_t) = {"alldifferent"(X_(t, r, k)) | t in cal(T)}
+$
+
+(alldifferent) Tutti gli incontri si svolgono in stanze diverse a turni diversi
+
+$
+  C_("alldiff"\_Y) = {"alldifferent"(Y_m)}
+$
+
+Ad ogni turno bisogna prendere almeno un incontro
+
+t - m variabili una per stanza (cioè: le prime m variabili di Y devono avere t tutte diverso)
+
+
+
+
+// Gli incontri totali sono esattamente $M$
+//
+// $
+//   C_M = {
+//     angle.l {Z_(t, s) | t in cal(T) and s in cal(S)} angle.r
+//   }
+// $
+
+// no, non mi piace, devo trovare un modo per dire esattamente gli incontri, e riempire ciascun incontro, posso fissare una matrice N $times$ M, e poi riempire quella, non importa come!
+
+// - $cal(P) = {1, ..., k dot.c Delta}$ l'insieme di posizioni possibili per un manager
 // TODO: off by 1
 // - $cal(D) = {1, ..., D}$
 // - $cal$
@@ -26,46 +79,23 @@ Dati i parametri $N, K, M, T, S$ siano
 // floor(10/3) e mi da 3, il numero di gruppi, quindi 3 - 1 il numero di divisori
 // se ho 10 stanze posso sempre e comunque fare al più 2 divisori + 2 quindi 4, e devono stare tutti a distanza 3, perché non è detto che il primo gruppo inizi proprio con il primo divisore, anche se così sto aggiungendo troppe possibilità in più... nah, magari li fisso i divisori, in realtà NON serve renderli mobili, basta che mi rigiro i clienti, tanto ho la permutazione e da quella so in automatico i gruppi, tanto i divisori sono fissi! E vanno ogni k
 
-E sia $(X, D, C)$ l'istanza parametrica di CSP t.c.
 
-$
-  X = { X_(t, p) | t in cal(T) and p in cal(P) } union { Z_m | m in cal(M)}
-$
+// - $Z_m$ indica la coppia $("turno", "stanza")$ usata per l'$m$-esimo meeting
 
-- $X_(t, p)$ è l'id del manager in posizione $p$ al turno $t$
+// X = { X_(t, p) | t in cal(T) and p in cal(P) } union { Z_m | m in cal(M)}
 
-- $Z_m$ indica la coppia $("turno", "stanza")$ usata per l'$m$-esimo meeting
+// - $X_(t, p)$ è l'id del manager in posizione $p$ al turno $t$
+// - $Z_m$ indica la coppia $("turno", "stanza")$ usata per l'$m$-esimo meeting
+
 // è vera se al turno $t$ la sala $s$ è stata usata per un incontro
 
-Anche se questo $Z_(t, s)$ a occhio si può evitare... beh
-
-Con i rispettivi domini
-
-$
-  D = { D_(X_(t, p)) | D_(X_(t, p)) = cal(N) } union { D_(Z_m) = cal(T) times Delta}
-$
-
-Ed i vincoli
-
-$
-  C = C_"alldiff" union C_M union C_Delta union C_"ord"
-$
-
-(alldifferent) ad un dato turno in ogni posizione c'è un manager diverso
-
-$
-  C_"alldiff" = {"alldifferent"(X_(t, p)) | t in cal(T)}
-$
-
-Gli incontri totali sono esattamente $M$
-
-$
-  C_M = {
-    angle.l {Z_(t, s) | t in cal(T) and s in cal(S)} angle.r
-  }
-$
-
-no, non mi piace, devo trovare un modo per dire esattamente gli incontri, e riempire ciascun incontro, posso fissare una matrice N $times$ M, e poi riempire quella, non importa come!
+// Anche se questo $Z_(t, s)$ a occhio si può evitare... beh
+//
+// Con i rispettivi domini
+//
+// $
+//   D = { D_(X_(t, p)) | D_(X_(t, p)) = cal(N) } union { D_(Z_m) = cal(T) times Delta}
+// $
 
 
 // - K numero massimo partecipanti per incontro, quindi differenza fra due divisori

@@ -18,6 +18,9 @@ pub trait Utility<T>: TransitionModel {
     fn utility(&self, prev: &Self::State, next: &Self::State, action: &Self::Action) -> T;
 }
 
+// If implements Utility it automatically implements Cost which is the reverse of the utility?
+// Think about it...
+// more Utility vs Cost trait
 pub trait Heuristic: Problem {
     type Value;
 
