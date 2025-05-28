@@ -10,52 +10,200 @@
 == Modellazione
 
 Dati i parametri $N, K, M, T, S$ siano
-- $cal(N) = {1, ..., N}$ l'insieme di $id$ dei manager
-- $R = min(floor(N / M), S)$ il numero massimo di sale utilizzabili in un turno
+- $cal(N) = {1, ..., N}$ l'insieme di identificatori dei manager
+- $R = min(floor(N / K), S)$ il numero massimo di stanze utilizzabili in un turno
 - $cal(R) = {1, ..., R}$
-- $cal(K) = {1, ..., k}$
-- $cal(M) = {1, ..., M}$
+- $cal(K) = {1, ..., k}$ l'insieme di posti in una stanza
+- $cal(T) = {1, ..., T}$ l'insieme di turni possibili
 
 E sia $(X, D, C)$ l'istanza parametrica di CSP t.c.
 
 $
-  X = { X_(t, r, k) | t in cal(T) and r in cal(R) and k in cal(K) } union { Y_m | m in cal(M)}
+  X = { X_(t, r, k) | t in cal(T) and r in cal(R) and k in cal(K) } union { Y_t | t in cal(T) }
 $
 
-- $X_(t, r, k)$ è l'id del manager in posizione $k$ nella stanza $r$ al turno $t$
-- $Y_m$ è la coppia $("turno", "stanza")$ usata per l'$m$-esimo meeting
+- $X_(t, r, k)$ è l'id del manager al posto $k$ nella stanza $r$ al turno $t$
+- $Y_t$ è il numero di stanze usate al $t$-esimo turno
 
 Con i rispettivi domini
 
 $
-  D = { D_(X_(t, r, k)) | D_(X_(t, r, k)) = cal(N) } union { D_(Y_m) = cal(T) times cal(R)}
+  D = { D_(X_(t, r, k)) | D_(X_(t, r, k)) = cal(N) } union { D_(Y_t) = cal(R) }
 $
 
-Ed i vincoli
+Ed l'insieme di vincoli
 
 $
-  C = C_("alldiff"\_X_t) union C_("alldiff"\_Y)
-  // C = C_"alldiff" union C_M union C_Delta union C_"ord"
+  C = C_M union C_"alldiff" union C_"symmetry" union C_"pairs"
 $
 
-(alldifferent) Ad un dato turno in ogni posizione c'è un manager diverso
+La somma delle stanze usate nei vari turni corrisponde al numero totale di incontri
 
 $
-  C_("alldiff"\_X_t) = {"alldifferent"(X_(t, r, k)) | t in cal(T)}
+  C_M = {angle.l { Y_t | t in cal(T) } , sum_(t in cal(T)) Y_t = M angle.r}
 $
 
-(alldifferent) Tutti gli incontri si svolgono in stanze diverse a turni diversi
+(alldifferent) In un dato turno un manager non può stare in due stanze in due posti diversi
 
 $
-  C_("alldiff"\_Y) = {"alldifferent"(Y_m)}
+  C = { "alldifferent"(X_(t, r, k)) | t in cal(T) }
 $
 
-Ad ogni turno bisogna prendere almeno un incontro
+(symmetry breaking) In una determinata stanza, l'ordine dei manager non conta, quindi se ne può fissare uno
 
-t - m variabili una per stanza (cioè: le prime m variabili di Y devono avere t tutte diverso)
+$
+  & C_"symmetry" = { \
+    & quad angle.l {X_(t, r, k), X_(t, r, k + 1)}, X_(t, r, k) < X_(t, r, k + 1) angle.r | \
+    & quad t in cal(T) and r in cal(R) and k in cal(K) \
+    & }
+$
+
+#pagebreak()
+
+Per ogni coppia di manager, ci deve essere un turno e una stanza in cui questi due si incontrano (è un vincolo su tutte le variabili, un po' bruttino... ma fa il suo)
+
+$
+  & C_"pairs" = { \
+    & quad angle.l {X_(t, r, k), X_(t, r, l), Y_t | t in cal(T) and r in cal(R) and k, l in cal(K)}, \
+    & quad forall i, j \
+    & quad quad (i, j in cal(N) and i < j) -> \
+    & quad quad quad exists t, r, k, l quad \
+    & quad quad quad quad t in cal(T) and r in cal(R) and k,l in cal(K) and \
+    & quad quad quad quad k < l and r <= Y_t and X_(t, r, k) = i and X_(t, r, l) = j \
+    & quad angle.r | t in cal(T) and r in cal(R) and k, l in cal(K) and k < l \
+    & }
+$
+
+// Se in un dato turno una certa stanza è utilizzata, allora tutti gli gli incontri in quel turno e in quella stanza sono realizzati
+//
+// $
+//   & C_Z = { \
+//     & quad angle.l { X_(t, r, k), X_(t, r, l), Y_t, Z_(k, l) }, r <= Y_t -> Z_(X_(t, r, k), X_(t, r, l)) angle.r | \
+//     & quad t in cal(T) and r in cal(R) and k, l in cal(K) and k < l \
+//     & }
+// $
+//
+// Tutti gli incontri si devono realizzare
+//
+// $
+//   & C_Delta = { angle.l {Z_(n, m) | n, m in cal(N) and n < m}, and.big_(n, m in cal(N) \ n < m) Z_(n, m) space angle.r }
+// $
+
+== Istanziazione
+
+Istanziazione lasciata al lettore...
+
+#pagebreak()
+
+== Codifica MiniZinc
+
+#align(
+  center,
+  box(width: 130%)[
+    #minizinc[
+      ```c
+      include "globals.mzn";
+
+      int: N = 6;
+      int: K = 3;
+      int: M = 8;
+      int: T = 5;
+      int: S = 6;
+
+      int: R = min(N div K, S);
+
+      array[1..T, 1..R, 1..K] of var 1..N: X;
+      array[1..T] of var 0..R: Y;
+
+      constraint sum(t in 1..T)(Y[t]) = M;
+
+      constraint forall(t in 1..T)(
+        alldifferent([X[t, r, k] | r in 1..R, k in 1..K])
+      );
+
+      constraint forall(t in 1..T, r in 1..R, k in 1..K - 1)(
+        X[t, r, k] < X[t, r, k + 1]
+      );
+
+      constraint forall(i in 1..N - 1, j in i + 1..N)(
+        exists(t in 1..T, r in 1..R, k in 1..K - 1, l in k + 1..K)(
+          X[t, r, k] = i /\ X[t, r, l] = j /\ r <= Y[t]
+        )
+      );
+
+      output[
+        "turn" ++ show(t) ++ ": | " ++ concat(
+          [concat([show_int(-2, X[t, r, k]) ++ " " | k in 1..K]) ++ "| " | r in 1..R]
+        ) ++ "\n" | t in 1..T
+      ];
+
+      output [
+        show(Y[t]) ++ " " | t in 1..T
+      ];
+      ```
+    ]
+  ],
+)
+
+// per ogni incontro generlo la conformazione dei posti, e rompo la simmetria etc...
+// Ok, adesso devo garantire di poter distribuire in T turni con al massimo R stanze
+// i vari posti
+//
+// se ho più incontri, li metto tutti in turni diversi,
+// ok, dalla forma degli incontri è possibile derivare una turnazione e un set di aule.
+// constraint: turns / rooms = numero di
+// trovo un assegnamento ai turni e alle stanze
+// in base alle stanze generate
+// che deve essere valido
+// se non è valido, modifica la conformazione
+// Y_(t, s) = M quindi, al turno t, stanza s c'è il meeting M
+// e devo vincolare le stanze
+// ma non so quante s posso avere
+// non posso avere tutto fissato, magari mettendo della ridondanza che conta cose
+// ma non posso avere un insieme fissato di cose (non so esattamente quante stanze uso in ogni turno)
+// HMMM! Idea! Magari posso dire (in questo turno uso esattamente X stanze! Al meno uno al più uno
+// AHHHHH, geniale, mi tengo una variabile per dire quante stanze ho usato al turno i,
+// e mi tengo dei domini, e di co che la somma sia esattamente M
+
+// vorrei fissare in qualche modo le stanze
+// ma devo garantire che le stanze stanno in turni diversi
+//
+// poss
+// dovrei mettere un brutto vincolo, del tipo:
+// - per ogni coppia di stanze che hanno lo stesso turno devo garantire il fatto che le
+//   persone nelle due stanze siano diverse
+// - sennò posso usare un alldifferent in modo matemagico:
+//      - prendo tutte le
+
+// union { Y_m | m in cal(M)}
+// - $Y_m$ è la coppia $("turno", "stanza")$ usata per l'$m$-esimo meeting
+
+// $
+//   D = { D_(X_(t, r, k)) | D_(X_(t, r, k)) = cal(N) } union { D_(Y_m) = cal(T) times cal(R)}
+// $
 
 
+// $
+//   C = C_("alldiff"\_X_t) union C_("alldiff"\_Y)
+//   // C = C_"alldiff" union C_M union C_Delta union C_"ord"
+// $
 
+
+// (alldifferent) Ad un dato turno in ogni posizione c'è un manager diverso
+//
+// $
+//   C_("alldiff"\_X_t) = {"alldifferent"(X_(t, r, k)) | t in cal(T)}
+// $
+//
+// (alldifferent) Tutti gli incontri si svolgono in stanze diverse a turni diversi
+//
+// $
+//   C_("alldiff"\_Y) = {"alldifferent"(Y_m)}
+// $
+
+// Ad ogni turno bisogna prendere almeno un incontro
+//
+// t - m variabili una per stanza (cioè: le prime m variabili di Y devono avere t tutte diverso)
 
 // Gli incontri totali sono esattamente $M$
 //

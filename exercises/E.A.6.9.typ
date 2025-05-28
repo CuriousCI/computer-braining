@@ -84,7 +84,6 @@ $
 
 === Vincoli
 
-
 (ALO) Ogni carta ha almeno una posizione.
 
 #math.equation(block: true, numbering: none)[
