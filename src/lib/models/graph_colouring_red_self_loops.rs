@@ -11,7 +11,7 @@ pub enum Color {
 #[derive(Clone, Copy, Hash, PartialEq, Eq, PartialOrd, Ord, Serialize, Debug)]
 pub struct X<T>(T, Color);
 
-pub fn encode_instance<T>(vertices: &[T], edges: &[(T, T)]) -> (String, Vec<X<T>>)
+pub fn to_dimacs<T>(nodes: &[T], edges: &[(T, T)]) -> (Dimacs, Vec<X<T>>)
 where
     T: std::cmp::Eq + std::hash::Hash + std::fmt::Debug + Serialize + Clone + Copy,
 {
@@ -21,18 +21,18 @@ where
     let mut encoder = EncoderSAT::new();
 
     // ALO_col
-    for &v in vertices {
+    for &v in nodes {
         encoder.add(colors.into_iter().map(|color| X(v, color).into()).collect());
     }
 
     // AMO_col
-    for &v in vertices {
-        for (i_1, &color_1) in colors.iter().enumerate() {
-            for &color_2 in colors.iter().skip(i_1 + 1) {
-                encoder.add(vec![Neg(X(v, color_1)), Neg(X(v, color_2))]);
-            }
-        }
-    }
+    // for &v in nodes {
+    //     for (i_1, &color_1) in colors.iter().enumerate() {
+    //         for &color_2 in colors.iter().skip(i_1 + 1) {
+    //             encoder.add(vec![Neg(X(v, color_1)), Neg(X(v, color_2))]);
+    //         }
+    //     }
+    // }
 
     // col + loop
     for &(u, v) in edges {
@@ -45,5 +45,5 @@ where
         }
     }
 
-    encoder.end()
+    encoder.to_dimacs()
 }

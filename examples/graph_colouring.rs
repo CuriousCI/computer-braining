@@ -60,5 +60,5 @@ fn main() {
         }
     }
 
-    encoder.end();
+    encoder.to_dimacs();
 }

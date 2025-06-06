@@ -75,5 +75,5 @@ pub fn encode_instance(
         }
     }
 
-    encoder.end()
+    encoder.to_dimacs()
 }

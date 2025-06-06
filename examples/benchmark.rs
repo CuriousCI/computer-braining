@@ -1,3 +1,4 @@
+use std::env::home_dir;
 use std::io::Write;
 
 use computer_braining::models::*;
@@ -87,6 +88,58 @@ fn results(encoding: String, solver: &str) -> String {
 }
 
 fn main() {
+    let mut graph_file = std::fs::OpenOptions::new()
+        .write(true)
+        .truncate(true) // This actually clears the file
+        .create(true)
+        .open(
+            home_dir()
+                .unwrap()
+                .join("projects/computer-braining/minizinc/data.dzn"),
+        )
+        .unwrap();
+
+    let mut rng = rand::rng();
+    let size = 4300;
+
+    // file.write_all(encoding.as_bytes()).unwrap();
+
+    let nodes: Vec<_> = (0..size).collect();
+    let edges: Vec<_> = (0..size)
+        .flat_map(|u| {
+            (u..size)
+                .filter_map(|v| rng.random_bool(0.001).then_some((u, v)))
+                .collect::<Vec<_>>()
+        })
+        .collect();
+
+    graph_file
+        .write_all(&format!("size = {size};\n").into_bytes())
+        .unwrap();
+
+    graph_file
+        .write_all(&format!("edges_size = {};\n", edges.len()).into_bytes())
+        .unwrap();
+
+    graph_file
+        .write_all(
+            &format!(
+                "edges = [{}];\n",
+                edges
+                    .clone()
+                    .into_iter()
+                    .map(|(u, v)| format!("({}, {}),", u + 1, v + 1))
+                    .collect::<String>()
+            )
+            .into_bytes(),
+        )
+        .unwrap();
+
+    let (dimacs_encoding, _) = graph_colouring_red_self_loops::to_dimacs(&nodes, &edges);
+    println!("{dimacs_encoding}");
+
+    return;
+
     #[rustfmt::skip]
     // let buses = vec![
     //     (1, 2), (1, 3), (2, 4),(2, 5), (3, 1), (3, 5), (4, 1), (4, 5), (5, 2), (5, 3)
@@ -133,7 +186,7 @@ fn main() {
                 .collect();
 
             println!("size - {size}\n");
-            graph_colouring_red_self_loops::encode_instance(&vertices, &edges).0
+            graph_colouring_red_self_loops::to_dimacs(&vertices, &edges).0
         });
 
         writeln!(&mut file, "{results}").unwrap();

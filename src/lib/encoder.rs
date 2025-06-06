@@ -1,21 +1,12 @@
-use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
 type Clause = Vec<Literal<usize>>;
+pub type Dimacs = String;
 
 pub struct EncoderSAT<T> {
     map: HashMap<T, usize>,
     clauses: Vec<Clause>,
 }
-
-pub struct DecoderSAT<T> {
-    vars: Vec<T>,
-}
-
-// pub struct Clause(Clause2);
-// impl <T> DecoderSAT<T> {
-// }
-
 impl<T> EncoderSAT<T> {
     pub fn new() -> Self {
         Self {
@@ -47,54 +38,39 @@ impl<T> Default for EncoderSAT<T> {
     }
 }
 
-// TODO: return a printable string
-impl<T: std::fmt::Debug + Clone + Serialize> EncoderSAT<T> {
-    pub fn end(self) -> (String, Vec<T>) {
-        let variables_number = self.map.len();
+impl<T: std::fmt::Debug + Clone> EncoderSAT<T> {
+    pub fn to_dimacs(self) -> (Dimacs, Vec<T>) {
+        let propos_letters_count = self.map.len();
 
-        let mut variables = vec![None; variables_number];
-        for (k, v) in self.map {
-            variables[v - 1] = Some(k);
+        let mut propos_letters = vec![None; propos_letters_count];
+        for (letter, number) in self.map {
+            propos_letters[number - 1] = Some(letter);
         }
 
-        let variables = variables.into_iter().filter_map(|x| x).collect();
+        let propos_letters = propos_letters.into_iter().flatten().collect();
+        let mut dimacs_encoding = String::new();
 
-        let mut encoding = String::new();
-
-        encoding.push_str(&format!(
-            "c {:?}\n",
-            serde_json::to_string(&variables).unwrap()
-        ));
-        encoding.push_str(&format!(
-            "p cnf {variables_number} {}\n",
+        dimacs_encoding.push_str(&format!(
+            "p cnf {propos_letters_count} {}\n",
             self.clauses.len()
         ));
 
         for clause in self.clauses {
-            let mut clause: String = clause
+            let clause: String = clause
                 .into_iter()
                 .map(|literal| match literal {
                     Literal::Pos(l) => format!("{l} "),
                     Literal::Neg(l) => format!("-{l} "),
                 })
                 .collect();
-            clause.push('0');
-            encoding.push_str(&format!("{clause}\n"));
+
+            dimacs_encoding.push_str(&format!("{clause}0\n"));
         }
 
-        (encoding, variables)
+        (dimacs_encoding, propos_letters)
     }
 }
 
-// let serializable_map: HashMap<String, _> = self
-//     .map
-//     .into_iter()
-//     .map(|(k, v)| (format!("{:?}", k), v))
-//     .collect();
-
-// println!("c {:?}", serde_json::to_string(&serializable_map).unwrap());
-
-#[derive(Serialize, Deserialize)]
 pub enum Literal<T> {
     Pos(T),
     Neg(T),
@@ -117,6 +93,28 @@ impl<T> From<T> for Literal<T> {
         Literal::Pos(value)
     }
 }
+
+// let mut encoding = String::new();
+// encoding.push_str(&format!(
+//     "c {:?}\n",
+//     serde_json::to_string(&variables).unwrap()
+// ));
+
+// pub struct DecoderSAT<T> {
+//     vars: Vec<T>,
+// }
+
+// pub struct Clause(Clause2);
+// impl <T> DecoderSAT<T> {
+// }
+
+// let serializable_map: HashMap<String, _> = self
+//     .map
+//     .into_iter()
+//     .map(|(k, v)| (format!("{:?}", k), v))
+//     .collect();
+
+// println!("c {:?}", serde_json::to_string(&serializable_map).unwrap());
 
 // pub fn clause(self) -> ClauseBuilder<T> {
 //     ClauseBuilder {

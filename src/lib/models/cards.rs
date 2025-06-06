@@ -56,5 +56,5 @@ pub fn encode_instance(card_k: usize, card_n: usize) -> (String, Vec<X>) {
         }
     }
 
-    encoder.end()
+    encoder.to_dimacs()
 }
