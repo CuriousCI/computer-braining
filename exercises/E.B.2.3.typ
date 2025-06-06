@@ -35,6 +35,16 @@
     // 0 + 0 = 0 and 0 + 1 = 1 and 0 + 2 = 2 and 0 + 3 = 3 and 0 + 4 = 4 and \
     // 0 + 5 = 5 and 0 + 6 = 6 and 0 + 7 = 7 and 0 + 8 = 8 and 0 + 9 = 9 and \
     // 0 + 10 = 10 and 1 +
+    // Non c'è un modo pulito per fare questa cosa?
+    // Non mi convince... il problema è che devo per forza fare cose tipo min e sommme per poter
+    // A meno che! Per ogni quadrupla non mi tengo il risultato!!!! Beh, brutta storia, ho settordici quadruple...
+    //
+    // (C1, L1, C2, L2)
+    // allora il risultato è
+    // (5, 4, 10, 5, 0, 9)
+    // sono questi 0 e 9 il problema tendenzialmente
+    // lo posso gestire tipo un grafo?
+    // Non ha senso, magari posso aggiungere della ridondanza...
   ]
 
 

@@ -88,11 +88,12 @@ fn results(encoding: String, solver: &str) -> String {
 
 fn main() {
     #[rustfmt::skip]
-    let buses = vec![
-        (1, 2), (1, 3), (2, 4),(2, 5), (3, 1), (3, 5), (4, 1), (4, 5), (5, 2), (5, 3)
-    ];
-    let vips = vec![2, 4];
-    let (enc, vars) = hc_vip::encode_instance(4, &buses, &vips);
+    // let buses = vec![
+    //     (1, 2), (1, 3), (2, 4),(2, 5), (3, 1), (3, 5), (4, 1), (4, 5), (5, 2), (5, 3)
+    // ];
+    // let vips = vec![2, 4];
+    // let (enc, vars) = hc_vip::encode_instance(4, &buses, &vips);
+    let (enc, vars) = cards_2::encode_instance(vec![1, 1, 2, 2, 3, 3, 4], 7, 4, 4);
     let res = results(enc, "picosat");
     println!("{res}");
 

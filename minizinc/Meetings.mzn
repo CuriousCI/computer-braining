@@ -6,6 +6,12 @@ int: M;
 int: T;
 int: S;
 
+N = 6; % Number of managers
+M = 15; % Number of meetings
+K = 2; % Number of managers participating in each meeting
+S = 3; % Number of rooms
+T = 8; % Number of time slots
+
 % int: N = 6;
 % int: K = 3;
 % int: M = 8;
