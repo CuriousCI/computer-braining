@@ -147,3 +147,58 @@ impl<T: Priority<V>, V: Ord> Frontier<T> for TreePriorityFrontier<T, V> {
 // });
 //
 // frontier.insert(node);
+
+// let mut encoding = String::new();
+// encoding.push_str(&format!(
+//     "c {:?}\n",
+//     serde_json::to_string(&variables).unwrap()
+// ));
+
+// pub struct DecoderSAT<T> {
+//     vars: Vec<T>,
+// }
+
+// pub struct Clause(Clause2);
+// impl <T> DecoderSAT<T> {
+// }
+
+// let serializable_map: HashMap<String, _> = self
+//     .map
+//     .into_iter()
+//     .map(|(k, v)| (format!("{:?}", k), v))
+//     .collect();
+
+// println!("c {:?}", serde_json::to_string(&serializable_map).unwrap());
+
+// pub fn clause(self) -> ClauseBuilder<T> {
+//     ClauseBuilder {
+//         encoder: self,
+//         clause: Default::default(),
+//     }
+// }
+
+// impl<T, const N: usize> From<[T; N]> for Vec<T>
+
+// pub struct ClauseBuilder<T> {
+//     encoder: EncoderSAT<T>,
+//     clause: Clause,
+// }
+//
+// impl<T> ClauseBuilder<T>
+// where
+//     T: std::cmp::Eq + std::hash::Hash + Serialize,
+// {
+//     pub fn add<U: Into<Literal<T>>>(&mut self, literal: U) {
+//         let next_id = self.encoder.map.len() + 1;
+//         let literal = literal
+//             .into()
+//             .map(|t| *self.encoder.map.entry(t).or_insert(next_id));
+//
+//         self.clause.push(literal);
+//     }
+//
+//     pub fn end(mut self) -> EncoderSAT<T> {
+//         self.encoder.clauses.push(self.clause);
+//         self.encoder
+//     }
+// }

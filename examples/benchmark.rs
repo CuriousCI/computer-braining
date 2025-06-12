@@ -146,21 +146,21 @@ fn main() {
     // ];
     // let vips = vec![2, 4];
     // let (enc, vars) = hc_vip::encode_instance(4, &buses, &vips);
-    let (enc, vars) = cards_2::encode_instance(vec![1, 1, 2, 2, 3, 3, 4], 7, 4, 4);
-    let res = results(enc, "picosat");
-    println!("{res}");
-
-    let indices: Vec<usize> = res
-        .replace('v', " ")
-        .split_whitespace()
-        .filter_map(|number| number.parse::<i32>().ok())
-        .filter_map(|i| (i >= 1).then_some(i as usize))
-        .collect();
-    // let indices = [8, 16, 24, 32, 40, 48, 56, 64];
-
-    for i in indices {
-        println!("{:?}", vars[i - 1])
-    }
+    // let (enc, vars) = cards_2::encode_instance(vec![1, 1, 2, 2, 3, 3, 4], 7, 4, 4);
+    // let res = results(enc, "picosat");
+    // println!("{res}");
+    //
+    // let indices: Vec<usize> = res
+    //     .replace('v', " ")
+    //     .split_whitespace()
+    //     .filter_map(|number| number.parse::<i32>().ok())
+    //     .filter_map(|i| (i >= 1).then_some(i as usize))
+    //     .collect();
+    // // let indices = [8, 16, 24, 32, 40, 48, 56, 64];
+    //
+    // for i in indices {
+    //     println!("{:?}", vars[i - 1])
+    // }
 
     return;
 

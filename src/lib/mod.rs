@@ -1,6 +1,6 @@
 pub mod clean;
 pub mod csp;
-pub mod encoder;
+pub mod encoder_sat;
 pub mod frontiers;
 pub mod local_search;
 pub mod models;

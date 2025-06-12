@@ -1,4 +1,4 @@
-use computer_braining::encoder::*;
+use computer_braining::encoder_sat::*;
 use serde::Serialize;
 
 #[derive(Clone, Copy, Hash, PartialEq, Eq, PartialOrd, Ord, Serialize, Debug)]

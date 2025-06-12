@@ -1,7 +1,4 @@
-use std::{
-    collections::{BTreeSet, VecDeque},
-    path::Iter,
-};
+use std::collections::{BTreeSet, VecDeque};
 
 pub type Assignment = Vec<Option<usize>>;
 
