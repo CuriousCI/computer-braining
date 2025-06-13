@@ -21,7 +21,7 @@ IA course @ Sapienza
 - [x] E.A.5.6 - CSP, Cards _(+ soluzione)_ _(+ video)_
 - [x] E.A.5.7 - CSP, Cards 2 _(+ soluzione)_ _(+ video)_
 - [x] E.A.5.8 - CSP, Social Golfers _(+ soluzione)_ _(+ video)_
-- [ ] E.A.5.9 - CSP, Meetings _(- soluzione)_ _(- video)_
+- [ ] E.A.5.9 - CSP, Meetings _(- soluzione)_
 - [ ] E.A.5.10 - CSP, Protein Folding
 
 - [x] E.A.6.1 - Logica proposizionale, Risoluzione 1 _(+ video)_
