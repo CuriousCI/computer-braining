@@ -1,13 +1,13 @@
-use crate::encoder_sat::*;
+use crate::sat::dimacs_encoder::*;
 use serde::Serialize;
 
 #[derive(Clone, Copy, Hash, PartialEq, Eq, PartialOrd, Ord, Serialize, Debug)]
 pub struct X(usize, usize, usize);
 
 pub fn encode_instance(card_k: usize, card_n: usize) -> (String, Vec<X>) {
-    use Literal::Neg;
+    use Literal::Negative as Neg;
 
-    let mut encoder = EncoderSAT::new();
+    let mut encoder = Encoder::new();
     let card_p = card_n * card_k;
 
     // ALO_pos

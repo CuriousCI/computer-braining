@@ -1,4 +1,4 @@
-use crate::encoder_sat::*;
+use crate::sat::dimacs_encoder::*;
 use serde::Serialize;
 
 #[derive(Clone, Copy, Hash, PartialEq, Eq, PartialOrd, Ord, Serialize, Debug)]

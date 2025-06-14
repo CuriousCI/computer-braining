@@ -1,4 +1,4 @@
-use crate::encoder_sat::*;
+use crate::sat::dimacs_encoder::*;
 use serde::Serialize;
 
 #[derive(Clone, Copy, Hash, PartialEq, Eq, PartialOrd, Ord, Serialize, Debug)]
@@ -15,10 +15,10 @@ pub fn to_dimacs<T>(nodes: &[T], edges: &[(T, T)]) -> (DIMACS, Vec<X<T>>)
 where
     T: std::cmp::Eq + std::hash::Hash + std::fmt::Debug + Serialize + Clone + Copy,
 {
-    use Literal::Neg;
+    use Literal::Negative as Neg;
     let colors = [Color::R, Color::B, Color::C];
 
-    let mut encoder = EncoderSAT::new();
+    let mut encoder = Encoder::new();
 
     // ALO_col
     for &v in nodes {

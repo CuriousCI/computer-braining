@@ -1,4 +1,4 @@
-use computer_braining::encoder_sat::*;
+use computer_braining::sat::dimacs_encoder::*;
 use serde::Serialize;
 
 #[derive(Clone, Copy, Hash, PartialEq, Eq, PartialOrd, Ord, Serialize, Debug)]
@@ -15,7 +15,7 @@ struct X(Node, Color);
 
 fn main() {
     use Color::*;
-    use Literal::Neg;
+    use Literal::Negative as Neg;
 
     #[rustfmt::skip]
     let nodes = [
@@ -33,7 +33,7 @@ fn main() {
 
     let colors = [R, B, C];
 
-    let mut encoder = EncoderSAT::new();
+    let mut encoder = Encoder::new();
 
     // ALO
     for v in nodes {

@@ -1,4 +1,4 @@
-use crate::encoder_sat::*;
+use crate::sat::dimacs_encoder::*;
 use serde::Serialize;
 
 #[derive(Clone, Copy, Hash, PartialEq, Eq, PartialOrd, Ord, Serialize, Debug)]
@@ -9,11 +9,11 @@ pub fn encode_instance(
     buses: &[(usize, usize)],
     vips: &[usize],
 ) -> (String, Vec<X>) {
-    use Literal::Neg;
+    use Literal::Negative as Neg;
     // clients non ha "casa"
     let steps = addresses;
 
-    let mut encoder = EncoderSAT::new();
+    let mut encoder = Encoder::new();
 
     // ALO_ind
     for p in 1..=steps {

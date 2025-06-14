@@ -14,18 +14,18 @@ pub trait GoalBased: Problem {
     fn goal_test(&self, state: &Self::State) -> bool;
 }
 
-pub trait Utility<T>: TransitionModel {
-    fn utility(&self, prev: &Self::State, next: &Self::State, action: &Self::Action) -> T;
-}
+// pub trait Utility<T>: TransitionModel {
+//     fn utility(&self, prev: &Self::State, next: &Self::State, action: &Self::Action) -> T;
+// }
 
 // If implements Utility it automatically implements Cost which is the reverse of the utility?
 // Think about it...
 // more Utility vs Cost trait
-pub trait Heuristic: Problem {
-    type Value;
-
-    fn heuristic(&self, state: &Self::State) -> Self::Value;
-}
+// pub trait Heuristic: Problem {
+//     type Value;
+//
+//     fn heuristic(&self, state: &Self::State) -> Self::Value;
+// }
 
 pub trait Mutable: Problem {
     fn mutate(&self, state: &mut Self::State, rng: &mut impl rand::Rng);

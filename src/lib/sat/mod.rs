@@ -1,3 +1,5 @@
+pub mod dimacs_encoder;
+
 #[derive(Debug)]
 pub enum Solver {
     ZChaff,

@@ -1,8 +1,8 @@
 use std::num::NonZeroUsize;
 
 use computer_braining::{
-    encoder_sat,
     models::wumpus::{self, Col, KnowledgeBase, Row},
+    sat::dimacs_encoder::*,
 };
 
 enum WumpusPropositionalLetter {
@@ -25,7 +25,7 @@ enum WumpusPropositionalLetter {
 }
 
 pub struct WumpusAgentSAT {
-    encoder: encoder_sat::EncoderSAT<WumpusPropositionalLetter>,
+    encoder: Encoder<WumpusPropositionalLetter>,
 }
 
 impl WumpusAgentSAT {
