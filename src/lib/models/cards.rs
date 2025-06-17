@@ -13,7 +13,7 @@ pub fn encode_instance(card_k: usize, card_n: usize) -> (String, Vec<X>) {
     // ALO_pos
     for n in 1..=card_n {
         for k in 1..=card_k {
-            encoder.add((1..=card_p).map(|p| X(n, k, p).into()).collect());
+            encoder.insert_clause((1..=card_p).map(|p| X(n, k, p).into()).collect());
         }
     }
 
@@ -22,7 +22,7 @@ pub fn encode_instance(card_k: usize, card_n: usize) -> (String, Vec<X>) {
         for k in 1..=card_k {
             for p1 in 1..=card_p {
                 for p2 in p1 + 1..=card_p {
-                    encoder.add(vec![Neg(X(n, k, p1)), Neg(X(n, k, p2))])
+                    encoder.insert_clause(vec![Neg(X(n, k, p1)), Neg(X(n, k, p2))])
                 }
             }
         }
@@ -33,9 +33,9 @@ pub fn encode_instance(card_k: usize, card_n: usize) -> (String, Vec<X>) {
         for k in 1..card_k {
             for p in 1..=card_p {
                 if p + n < card_p {
-                    encoder.add(vec![Neg(X(n, k, p)), X(n, k + 1, p + n + 1).into()])
+                    encoder.insert_clause(vec![Neg(X(n, k, p)), X(n, k + 1, p + n + 1).into()])
                 } else {
-                    encoder.add(vec![Neg(X(n, k, p))]);
+                    encoder.insert_clause(vec![Neg(X(n, k, p))]);
                 }
             }
         }
@@ -48,7 +48,7 @@ pub fn encode_instance(card_k: usize, card_n: usize) -> (String, Vec<X>) {
                 for k2 in 1..=card_k {
                     for p in 1..=card_p {
                         if (n1, k1) < (n2, k2) {
-                            encoder.add(vec![Neg(X(n1, k1, p)), Neg(X(n2, k2, p))]);
+                            encoder.insert_clause(vec![Neg(X(n1, k1, p)), Neg(X(n2, k2, p))]);
                         }
                     }
                 }

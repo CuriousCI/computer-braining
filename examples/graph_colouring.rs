@@ -37,14 +37,14 @@ fn main() {
 
     // ALO
     for v in nodes {
-        encoder.add(colors.into_iter().map(|color| X(v, color).into()).collect());
+        encoder.insert_clause(colors.into_iter().map(|color| X(v, color).into()).collect());
     }
 
     // AMO
     for v in nodes {
         for (i_1, &color_1) in colors.iter().enumerate() {
             for &color_2 in colors.iter().skip(i_1 + 1) {
-                encoder.add(vec![Neg(X(v, color_1)), Neg(X(v, color_2))]);
+                encoder.insert_clause(vec![Neg(X(v, color_1)), Neg(X(v, color_2))]);
             }
         }
     }
@@ -52,10 +52,10 @@ fn main() {
     // 1. + 2.
     for (u, v) in edges {
         if u == v {
-            encoder.add(vec![X(v, R).into()])
+            encoder.insert_clause(vec![X(v, R).into()])
         } else {
             for color in colors {
-                encoder.add(vec![Neg(X(u, color)), Neg(X(v, color))]);
+                encoder.insert_clause(vec![Neg(X(u, color)), Neg(X(v, color))]);
             }
         }
     }

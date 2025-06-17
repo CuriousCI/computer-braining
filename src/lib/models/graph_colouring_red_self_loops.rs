@@ -22,7 +22,7 @@ where
 
     // ALO_col
     for &v in nodes {
-        encoder.add(colors.into_iter().map(|color| X(v, color).into()).collect());
+        encoder.insert_clause(colors.into_iter().map(|color| X(v, color).into()).collect());
     }
 
     // AMO_col
@@ -37,10 +37,10 @@ where
     // col + loop
     for &(u, v) in edges {
         if u == v {
-            encoder.add(vec![X(v, Color::R).into()])
+            encoder.insert_clause(vec![X(v, Color::R).into()])
         } else {
             for color in colors {
-                encoder.add(vec![Neg(X(u, color)), Neg(X(v, color))]);
+                encoder.insert_clause(vec![Neg(X(u, color)), Neg(X(v, color))]);
             }
         }
     }

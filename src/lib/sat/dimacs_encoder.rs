@@ -23,7 +23,7 @@ impl<T> Literal<T> {
 type Clause = Vec<Literal<NonZeroUsize>>;
 
 pub struct Encoder<T> {
-    map: HashMap<T, NonZeroUsize>,
+    letter_to_encoding: HashMap<T, NonZeroUsize>,
     clauses: Vec<Clause>,
 }
 
@@ -38,61 +38,103 @@ impl<T> Encoder<T> {
 impl<T> Default for Encoder<T> {
     fn default() -> Self {
         Self {
-            map: Default::default(),
+            letter_to_encoding: Default::default(),
             clauses: Default::default(),
         }
     }
 }
 
 impl<T: Eq + std::hash::Hash> Encoder<T> {
-    pub fn add(&mut self, clause: Vec<Literal<T>>) {
+    pub fn insert_clause(&mut self, clause: Vec<Literal<T>>) {
         self.clauses.push(
             clause
                 .into_iter()
                 .map(|literal| {
-                    let next_id = unsafe { NonZeroUsize::new_unchecked(self.map.len() + 1) };
-                    literal.map(|t| *self.map.entry(t).or_insert(next_id))
+                    let next_letter_encoding =
+                        unsafe { NonZeroUsize::new_unchecked(self.letter_to_encoding.len() + 1) };
+
+                    literal.map(|t| {
+                        *self
+                            .letter_to_encoding
+                            .entry(t)
+                            .or_insert(next_letter_encoding)
+                    })
                 })
                 .collect(),
         );
     }
 }
 
-// maybe I should use a wrapper type, or give it more structure, like "variables num" etc...
+// -X, Y, Z
+// X and Y -> Z or W
+// ALO
+// AMO
+// alldiff
+#[macro_export]
+macro_rules! clause {
+    () => {};
+}
+
 pub type DIMACS = String;
+pub type EncodingToLetter<T> = Vec<T>;
 
 impl<T: std::fmt::Debug + Clone> Encoder<T> {
-    pub fn to_dimacs(&self) -> (DIMACS, Vec<T>) {
-        let propositional_letters_count = self.map.len();
+    pub fn to_dimacs(&self) -> (DIMACS, EncodingToLetter<T>) {
+        let letters_count = self.letter_to_encoding.len();
 
-        let mut propositional_letters = vec![None; propositional_letters_count];
-        for (propositional_letter, id) in self.map.iter() {
-            // propositional_letters[id.into() - 1usize] = Some(propositional_letter.clone());
+        let mut encoding_to_letter = vec![None; letters_count];
+        for (letter, &encoding) in self.letter_to_encoding.iter() {
+            encoding_to_letter[usize::from(encoding) - 1usize] = Some(letter.to_owned())
         }
 
-        let propos_letters = propositional_letters.into_iter().flatten().collect();
+        let encoding_to_letter = encoding_to_letter.into_iter().flatten().collect();
+
         let mut dimacs_encoding = String::new();
-
-        dimacs_encoding.push_str(&format!(
-            "p cnf {propositional_letters_count} {}\n",
-            self.clauses.len()
-        ));
-
-        for clause in self.clauses.iter() {
-            let clause: String = clause
+        dimacs_encoding.push_str(&format!("p cnf {letters_count} {}\n", self.clauses.len()));
+        dimacs_encoding.push_str(
+            &self
+                .clauses
                 .iter()
-                .map(|literal| match literal {
-                    Literal::Positive(l) => format!("{l} "),
-                    Literal::Negative(l) => format!("-{l} "),
+                .map(|clause| {
+                    format!(
+                        "{}0\n",
+                        clause
+                            .iter()
+                            .map(|literal| match literal {
+                                Literal::Positive(letter) => format!("{letter} "),
+                                Literal::Negative(letter) => format!("-{letter} "),
+                            })
+                            .collect::<String>()
+                    )
                 })
-                .collect();
+                .collect::<String>(),
+        );
 
-            dimacs_encoding.push_str(&format!("{clause}0\n"));
-        }
-
-        (dimacs_encoding, propos_letters)
+        (dimacs_encoding, encoding_to_letter)
     }
 }
+
+// propositional_letters[id.into() - 1usize] = Some(propositional_letter.clone());
+// let clause: String = clause
+//     .iter()
+//     .map(|literal| match literal {
+//         Literal::Positive(letter) => format!("{letter} "),
+//         Literal::Negative(letter) => format!("-{letter} "),
+//     })
+//     .collect();
+//
+// format!("{clause}0\n")
+// for clause in self.clauses.iter() {
+//     let clause: String = clause
+//         .iter()
+//         .map(|literal| match literal {
+//             Literal::Positive(letter) => format!("{letter} "),
+//             Literal::Negative(letter) => format!("-{letter} "),
+//         })
+//         .collect();
+//
+//     dimacs_encoding.push_str(&format!("{clause}0\n"));
+// }
 
 // fn map<U, F: FnOnce(T) -> U>(self, f: F) -> Literal<U> {
 //     match self {
