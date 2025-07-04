@@ -65,16 +65,6 @@ impl<T: Eq + std::hash::Hash> Encoder<T> {
     }
 }
 
-// -X, Y, Z
-// X and Y -> Z or W
-// ALO
-// AMO
-// alldiff
-#[macro_export]
-macro_rules! clause {
-    () => {};
-}
-
 pub type DIMACS = String;
 pub type EncodingToLetter<T> = Vec<T>;
 
@@ -113,32 +103,3 @@ impl<T: std::fmt::Debug + Clone> Encoder<T> {
         (dimacs_encoding, encoding_to_letter)
     }
 }
-
-// propositional_letters[id.into() - 1usize] = Some(propositional_letter.clone());
-// let clause: String = clause
-//     .iter()
-//     .map(|literal| match literal {
-//         Literal::Positive(letter) => format!("{letter} "),
-//         Literal::Negative(letter) => format!("-{letter} "),
-//     })
-//     .collect();
-//
-// format!("{clause}0\n")
-// for clause in self.clauses.iter() {
-//     let clause: String = clause
-//         .iter()
-//         .map(|literal| match literal {
-//             Literal::Positive(letter) => format!("{letter} "),
-//             Literal::Negative(letter) => format!("-{letter} "),
-//         })
-//         .collect();
-//
-//     dimacs_encoding.push_str(&format!("{clause}0\n"));
-// }
-
-// fn map<U, F: FnOnce(T) -> U>(self, f: F) -> Literal<U> {
-//     match self {
-//         Literal::Positive(t) => Literal::Positive(f(t)),
-//         Literal::Negative(t) => Literal::Negative(f(t)),
-//     }
-// }

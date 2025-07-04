@@ -5,7 +5,7 @@ use std::{
     rc::Rc,
 };
 
-use crate::{problem::Problem, search::*};
+use crate::{problem::StateSpace, search::*};
 
 pub struct BFS<T>(VecDeque<T>);
 

@@ -1,3 +1,5 @@
+pub mod frontiers;
+pub mod local_search;
 // use std::{collections::VecDeque, ops::Add, rc::Rc};
 //
 // use crate::problem::{GoalBased, Problem, Utility};
